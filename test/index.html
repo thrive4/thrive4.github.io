@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
+    <title>index</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
+    <link rel="stylesheet" href="font.css" />
+    <link rel="stylesheet" href="w3.css" />
+    <link rel="stylesheet" href="navbar.css" />
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+<button id="darkmodeswitch" hidden>dark mode on/off</button>
+<nav class="nav">
+  <div class="nav-left">
+    <a class="nav-item" href="index.html">THRIVE4</a>
+  </div>
+
+  <label for="menu-toggle" class="nav-toggle">&equiv;</label>
+  <input type="checkbox" id="menu-toggle" class="is-hidden"/>
+
+  <div class="nav-right nav-menu">
+    <a class="nav-item" href="/pages/about.html">About</a>
+    <a class="nav-item" href="/archives.html">Archives</a>
+    <a class="nav-item" href="/categories.html">Categories</a>
+    <a class="nav-item" href="/tags.html">Tags</a>
+    <a class="nav-item" href="./imageviewer.html">imageviewer</a>
+    <a class="nav-item" href="#" onclick="myFunction(); id='darkmodeswitch';">dark mode</a>
+  </div>
+</nav>
+
+<div class="container">
+         <div class="row">
+          <div class="cardcontainer">
+               <a href="https://www.nexusmods.com/users/4664747?tab=user+files&BH=0">
+               <div class="column">
+                    <div class="card"><b>MODS</b></div>
+               </div>
+                     <span class="link"></span>
+               </a>
+          </div>
+          <div class="cardcontainer">
+               <a href="https://github.com/thrive4">
+              <div class="column">
+                  <div class="card"><b>CODE</b></div>
+              </div>
+                     <span class="link"></span>
+               </a>
+          </div>
+          <div class="cardcontainer">
+               <a href="table.html">
+              <div class="column">
+                  <div class="card"><b>MUSIC</b></div>
+              </div>
+                     <span class="link"></span>
+               </a>
+          </div>
+      </div>
+     <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec diam ipsum, maximus eu metus ac, semper tristique neque. Suspendisse sed finibus metus, dignissim blandit lorem. Praesent ornare lectus metus, ut aliquet est suscipit et. Quisque sollicitudin, lorem a efficitur euismod, elit elit interdum est, nec vehicula tortor est ut velit. Morbi blandit consequat lectus a auctor. Nulla sed dolor auctor, congue enim vel, blandit mi. Fusce arcu augue, cursus in mollis vitae, porta non magna.
+      </p>
+      <p>
+        Integer condimentum id nisl in lacinia. Ut congue ante sit amet ligula scelerisque, nec gravida erat tempor. Pellentesque venenatis pulvinar aliquam. Sed consectetur dapibus faucibus. Ut volutpat eget turpis sed ultricies. Nunc ut risus sit amet tortor feugiat facilisis sit amet non dolor. Morbi elementum arcu tortor, eu vulputate sapien sollicitudin a.
+      </p>
+      <p>
+        Duis dapibus dui eget est pellentesque, tristique pharetra elit imperdiet. Suspendisse quis quam sed nisi sodales faucibus. Donec quis sodales ex. Etiam molestie est ac ipsum scelerisque, ut bibendum metus molestie. Mauris porttitor ullamcorper faucibus.
+      </p>
+      <p>
+        Integer vulputate venenatis iaculis. Vestibulum fermentum sodales lectus, in posuere lacus interdum eget. Suspendisse maximus, lectus id pellentesque molestie, mi ante placerat est, vel condimentum orci nisl vel lacus.
+      </p>
+      <p>
+        Duis leo diam, viverra nec nulla et, accumsan commodo mauris. Sed id sollicitudin nunc. Praesent aliquet efficitur odio eget imperdiet.
+      </p>
+      <div class="container-audio">
+          <audio id="audio" controls>
+            <source src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/9473/new_year_dubstep_minimix.ogg" type="audio/ogg">
+            Your browser dose not Support the audio Tag
+          </audio>
+      </div>
+
+      <h2>Slideshow Indicators</h2>
+      <p>Using images to indicate how many slides there are in the slideshow, and highlight the image the user is currently viewing.</p>
+      <img id="myImg" src="https://unsplash.it/300?random" alt="Northern Lights, Norway" width="300" height="200">
+      <p>_</p>
+</div>
+
+<!-- overlay for image navigation -->
+<div id="myModal" class="modal">
+  <span class="close">&times;</span>
+   <p id="time"></p>
+   <p id="date"></p>
+    <div class="w3-content w3-display-container">
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="https://unsplash.it/300?random">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            A
+          </div>
+        </div>
+
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="https://unsplash.it/600?random">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            B
+          </div>
+        </div>
+
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="https://unsplash.it/900?random">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            C
+          </div>
+        </div>
+
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="https://unsplash.it/1200?random">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            D
+          </div>
+        </div>
+
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="images/01.jpg">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            E
+          </div>
+        </div>
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="images/02.jpg">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            F
+          </div>
+        </div>
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="images/03.jpg">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            G
+          </div>
+        </div>
+
+        <!-- image navigation left and right -->
+        <div class="w3-text-white w3-display-middle" style="top:350px;width:90%">
+             <div class="w3-left w3-hover-text-khaki"  onclick="plusDivs(-1)">&#10094;</div>
+             <div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>
+        </div>
+
+        <!-- <div class="w3-row-padding w3-section"> -->
+        <div class="ovthumbbox">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/300?random"  onclick="currentDiv(1)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/600?random"  onclick="currentDiv(2)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/900?random"  onclick="currentDiv(3)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/1200?random" onclick="currentDiv(4)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="images/01.jpg" onclick="currentDiv(5)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="images/02.jpg" onclick="currentDiv(6)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="images/03.jpg" onclick="currentDiv(7)">
+        </div>
+    </div>
+</div>
+<footer class="footer">
+    <p>Footer Content</p>
+</footer>
+<script type="text/javascript" src="lib.js"></script>
+<script>
+  const element = document.getElementById('darkmodeswitch');
+  element.addEventListener("darkmodeswitch", myFunction);
+  function myFunction() {
+    document.body.classList.toggle('dark');
+     var data = document.getElementsByClassName("card");
+     for (i = 0; i < data.length; i++) {
+       //data[i].style.fontSize = "30px";
+       //data[i].style.background = "green";
+       data[i].classList.toggle("carddarkmode")
+     }
+     var data = document.getElementsByClassName("nav");
+     for (i = 0; i < data.length; i++) {
+       data[i].classList.toggle("navdarkmode")
+     }
+     var data = document.getElementsByClassName("footer");
+     for (i = 0; i < data.length; i++) {
+       data[i].classList.toggle("footerdarkmode")
+     }
+     var data = document.getElementsByClassName("nav-item");
+     for (i = 0; i < data.length; i++) {
+       data[i].classList.toggle("nav-itemdarkmode")
+     }
+     var data = document.getElementsByClassName("nav-right");
+     for (i = 0; i < data.length; i++) {
+       data[i].classList.toggle("nav-rightdarkmode")
+     }
+     var data = document.querySelectorAll('#myTable tr:nth-child(odd)');
+     for (i = 0; i < data.length; i++) {
+       data[i].classList.toggle("trdarkmode")
+     }
+     window.localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    // debug feedback
+    document.getElementById("result").innerHTML =  window.localStorage.getItem('theme');
+  }
+
+  if ( window.localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark');
+     var data = document.getElementsByClassName("card");
+     for (i = 0; i < data.length; i++) {
+       //data[i].style.fontSize = "30px";
+       //data[i].style.background = "green";
+       data[i].classList.toggle("carddarkmode")
+     }
+     var data = document.getElementsByClassName("nav");
+     for (i = 0; i < data.length; i++) {
+       data[i].classList.toggle("navdarkmode")
+     }
+     var data = document.getElementsByClassName("footer");
+     for (i = 0; i < data.length; i++) {
+       data[i].classList.toggle("footerdarkmode")
+     }
+     var data = document.getElementsByClassName("nav-item");
+     for (i = 0; i < data.length; i++) {
+       data[i].classList.toggle("nav-itemdarkmode")
+     }
+     var data = document.getElementsByClassName("nav-right");
+     for (i = 0; i < data.length; i++) {
+       data[i].classList.toggle("nav-rightdarkmode")
+     }
+     var data = document.querySelectorAll('#myTable tr:nth-child(odd)');
+     for (i = 0; i < data.length; i++) {
+       data[i].classList.toggle("trdarkmode")
+     }
+  }
+</script>
+</body>
+</html>

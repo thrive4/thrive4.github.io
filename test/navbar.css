@@ -1,0 +1,134 @@
+<style>
+
+a:hover {
+    background-color: #dddddd;
+    text-decoration: none;
+}
+
+
+.is-hidden {
+	 display: none;
+}
+
+.container {
+    padding: 18px;
+    margin-top: 55px;
+    height: 500px;
+}
+
+@media screen and (max-width: 768px) {
+         #menu-toggle:checked + .nav-menu {
+         display: block;
+     }
+}
+
+.nav-toggle {
+    font-size: 3.25rem;
+    align-items: center;
+    display: flex;
+    padding-right: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .nav-toggle {
+        display: none;
+    }
+}
+
+.nav-toggle:hover {
+    cursor: pointer;
+}
+
+.nav-item {
+    color: black;
+    align-items: center;
+    display: flex;
+    padding: 0.25rem 0.5rem;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-itemdarkmode {
+    color: white;
+}
+
+.nav-item:hover {
+    background:#ddd;
+}
+
+.nav-itemdarkmode:hover {
+    background:#333;
+}
+
+.nav-left, .nav-right {
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+}
+
+.nav-left {
+    justify-content: flex-start;
+}
+
+.nav-right {
+    justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+    .nav-menu.nav-right {
+        display: none;
+	left: 0;
+	right: 0;
+	top: 100%;
+	position: absolute;
+	background-color: white;
+	box-shadow: 0 4px 7px rgba(10, 10, 10, 0.1);
+    }
+    .nav-menu.nav-rightdarkmode {
+	background-color: grey;
+    }
+    .nav-menu.nav-right .nav-item {
+        border-top: 1px solid rgba(219, 219, 219, 0.5);
+        padding: 0.75rem;
+    }
+}
+
+.nav {
+    display: flex;
+    align-items: stretch;
+    opacity:0.9;
+    background-image: linear-gradient(to bottom, #eee, #bbb);
+    min-height: 3.25rem;
+    position: fixed;
+    top: 0.5rem;
+    width: 99%;
+}
+
+.navdarkmode {
+    background-image: linear-gradient(to bottom, #aaa, #333);
+}
+
+.footer {
+    opacity:0.9;
+    background-image: linear-gradient(to bottom, #eee, #aaa);
+    position: fixed;
+    height: 45px;
+    top: calc( 100vh - 45px );
+    left: 5px;
+    width:98.5%;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.footerdarkmode {
+    background-image: linear-gradient(to bottom, #aaa, #333);
+}
+
+.ovthumbbox {
+    position: fixed;
+    bottom:10px;
+    left:1px;
+    max-width:550px;
+}
+</style>

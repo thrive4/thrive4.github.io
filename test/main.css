@@ -1,0 +1,111 @@
+* {
+  box-sizing: border-box;
+}
+
+.dark {
+  background-color: #131124;
+  color: white;
+}
+
+.header {
+  background-color: #f1f1f1;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+}
+
+/* Create three equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 0 10px;
+  height: 300px;
+}
+
+/* Style the counter cards */
+.card {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  text-align: center;
+  background: #f1f1f1;
+  height: 97%;
+  width: 97%;
+  transition: width 0.3s, height 0.3s, background 0.3s;
+}
+
+.carddarkmode {
+  background: #162F0A;
+}
+
+.card:hover {
+  background: #d1d1d1;
+  width: 100%;
+  height: 100%;
+}
+
+.carddarkmode:hover {
+  background: #356120;
+}
+
+.cardcontainer {
+  cursor: pointer;
+}
+
+.link {
+  z-index: 1;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+@media (max-width: 600px) {
+  .column {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+
+.container-audio {
+    width: 66%;
+    height: auto;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #eee;
+    color: #666;
+    margin: 20px auto;
+    overflow: hidden;
+}
+
+audio {
+  width:100%;
+}
+
+table {
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th {
+  cursor: pointer;
+}
+
+th, td {
+  text-align: left;
+  padding: 16px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.trdarkmode {
+  background-color: #000000;
+  color: white;
+}
