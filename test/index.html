@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
     <title>index</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
     <link rel="stylesheet" href="font.css" />
-    <link rel="stylesheet" href="w3.css" />
-    <link rel="stylesheet" href="navbar.css" />
     <link rel="stylesheet" href="main.css" />
 </head>
 <body>
@@ -20,12 +18,9 @@
   <input type="checkbox" id="menu-toggle" class="is-hidden"/>
 
   <div class="nav-right nav-menu">
-    <a class="nav-item" href="/pages/about.html">About</a>
-    <a class="nav-item" href="/archives.html">Archives</a>
-    <a class="nav-item" href="/categories.html">Categories</a>
-    <a class="nav-item" href="/tags.html">Tags</a>
-    <a class="nav-item" href="./imageviewer.html">imageviewer</a>
-    <a class="nav-item" href="#" onclick="myFunction(); id='darkmodeswitch';">dark mode</a>
+    <a class="nav-item" href="about.html">About</a>
+    <a class="nav-item" href="" onclick="id='myImg';">imageviewer</a>
+    <a class="nav-item" href="" onclick="switchtheme(); id='darkmodeswitch';">dark mode</a>
   </div>
 </nav>
 
@@ -159,71 +154,6 @@
     <p>Footer Content</p>
 </footer>
 <script type="text/javascript" src="lib.js"></script>
-<script>
-  const element = document.getElementById('darkmodeswitch');
-  element.addEventListener("darkmodeswitch", myFunction);
-  function myFunction() {
-    document.body.classList.toggle('dark');
-     var data = document.getElementsByClassName("card");
-     for (i = 0; i < data.length; i++) {
-       //data[i].style.fontSize = "30px";
-       //data[i].style.background = "green";
-       data[i].classList.toggle("carddarkmode")
-     }
-     var data = document.getElementsByClassName("nav");
-     for (i = 0; i < data.length; i++) {
-       data[i].classList.toggle("navdarkmode")
-     }
-     var data = document.getElementsByClassName("footer");
-     for (i = 0; i < data.length; i++) {
-       data[i].classList.toggle("footerdarkmode")
-     }
-     var data = document.getElementsByClassName("nav-item");
-     for (i = 0; i < data.length; i++) {
-       data[i].classList.toggle("nav-itemdarkmode")
-     }
-     var data = document.getElementsByClassName("nav-right");
-     for (i = 0; i < data.length; i++) {
-       data[i].classList.toggle("nav-rightdarkmode")
-     }
-     var data = document.querySelectorAll('#myTable tr:nth-child(odd)');
-     for (i = 0; i < data.length; i++) {
-       data[i].classList.toggle("trdarkmode")
-     }
-     window.localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-    // debug feedback
-    document.getElementById("result").innerHTML =  window.localStorage.getItem('theme');
-  }
-
-  if ( window.localStorage.getItem('theme') === 'dark') {
-    document.body.classList.add('dark');
-     var data = document.getElementsByClassName("card");
-     for (i = 0; i < data.length; i++) {
-       //data[i].style.fontSize = "30px";
-       //data[i].style.background = "green";
-       data[i].classList.toggle("carddarkmode")
-     }
-     var data = document.getElementsByClassName("nav");
-     for (i = 0; i < data.length; i++) {
-       data[i].classList.toggle("navdarkmode")
-     }
-     var data = document.getElementsByClassName("footer");
-     for (i = 0; i < data.length; i++) {
-       data[i].classList.toggle("footerdarkmode")
-     }
-     var data = document.getElementsByClassName("nav-item");
-     for (i = 0; i < data.length; i++) {
-       data[i].classList.toggle("nav-itemdarkmode")
-     }
-     var data = document.getElementsByClassName("nav-right");
-     for (i = 0; i < data.length; i++) {
-       data[i].classList.toggle("nav-rightdarkmode")
-     }
-     var data = document.querySelectorAll('#myTable tr:nth-child(odd)');
-     for (i = 0; i < data.length; i++) {
-       data[i].classList.toggle("trdarkmode")
-     }
-  }
-</script>
+<script type="text/javascript" src="libtheme.js"></script>
 </body>
 </html>

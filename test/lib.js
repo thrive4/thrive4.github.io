@@ -1,4 +1,3 @@
-
 // clock time and date routines
 window.onload = setInterval(clock,1000);
 function addZero(i) {
@@ -26,12 +25,14 @@ function clock() {
   document.getElementById("time").innerHTML=hour+":"+min;
 }
 
+// image and slide routines
 // overlay images
 var modal = document.getElementById('myModal');
-
+if (modal == undefined) { modal = ""; }
 // Get the image and insert it inside the modal - use its "alt" text as a caption
 var img = document.getElementById('myImg');
 var modalImg = document.getElementById("ovimage");
+if (modalImg == undefined) { modalImg = ""; }
 var captionText = document.getElementById("caption");
 img.onclick = function() {
   modal.style.display = "block";
@@ -47,7 +48,6 @@ span.onclick = function() {
     modal.style.display = "none";
 }
 
-// image and slide routines
 var slideIndex = 1;
 showDivs(slideIndex);
 
@@ -99,6 +99,38 @@ document.onkeydown = function (event) {
 }
 
 // dark mode toggle
+function switchtheme() {
+   document.body.classList.toggle('dark');
+   var data = document.getElementsByClassName("card");
+   for (i = 0; i < data.length; i++) {
+     //data[i].style.fontSize = "30px";
+     //data[i].style.background = "green";
+     data[i].classList.toggle("carddarkmode")
+   }
+   var data = document.getElementsByClassName("nav");
+   for (i = 0; i < data.length; i++) {
+     data[i].classList.toggle("navdarkmode")
+   }
+   var data = document.getElementsByClassName("footer");
+   for (i = 0; i < data.length; i++) {
+     data[i].classList.toggle("footerdarkmode")
+   }
+   var data = document.getElementsByClassName("nav-item");
+   for (i = 0; i < data.length; i++) {
+     data[i].classList.toggle("nav-itemdarkmode")
+   }
+   var data = document.getElementsByClassName("nav-right");
+   for (i = 0; i < data.length; i++) {
+     data[i].classList.toggle("nav-rightdarkmode")
+   }
+   var data = document.querySelectorAll('#myTable tr:nth-child(odd)');
+   for (i = 0; i < data.length; i++) {
+     data[i].classList.toggle("trdarkmode")
+   }
+   window.localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+   // debug feedback
+   //document.getElementById("result").innerHTML =  window.localStorage.getItem('theme');
+}
 
 // set audio volume html5 audio
 document.getElementById("audio").volume = 0.5;
