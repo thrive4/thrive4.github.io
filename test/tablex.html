@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
+    <title>table</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
+    <link rel="stylesheet" href="font.css" />
+    <link rel="stylesheet" href="main.css" />
+<style>
+body {
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  line-height: 1.4;
+  background: #fefefe;
+  color: #333;
+  margin: 0 1em;
+}
+
+table {
+  margin: 1em 0;
+  border-collapse: collapse;
+}
+
+caption {
+  text-align: left;
+  font-style: italic;
+  padding: 0.25em 0.5em 0.5em 0.5em;
+}
+
+th,
+td {
+  padding: 0.25em 0.5em 0.25em 1em;
+  vertical-align: text-top;
+  text-align: left;
+  text-indent: -0.5em;
+}
+
+th {
+  vertical-align: bottom;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-weight: bold;
+}
+
+.row td:nth-of-type(2), .cell td:nth-of-type(3) {
+  font-style: italic;
+}
+
+.row th:nth-of-type(3),
+.row td:nth-of-type(3),
+.cell th:nth-of-type(4),
+.cell td:nth-of-type(4) {
+  text-align: right;
+}
+
+td[colspan] {
+  background-color: #eee;
+  color: #000;
+  font-weight: normal;
+  font-style: italic;
+  padding: 0;
+  text-indent: 0;
+}
+
+tr.shown, tr.hidden {
+  background-color: #eee;
+  display: table-row;
+}
+
+tr.hidden {
+  display: none;
+}
+
+.row button {
+  background-color: transparent;
+  border: .1em solid transparent;
+  font: inherit;
+  padding: 0.25em 0.5em 0.25em .25em;
+  width: 100%;
+  text-align: left;
+}
+
+.row button:focus, .row button:hover {
+  background-color: #ddd;
+  outline: .2em solid #00f;
+}
+
+.row button svg {
+  width: .8em;
+  height: .8em;
+  margin: 0 0 -.05em 0;
+  fill: #66f;
+  transition: transform 0.25s ease-in;
+  transform-origin: center 45%;
+}
+
+.row button:hover svg,
+.row button:focus svg {
+  fill: #00c;
+}
+
+/* Lean on programmatic state for styling */
+.row button[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.cell button {
+  font-size: 60%;
+  color: #000;
+  background-color: #00f;
+  padding: 0.3em 0.2em 0 0.2em;
+  border: 0.2em solid #00f;
+  border-radius: 50%;
+  line-height: 1;
+  text-align: center;
+  text-indent: 0;
+  transform: rotate(270deg);
+}
+
+.cell button svg {
+  width: 1.25em;
+  height: 1.25em;
+  fill: #fff;
+  transition: transform 0.25s ease-in;
+  transform-origin: center 45%;
+}
+
+.cell button:hover,
+.cell button:focus {
+  background-color: #fff;
+  outline: none;
+}
+
+.cell button:hover svg,
+.cell button:focus svg {
+  fill: #00f;
+}
+
+/* Lean on programmatic state for styling */
+.cell button[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+
+/* Proven method to visually hide something but */
+/* still make it available to assistive technology */
+.visually-hidden {
+  position: absolute;
+  top: auto;
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px); /* IE 6/7 */
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px;
+  white-space: nowrap;
+}
+</style>
+
+</head>
+<body>
+<button id="darkmodeswitch" hidden>dark mode on/off</button>
+<nav class="nav">
+  <div class="nav-left">
+    <a class="nav-item" href="index.html">THRIVE4</a>
+  </div>
+
+  <label for="menu-toggle" class="nav-toggle">&equiv;</label>
+  <input type="checkbox" id="menu-toggle" class="is-hidden"/>
+
+  <div class="nav-right nav-menu">
+    <a class="nav-item" href="about.html">About</a>
+    <a class="nav-item" href="./imageviewer.html">imageviewer</a>
+    <a class="nav-item" href="" onclick="switchtheme(); id='darkmodeswitch';">dark mode</a>
+  </div>
+</nav>
+
+<br><br>
+<br><br>
+<div class="container">
+    <p><strong>Click the headers to sort the table.</strong></p>
+    <p>The first time you click, the sorting direction is ascending (A to Z).</p>
+    <p>Click again, and the sorting direction will be descending (Z to A):</p>
+    
+    <table id="myTable">
+      <tr>
+       <!--When a header is clicked, run the sortTable function, with a parameter, 0 for sorting by names, 1 for sorting by country:-->  
+        <th onclick="sortTable(0)">Author</th>
+        <th onclick="sortTable(1)">Title</th>
+        <th onclick="sortTable(2)">Year</th>
+        <th onclick="sortTable(3)">ISBN-13</th>
+        <th onclick="sortTable(4)">ISBN-10</th>
+      </tr>
+
+</table>
+<table class="row">
+  <caption>Books I May or May Not Have Read</caption>
+  <thead>
+    <tr>
+      <th>Author</th>
+      <th>Title</th>
+      <th>Year</th>
+      <th>ISBN-13</th>
+      <th>ISBN-10</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Miguel De Cervantes</td>
+      <td>The Ingenious Gentleman Don Quixote of La Mancha</td>
+      <td>1605</td>
+      <td>9783125798502</td>
+      <td>3125798507</td>
+    </tr>
+    <tr>
+      <td>Mary Shelley</td>
+      <td>Frankenstein; or, The Modern Prometheus</td>
+      <td>1818</td>
+      <td>9781530278442</td>
+      <td>1530278449</td>
+    </tr>
+    <tr>
+      <td colspan="5">
+        <button type="button" id="btnMSa" aria-expanded="false" onclick="toggle(this.id,'#MS01a,#MS02a,#MS03a');" aria-controls="MS01a MS02a MS03a">
+          <svg viewBox="0 0 80 80" focusable="false"><path d="M70.3 13.8L40 66.3 9.7 13.8z"></path></svg>
+          3 more from Mary Shelley…
+        </button>
+      </td>
+    </tr>
+    <tr id="MS01a" class="hidden">
+      <td>Mary Shelley</td>
+      <td>Valperga: Or, the Life and Adventures of Castruccio, Prince of Lucca</td>
+      <td>1823</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr id="MS02a" class="hidden">
+      <td>Mary Shelley</td>
+      <td>The Last Man</td>
+      <td>1826</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr id="MS03a" class="hidden">
+      <td>Mary Shelley</td>
+      <td>The Fortunes of Perkin Warbeck, A Romance</td>
+      <td>1830</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Herman Melville</td>
+      <td>Moby-Dick; or, The Whale</td>
+      <td>1851</td>
+      <td>9781530697908</td>
+      <td>1530697905</td>
+    </tr>
+    <tr>
+      <td>Emma Dorothy Eliza Nevitte Southworth</td>
+      <td>The Hidden Hand</td>
+      <td>1888</td>
+      <td>9780813512969</td>
+      <td>0813512964</td>
+    </tr>
+    <tr>
+      <td colspan="5">
+        <button type="button" id="btnEDENSa" aria-expanded="false" onclick="toggle(this.id,'#EDENS01a,#EDENS02a,#EDENS03a,#EDENS04a,#EDENS05a');" aria-controls="EDENS01a EDENS02a EDENS03a EDENS04a EDENS05a">
+          <svg viewBox="0 0 80 80" focusable="false"><path d="M70.3 13.8L40 66.3 9.7 13.8z"></path></svg>
+          5 more from Emma Dorothy Eliza Nevitte Southworth…
+        </button>
+      </td>
+    </tr>
+    <tr id="EDENS01a" class="hidden">
+      <td>Emma Dorothy Eliza Nevitte Southworth</td>
+      <td>A Leap in the Dark: A Novel</td>
+      <td>1889</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr id="EDENS02a" class="hidden">
+      <td>Emma Dorothy Eliza Nevitte Southworth</td>
+      <td>Unknown; or the Mystery of Raven Rocks</td>
+      <td>1889</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr id="EDENS03a" class="hidden">
+      <td>Emma Dorothy Eliza Nevitte Southworth</td>
+      <td>The Lost Lady of Lone</td>
+      <td>1890</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr id="EDENS04a" class="hidden">
+      <td>Emma Dorothy Eliza Nevitte Southworth</td>
+      <td>The Rejected Bride</td>
+      <td>1894</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr id="EDENS05a" class="hidden">
+      <td>Emma Dorothy Eliza Nevitte Southworth</td>
+      <td>Gertrude Haddon</td>
+      <td>1894</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>F. Scott Fitzgerald</td>
+      <td>The Great Gatsby</td>
+      <td>1925</td>
+      <td>9780743273565</td>
+      <td>0743273567</td>
+    </tr>
+    <tr>
+      <td>George Orwell</td>
+      <td>Nineteen Eighty-Four</td>
+      <td>1948</td>
+      <td>9780451524935</td>
+      <td>0451524934</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<footer class="footer">
+    <p>Footer Content</p>
+</footer>
+<script type="text/javascript" src="lib.js"></script>
+<script type="text/javascript" src="libtheme.js"></script>
+
+<script>
+function toggle(btnID, eIDs) {
+  // Feed the list of ids as a selector
+  var theRows = document.querySelectorAll(eIDs);
+  // Get the button that triggered this
+  var theButton = document.getElementById(btnID);
+  // If the button is not expanded...
+  if (theButton.getAttribute("aria-expanded") == "false") {
+    // Loop through the rows and show them
+    for (var i = 0; i < theRows.length; i++) {
+      theRows[i].classList.add("shown");
+      theRows[i].classList.remove("hidden");
+    }
+    // Now set the button to expanded
+    theButton.setAttribute("aria-expanded", "true");
+  // Otherwise button is not expanded...
+  } else {
+    // Loop through the rows and hide them
+    for (var i = 0; i < theRows.length; i++) {
+      theRows[i].classList.add("hidden");
+      theRows[i].classList.remove("shown");
+    }
+    // Now set the button to collapsed
+    theButton.setAttribute("aria-expanded", "false");
+  }
+}
+</script>
+
+</body>
+</html>

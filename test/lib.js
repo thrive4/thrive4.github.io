@@ -75,16 +75,6 @@ function showDivs(n) {
   dots[slideIndex-1].className += " w3-opacity-off w3-border-orange w3-border-bottom";
 }
 
-function leftarrow () {
-    alert('left arrow');
-    //some code
-}
-
-function rightarrow () {
-    alert('right arrow');
-    //some code
-}
-
 document.onkeydown = function (event) {
     var kbpressed = event.key;
     if(kbpressed == "ArrowLeft") {
@@ -132,8 +122,31 @@ function switchtheme() {
    //document.getElementById("result").innerHTML =  window.localStorage.getItem('theme');
 }
 
-// set audio volume html5 audio
-document.getElementById("audio").volume = 0.5;
+// play audio source
+function audioplay(music, element) {
+    document.getElementById("audio").pause();
+    document.getElementById("audio").setAttribute('src', music);
+    document.getElementById("audio").setAttribute('type', 'audio/mpeg');
+    document.getElementById("audio").load();
+    document.getElementById("audio").play();
+    document.getElementById("audio").volume = 0.5;
+    var data = document.getElementsByClassName("audiobutton");
+    for (i = 0; i < data.length; i++) {
+        // toggle on row id
+        if (i == element.closest('tr').rowIndex - 1) {
+           data[i].style.visibility = "visible";
+           // get first td per row
+           document.getElementById("result").innerHTML = document.getElementsByTagName("tr")[i + 1].getElementsByTagName("td")[1].innerHTML;
+           document.getElementById("audio").title = document.getElementsByTagName("tr")[i + 1].getElementsByTagName("td")[1].innerHTML;
+        } else {
+           data[i].style.visibility = "hidden";
+        }
+    }
+    var data = document.getElementsByClassName("container-audio");
+    for (i = 0; i < data.length; i++) {
+        data[i].style.visibility = "visible";
+    }
+}
 
 // sort tablular info
 function sortTable(n) {
@@ -141,7 +154,7 @@ function sortTable(n) {
   table = document.getElementById("myTable");
   switching = true;
   //Set the sorting direction to ascending:
-  dir = "asc"; 
+  dir = "asc";
   /*Make a loop that will continue until
   no switching has been done:*/
   while (switching) {

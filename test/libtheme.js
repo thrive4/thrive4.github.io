@@ -30,11 +30,13 @@ if ( window.localStorage.getItem('theme') === 'dark') {
      data[i].classList.toggle("trdarkmode")
    }
 }
+
+// todo add svg solution
 if ( window.localStorage.getItem('theme') === 'dark') {
-   var favicon = document.querySelector('link[rel="shortcut icon"]'); // get favicon-192.png element
-   favicon.href = 'images/favicondark.jpg';
+   //var favicon = document.querySelector('link[rel="shortcut icon"]'); // get favicon-192.png element
+   //favicon.href = 'images/favicondark.jpg';
    //largeFavicon.href = '/assets/images/favicon-dark-192.png';
 } else {
-   favicon.href = 'images/favicon.jpg';
+   //favicon.href = 'images/favicon.jpg';
    //largeFavicon.href = '/assets/images/favicon-192.png';
 }

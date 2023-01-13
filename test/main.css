@@ -44,15 +44,23 @@ a:hover {
 }
 
 .container {
-    padding: 18px;
-    margin-top: 55px;
-    height: 500px;
+  padding: 2px;
+  margin: auto;
+  width: 80%;
+}
+
+@media only screen and (max-width:768px) {
+  .container {width: 90%;}
+}
+
+@media only screen and (min-width:1000px) {
+  .container {width: 60%;}
 }
 
 @media screen and (max-width: 768px) {
-         #menu-toggle:checked + .nav-menu {
-         display: block;
-     }
+       #menu-toggle:checked + .nav-menu {
+       display: block;
+   }
 }
 
 .nav-toggle {
@@ -178,16 +186,18 @@ a:hover {
 /* Style the counter cards */
 .card {
   border-radius: 8px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
   padding: 16px;
   text-align: center;
   background: #f1f1f1;
   height: 97%;
   width: 97%;
   transition: width 0.3s, height 0.3s, background 0.3s;
+  overflow: hidden;
 }
 
 .carddarkmode {
+  box-shadow: 0px 4px 8px 0px #444444;
   background: #081824;
 }
 
@@ -224,22 +234,35 @@ a:hover {
   }
 }
 
+/* audio */
 .container-audio {
-    width: 66%;
+    border-radius: 3px;
+    width: 60%;
     height: auto;
-    padding: 20px;
-    border-radius: 5px;
     background-color: #eee;
-    color: #666;
-    margin: 20px auto;
+    color: #eee;
+    margin: 1px auto;
     overflow: hidden;
+    visibility: hidden;
 }
 
 audio {
   width:100%;
 }
 
+.audiobutton {
+  border: 0;
+  background: transparent;
+  box-sizing: border-box;
+  width: 0;
+  border-color: transparent transparent transparent #202020;
+  border-style: solid;
+  border-width: 7px 0px 7px 15px;
+  visibility: hidden;
+}
+
 table {
+  border-radius: 3px;
   border-spacing: 0;
   width: 100%;
   border: 1px solid #ddd;
@@ -255,7 +278,8 @@ th, td {
 }
 
 tbody tr:hover {
-  background: #989892;
+  background: #3D85C6;
+  cursor: pointer;
 }
 
 tr:nth-child(even) {
