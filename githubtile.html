@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
-    <title>index</title>
+    <title>Download page</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
     <link rel="stylesheet" href="font.css" />
     <link rel="stylesheet" href="main.css" />
@@ -40,64 +40,13 @@
         </a><div class="dropdown-content"><p>data view</p></div></div>
      </div>
      <div class="row">
-            <div class="cardcontainer">
-                 <a href="https://www.nexusmods.com/users/4664747?tab=user+files&BH=0" target="_blank">
-                 <div class="column">
-                      <div class="card"><b>MODS</b>
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec diam ipsum, maximus eu metus ac, semper tristique neque. Suspendisse sed finibus metus, dignissim blandit lorem. Praesent ornare lectus metus, ut aliquet est suscipit et. Quisque sollicitudin, lorem a efficitur euismod, elit elit interdum est, nec vehicula tortor est ut velit. Morbi blandit consequat lectus a auctor. Nulla sed dolor auctor, congue enim vel, blandit mi. Fusce arcu augue, cursus in mollis vitae, porta non magna.
-                          </p>
-                      </div>
-                 </div>
-                       <span class="link"></span>
-                 </a>
-            </div>
-            <div class="cardcontainer">
-               <a href="https://github.com/thrive4" target="_blank">
-               <a href="githubtile.html">
-                <div class="column">
-                    <div class="card"><b>CODE</b>
-                      <p>
-                        Integer condimentum id nisl in lacinia. Ut congue ante sit amet ligula scelerisque, nec gravida erat tempor. Pellentesque venenatis pulvinar aliquam. Sed consectetur dapibus faucibus. Ut volutpat eget turpis sed ultricies. Nunc ut risus sit amet tortor feugiat facilisis sit amet non dolor. Morbi elementum arcu tortor, eu vulputate sapien sollicitudin a.
-                      </p>
-                    </div>
-                </div>
-                     <span class="link"></span>
-                 </a>
-            </div>
-            <div class="cardcontainer">
-                 <a href="music.html">
-                <div class="column">
-                    <div class="card"><b>MUSIC</b>
-                      <p>
-                        Duis dapibus dui eget est pellentesque, tristique pharetra elit imperdiet. Suspendisse quis quam sed nisi sodales faucibus. Donec quis sodales ex. Etiam molestie est ac ipsum scelerisque, ut bibendum metus molestie. Mauris porttitor ullamcorper faucibus.
-                      </p>
-                    </div>
-                </div>
-                       <span class="link"></span>
-                 </a>
-            </div>
-      </div>
-      <br>
-      <div class="row">
-        <div class="cardcontainer">
-             <div class="column">
-                  <div class="card"><b>GALLERY</b>
-                       <br><br><img id="myImg" src="https://unsplash.it/300?random" alt="Northern Lights, Norway">
-                  </div>
-             </div>
-        </div>
-      </div>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-</div>
+<!-- generated tiles !-->
+<p id="reponame"></p>
+</div></div>
+
+<!-- dummy image as placeholder for image overlay !-->
+<img id="myImg" src="">
+
 <!-- overlay for image navigation -->
 <div id="myModal" class="modal">
   <span class="close">&times;</span>
@@ -174,5 +123,73 @@
 </footer>
 <script type="text/javascript" src="lib.js"></script>
 <script type="text/javascript" src="libtheme.js"></script>
+<script type="text/javascript">
+    let text           = "";
+    let changelog      = "";
+    let totaldownloads = 0;
+    let cnt            = 0;
+    //let releaseTag = "latest"; // Using tag 'latest' for latest released download count
+
+    // get repo data
+    let repouser = "thrive4"; // User name of the repository
+    url = `https://api.github.com/users/${repouser}/repos`;
+    //url = `github.json`;
+    request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.onload = function () {
+
+        var objct = JSON.parse(this.response);
+        Object.entries(objct).forEach((entry) => {
+            const [key, value] = entry;
+            //console.log(value.Id)
+            //console.log(`${key}: ${value.Sample}`);
+            //window.alert(`${key}${value.name}`);
+            if (value.name.indexOf(".io") < 0 && value.visibility == "public" && value.private === false) {
+                if (window.localStorage.getItem('theme') === 'dark') {
+                   text += '<div class="cardcontainer"><div class="column"><div class="carddarkmode"><p>';
+                } else {
+                   text += '<div class="cardcontainer"><div class="column"><div class="card"><p>';
+                }
+                text += value.description + "<br>";
+                text += "last update: " + value.updated_at.substr(0, 10) + "<br>";
+                    // get release data
+                    url = `https://api.github.com/repos/${repouser}/${value.name}/releases`;
+                    request = new XMLHttpRequest();
+                    request.open('GET', url, false);
+                    request.onload = function () {
+                        var objct2 = JSON.parse(this.response);
+                        Object.entries(objct2).forEach((entry) => {
+                            const [key2, value2] = entry;
+                            if (value2.assets[0] !== undefined && value2.assets[0] !== null) {
+                               totaldownloads += value2.assets[0].download_count;
+                            }
+                            if (cnt == 0) {
+                               text += "<b>" + value2.name + "</b>";
+                               cnt += 1;
+                            };
+                            //changelog += value2.body + "<br>";
+                            document.getElementById("reponame").innerHTML        = text;
+                        });
+                    };
+                    request.send();
+                    cnt = 0;
+                text += "<br>downloads: " + totaldownloads + "<br>";
+                //text += "<br>- changelog -<br>" + changelog + "<br>";
+                text += '<a href="' + value.html_url + '">Source</a>' + " | ";
+                text += '  <a href="' + value.html_url + '/releases">Release</a>' + "<br><br>";
+                text += '</p></div></div></div>';
+                totaldownloads = 0;
+                changelog = "";
+            };
+        });
+        document.getElementById("reponame").innerHTML = text;
+        //console.log(text)
+    };
+    request.send();
+    // clean up
+    text = "";
+    changelog = "";
+
+</script>
 </body>
 </html>

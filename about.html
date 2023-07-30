@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
+    <title>table</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
+    <link rel="stylesheet" href="font.css" />
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+<button id="darkmodeswitch" hidden>dark mode on/off</button>
+<nav class="nav">
+  <div class="nav-left">
+    <a class="nav-item" href="index.html">THRIVE4</a>
+  </div>
+
+  <label for="menu-toggle" class="nav-toggle">&equiv;</label>
+  <input type="checkbox" id="menu-toggle" class="is-hidden"/>
+
+  <div class="nav-right nav-menu">
+    <a class="nav-item" href="about.html">About</a>
+    <a class="nav-item" href="#" onclick="document.getElementById('myModal').style.display='block'">imageviewer</a>
+    <a class="nav-item" href="" onclick="switchtheme(); id='darkmodeswitch';">dark mode</a>
+  </div>
+</nav>
+<br><br><br><br>
+<div class="container">
+    <p><strong>Click the headers to sort the table.</strong></p>
+    <p>The first time you click, the sorting direction is ascending (A to Z).</p>
+    <p>Click again, and the sorting direction will be descending (Z to A):</p>
+
+    <table id="myTable">
+      <tr>
+       <!--When a header is clicked, run the sortTable function, with a parameter, 0 for sorting by names, 1 for sorting by country:-->
+        <th onclick="sortTable(0)"; width=20px;>*</th>
+        <th onclick="sortTable(1)">Name</th>
+        <th onclick="sortTable(2)">Country</th>
+      </tr>
+      <tr onclick="audioplay('file://g:/data/mp3/10am/annie lennox - waiting in vain.mp3', this);">
+        <td><div class='audiobutton'></div></td>
+        <td>alison</td>
+        <td>Sweden</td>
+      </tr>
+      <tr onclick="audioplay('file://g:/data/mp3/10am/annie lennox - waiting in vain.mp3', this);">
+        <td><div class='audiobutton'></div></td>
+        <td>annie</td>
+        <td>UK</td>
+      </tr>
+      <tr>
+        <td><div class='audiobutton'></div></td>
+        <td>Alfreds Futterkiste</td>
+        <td>Germany</td>
+      </tr>
+      <tr>
+        <td><div class='audiobutton'></div></td>
+        <td>Koniglich Essen</td>
+        <td>Germany</td>
+      </tr>
+      <tr>
+        <td><div class='audiobutton'></div></td>
+        <td>Magazzini Alimentari Riuniti</td>
+        <td>Italy</td>
+      </tr>
+      <tr>
+        <td><div class='audiobutton'></div></td>
+        <td>Paris specialites</td>
+        <td>France</td>
+      </tr>
+      <tr>
+        <td><div class='audiobutton'></div></td>
+        <td>Island Trading</td>
+        <td>UK</td>
+      </tr>
+      <tr>
+        <td><div class='audiobutton'></div></td>
+        <td>Laughing Bacchus Winecellars</td>
+        <td>Canada</td>
+      </tr>
+    </table>
+</div>
+
+<br><br><br><br>
+<!-- dummy image as placeholder for image overlay !-->
+<img id="myImg" src="">
+
+<!-- overlay for image navigation -->
+<div id="myModal" class="modal">
+  <span class="close">&times;</span>
+   <p id="time"></p>
+   <p id="date"></p>
+    <div class="w3-content w3-display-container">
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="https://unsplash.it/300?random">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            A
+          </div>
+        </div>
+
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="https://unsplash.it/600?random">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            B
+          </div>
+        </div>
+
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="https://unsplash.it/900?random">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            C
+          </div>
+        </div>
+
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="https://unsplash.it/1200?random">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            D
+          </div>
+        </div>
+
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="images/01.jpg">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            E
+          </div>
+        </div>
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="images/02.jpg">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            F
+          </div>
+        </div>
+        <div class="w3-display-container mySlides">
+          <img class="w3-animate-left ovimage" src="images/03.jpg">
+          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
+            G
+          </div>
+        </div>
+
+        <!-- image navigation left and right -->
+        <div class="w3-text-white w3-display-middle" style="top:350px;width:90%">
+             <div class="w3-left w3-hover-text-khaki"  onclick="plusDivs(-1)">&#10094;</div>
+             <div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>
+        </div>
+
+        <!-- <div class="w3-row-padding w3-section"> -->
+        <div class="ovthumbbox">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/300?random"  onclick="currentDiv(1)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/600?random"  onclick="currentDiv(2)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/900?random"  onclick="currentDiv(3)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/1200?random" onclick="currentDiv(4)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="images/01.jpg" onclick="currentDiv(5)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="images/02.jpg" onclick="currentDiv(6)">
+        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="images/03.jpg" onclick="currentDiv(7)">
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+      <div class="container-audio">
+          <audio id="audio" title="" controls>
+            Your browser dose not Support the audio Tag
+          </audio>
+      </div>
+</footer>
+
+<script type="text/javascript" src="lib.js"></script>
+<script type="text/javascript" src="libtheme.js"></script>
+</body>
+</html>

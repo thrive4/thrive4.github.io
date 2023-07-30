@@ -37,7 +37,9 @@ var captionText = document.getElementById("caption");
 img.onclick = function() {
   modal.style.display = "block";
   modalImg.src = this.src;
-  captionText.innerHTML = this.alt;
+  if (captionText !== undefined && captionText !== null) {
+     captionText.innerHTML = this.alt;
+  }
 }
 
 // Get the <span> element that closes the modal
@@ -87,7 +89,6 @@ document.onkeydown = function (event) {
         modal.style.display = "none";
     }
 }
-
 // dark mode toggle
 function switchtheme() {
    document.body.classList.toggle('dark');

@@ -33,12 +33,6 @@
 }
 
 /* navbar */
-a:hover {
-    background-color: #dddddd;
-    text-decoration: none;
-}
-
-
 .is-hidden {
 	 display: none;
 }
@@ -172,43 +166,100 @@ a:hover {
     left:1px;
     max-width:550px;
 }
-
 /* end navbar */
+
+/* begin icon bar */
+svg {
+  width:  40px;
+  height: 40px;
+}
+svg:hover {
+  fill: maroon;
+}
+
+.dropdown {
+  float: right;
+  display: block;
+}
+.dropdown-content {
+  display: none;
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  z-index: 1;
+}
+.dropdown:hover .dropdown-content {
+  display: inline;
+}
+/* end icon bar */
 
 /* Create three equal columns that floats next to each other */
 .column {
   float: left;
   width: 33.33%;
-  padding: 0 10px;
-  height: 300px;
+  padding: 0 8px;
+  height: 400px;
+}
+
+.columnlist {
+  float: left;
+  width: 100%;
+  padding: 0 8px;
+  height: 100%;
 }
 
 /* Style the counter cards */
 .card {
   border-radius: 8px;
-  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
   padding: 16px;
   text-align: center;
   background: #f1f1f1;
-  height: 97%;
-  width: 97%;
+  width: 100%;
+  height: 95%;
+  transition: width 0.3s, height 0.3s, background 0.3s;
+  overflow: hidden;
+}
+.cardlist {
+  text-align: left;
+}
+
+.carddarkmode {
+  box-shadow: 0px 2px 2px 0px #444444;
+  background: #081824;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  text-align: center;
+  width: 100%;
+  height: 95%;
   transition: width 0.3s, height 0.3s, background 0.3s;
   overflow: hidden;
 }
 
-.carddarkmode {
-  box-shadow: 0px 4px 8px 0px #444444;
-  background: #081824;
+.cardlistdarkmode {
+  text-align: left;
 }
 
 .card:hover {
   background: #d1d1d1;
   width: 100%;
-  height: 100%;
+  height: 95%;
+  position: relative;
+  animation: tilemove 1s infinite;
+}
+
+@keyframes tilemove {
+  from {top: 0px;}
+  to {top: -10px;}
 }
 
 .carddarkmode:hover {
   background: #2C4C72;
+  width: 100%;
+  height: 95%;
+  position: relative;
+  animation: tilemove 1s infinite;
 }
 
 .cardcontainer {
