@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
-    <meta name="keywords" content="music, fruityloops, samples, vst, jazz, funk, dnb, latin, synth">
-    <title>music</title>
+    <meta name="keywords" content="freebasic, sdl, bass, code, utility, app, github, sqlite">
+    <title>code</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
     <link rel="stylesheet" href="font.css" />
     <link rel="stylesheet" href="main.css" />
@@ -11,7 +11,7 @@
 <body>
 <button id="darkmodeswitch" hidden>dark mode on/off</button>
 <p id="listtype"></p>
-<p id="tdelement"></p>
+<script>window.localStorage.setItem('tdelement', '1');</script>
 <nav class="nav">
   <div class="nav-left">
     <a class="nav-item" href="index.html">THRIVE4</a>
@@ -104,6 +104,7 @@
 </footer>
 <!-- set myimg workaround for imageviewer link !-->
 <p id='myImg'></p>
+
      </div>
       <br><br>
       <br><br>
@@ -125,7 +126,6 @@
 </div>
 </div>
 
-
 <script type="text/javascript" src="lib.js"></script>
 <script type="text/javascript" src="libtheme.js"></script>
 <script type="text/javascript" src="imageviewer.js"></script>
@@ -133,12 +133,15 @@
 function include(filename)
 {
    var head = document.getElementsByTagName('head')[0];
+
    var script = document.createElement('script');
    script.src = filename;
    script.type = 'text/javascript';
+
    head.appendChild(script)
 }
-window.onload = include("music.js");
+
+window.onload = include("code.js");
 </script>
 </body>
 </html>

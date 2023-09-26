@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
-    <title>table</title>
+    <title>about</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
     <link rel="stylesheet" href="font.css" />
     <link rel="stylesheet" href="main.css" />
 </head>
 <body>
 <button id="darkmodeswitch" hidden>dark mode on/off</button>
+<p id="listtype"></p>
 <nav class="nav">
   <div class="nav-left">
     <a class="nav-item" href="index.html">THRIVE4</a>
@@ -18,143 +19,37 @@
   <input type="checkbox" id="menu-toggle" class="is-hidden"/>
 
   <div class="nav-right nav-menu">
-    <a class="nav-item" href="about.html">About</a>
-    <a class="nav-item" href="#" onclick="document.getElementById('myModal').style.display='block'">imageviewer</a>
-    <a class="nav-item" href="" onclick="switchtheme(); id='darkmodeswitch';">dark mode</a>
+    <a class="nav-item" href="#" onclick="document.getElementById('myModal').style.display='block'">
+      <svg class="svglight" viewBox="-5 -5 34 34">
+          <path d="M21,4c-1.402,0-2.867,0-2.867,0L17.2,2c-0.215-0.498-1.075-1-1.826-1H8.759
+          C8.008,1,7.148,1.502,6.933,2L6,4c0,0-1.517,0-3,0C0.611,4,0,6,0,6v14c0,0,1.5,2,3,2s16.406,0,18,0s3-2,3-2V6C24,6,23.496,4,21,4z
+          M12,19.001c-3.313,0-6-2.687-6-6.001c0-3.313,2.687-6,6-6c3.314,0,6,2.687,6,6C18,16.314,15.314,19.001,12,19.001z M12,9
+          c-2.209,0-4,1.791-4,4s1.791,4,4,4s4-1.791,4-4S14.209,9,12,9z"/>
+      </svg>
+    </a>
+
+    <a class="nav-item" href="" onclick="switchtheme(); id='darkmodeswitch';">
+      <svg class="svglight" viewBox="-5 -5 34 34">
+        <circle cx="12" cy="12" r="5"/>
+        <path d="M21,13H20a1,1,0,0,1,0-2h1a1,1,0,0,1,0,2Z
+        M4,13H3a1,1,0,0,1,0-2H4a1,1,0,0,1,0,2Z
+        M17.66,7.34A1,1,0,0,1,17,7.05a1,1,0,0,1,0-1.41l.71-.71a1,1,0,1,1,1.41,1.41l-.71.71A1,1,0,0,1,17.66,7.34Z
+        M5.64,19.36a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.41L5.64,17a1,1,0,0,1,1.41,1.41l-.71.71A1,1,0,0,1,5.64,19.36Z
+        M12,5a1,1,0,0,1-1-1V3a1,1,0,0,1,2,0V4A1,1,0,0,1,12,5Z
+        M12,22a1,1,0,0,1-1-1V20a1,1,0,0,1,2,0v1A1,1,0,0,1,12,22Z
+        M6.34,7.34a1,1,0,0,1-.7-.29l-.71-.71A1,1,0,0,1,6.34,4.93l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,6.34,7.34Z
+        M18.36,19.36a1,1,0,0,1-.7-.29L17,18.36A1,1,0,0,1,18.36,17l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,18.36,19.36Z"/>
+      </svg>
+    </a>
   </div>
 </nav>
 <br><br><br><br>
 <div class="container">
-    <p><strong>Click the headers to sort the table.</strong></p>
-    <p>The first time you click, the sorting direction is ascending (A to Z).</p>
-    <p>Click again, and the sorting direction will be descending (Z to A):</p>
-
-    <table id="myTable">
-      <tr>
-       <!--When a header is clicked, run the sortTable function, with a parameter, 0 for sorting by names, 1 for sorting by country:-->
-        <th onclick="sortTable(0)"; width=20px;>*</th>
-        <th onclick="sortTable(1)">Name</th>
-        <th onclick="sortTable(2)">Country</th>
-      </tr>
-      <tr onclick="audioplay('file://g:/data/mp3/10am/annie lennox - waiting in vain.mp3', this);">
-        <td><div class='audiobutton'></div></td>
-        <td>alison</td>
-        <td>Sweden</td>
-      </tr>
-      <tr onclick="audioplay('file://g:/data/mp3/10am/annie lennox - waiting in vain.mp3', this);">
-        <td><div class='audiobutton'></div></td>
-        <td>annie</td>
-        <td>UK</td>
-      </tr>
-      <tr>
-        <td><div class='audiobutton'></div></td>
-        <td>Alfreds Futterkiste</td>
-        <td>Germany</td>
-      </tr>
-      <tr>
-        <td><div class='audiobutton'></div></td>
-        <td>Koniglich Essen</td>
-        <td>Germany</td>
-      </tr>
-      <tr>
-        <td><div class='audiobutton'></div></td>
-        <td>Magazzini Alimentari Riuniti</td>
-        <td>Italy</td>
-      </tr>
-      <tr>
-        <td><div class='audiobutton'></div></td>
-        <td>Paris specialites</td>
-        <td>France</td>
-      </tr>
-      <tr>
-        <td><div class='audiobutton'></div></td>
-        <td>Island Trading</td>
-        <td>UK</td>
-      </tr>
-      <tr>
-        <td><div class='audiobutton'></div></td>
-        <td>Laughing Bacchus Winecellars</td>
-        <td>Canada</td>
-      </tr>
-    </table>
+    <p><strong>ABOUT</strong></p>
+    <p>mods created in the past years released on nexus</p>
+    <p>code created in the past years released on github</p>
+    <p>music created in the past years to be released soon...</p>
 </div>
-
-<br><br><br><br>
-<!-- dummy image as placeholder for image overlay !-->
-<img id="myImg" src="">
-
-<!-- overlay for image navigation -->
-<div id="myModal" class="modal">
-  <span class="close">&times;</span>
-   <p id="time"></p>
-   <p id="date"></p>
-    <div class="w3-content w3-display-container">
-        <div class="w3-display-container mySlides">
-          <img class="w3-animate-left ovimage" src="https://unsplash.it/300?random">
-          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
-            A
-          </div>
-        </div>
-
-        <div class="w3-display-container mySlides">
-          <img class="w3-animate-left ovimage" src="https://unsplash.it/600?random">
-          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
-            B
-          </div>
-        </div>
-
-        <div class="w3-display-container mySlides">
-          <img class="w3-animate-left ovimage" src="https://unsplash.it/900?random">
-          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
-            C
-          </div>
-        </div>
-
-        <div class="w3-display-container mySlides">
-          <img class="w3-animate-left ovimage" src="https://unsplash.it/1200?random">
-          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
-            D
-          </div>
-        </div>
-
-        <div class="w3-display-container mySlides">
-          <img class="w3-animate-left ovimage" src="images/01.jpg">
-          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
-            E
-          </div>
-        </div>
-        <div class="w3-display-container mySlides">
-          <img class="w3-animate-left ovimage" src="images/02.jpg">
-          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
-            F
-          </div>
-        </div>
-        <div class="w3-display-container mySlides">
-          <img class="w3-animate-left ovimage" src="images/03.jpg">
-          <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">
-            G
-          </div>
-        </div>
-
-        <!-- image navigation left and right -->
-        <div class="w3-text-white w3-display-middle" style="top:350px;width:90%">
-             <div class="w3-left w3-hover-text-khaki"  onclick="plusDivs(-1)">&#10094;</div>
-             <div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>
-        </div>
-
-        <!-- <div class="w3-row-padding w3-section"> -->
-        <div class="ovthumbbox">
-        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/300?random"  onclick="currentDiv(1)">
-        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/600?random"  onclick="currentDiv(2)">
-        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/900?random"  onclick="currentDiv(3)">
-        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="https://unsplash.it/1200?random" onclick="currentDiv(4)">
-        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="images/01.jpg" onclick="currentDiv(5)">
-        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="images/02.jpg" onclick="currentDiv(6)">
-        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="images/03.jpg" onclick="currentDiv(7)">
-        </div>
-    </div>
-</div>
-
 <footer class="footer">
       <div class="container-audio">
           <audio id="audio" title="" controls>
@@ -162,8 +57,32 @@
           </audio>
       </div>
 </footer>
+<!-- set myimg workaround for imageviewer link !-->
+<p id='myImg'></p>
+
+     </div>
+      <br><br>
+      <br><br>
+      <br><br>
+      <br><br>
+      <br><br>
+      <br><br>
+      <br><br>
+      <br><br>
+      <br><br>
+</div>
+<!-- overlay for image navigation -->
+<div id="myModal" class="modal">
+<div id="imageoverlay"></div>
+<span class="close">&times;</span>
+<div class="w3-content w3-display-container">
+<div class="w3-display-container mySlides">
+<div class="demo" style="visibility: hidden;"></div>
+</div>
+</div>
 
 <script type="text/javascript" src="lib.js"></script>
 <script type="text/javascript" src="libtheme.js"></script>
+<script type="text/javascript" src="imageviewer.js"></script>
 </body>
 </html>
