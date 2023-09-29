@@ -25,7 +25,7 @@ function imageoverlay() {
             const [key, value] = entry;
             //window.alert(`${key}${value.name}`);
             text += '        <div class="w3-display-container mySlides">';
-            text += '         <img class="w3-animate-left ovimage" src="' + value.href + '">';
+            text += '         <img class="w3-animate-left ovimage" data-src="' + value.href + '">';
             text += '         <div class="w3-display-bottomleft-stretch w3-container w3-padding-8 w3-black">';
             text += value.name;
             text += '          </div>';
@@ -36,7 +36,7 @@ function imageoverlay() {
         Object.entries(objct).forEach((entry) => {
             const [key, value] = entry;
             //window.alert(`${key}${value.name}`);
-            text += '        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" src="' + value.href + '" onclick="currentDiv(' + cnt + ')">';
+            text += '        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" data-src="' + value.href + '" onclick="currentDiv(' + cnt + ')">';
             cnt += 1;
         });
 
@@ -56,3 +56,41 @@ function imageoverlay() {
 }
 
 imageoverlay();
+
+// ghetto lazyload images for imageviewer drawback is called for every click
+// via https://stackoverflow.com/questions/67988689/modify-the-src-to-data-src-javascript Junaid Hamza
+document.addEventListener("click", getimagesviewer);
+function getimagesviewer() {
+  if (document.getElementById('myModal').style.display == 'block') {
+    var imgs =  document.getElementsByClassName('w3-animate-left');
+    imgload(imgs);
+    // thumbs
+    var imgs =  document.getElementsByClassName('demo');
+    imgload(imgs);
+  } else {
+    var imgs =  document.getElementsByClassName('w3-animate-left');
+    imglazy(imgs);
+    // thumbs
+    var imgs =  document.getElementsByClassName('demo');
+    imglazy(imgs);
+  }
+}
+
+function imgload(imgs){
+    for (var i = 0; i < imgs.length; i++) {
+      if (imgs[i].getAttribute('data-src')) {
+        imgs[i].setAttribute('src', imgs[i].getAttribute('data-src'));
+        imgs[i].removeAttribute('data-src');
+      }
+    }
+}
+
+function imglazy(imgs){
+    for (var i = 0; i < imgs.length; i++) {
+      if (imgs[i].getAttribute('src')) {
+        imgs[i].setAttribute('data-src', imgs[i].getAttribute('src'));
+        imgs[i].removeAttribute('src');
+      }
+    }
+}
+
