@@ -53,7 +53,7 @@ function codedatatable() {
                                   text += "<tr class='trlight'>";
                                }
                                text += "<td></td><td>" + value2.name + "</td>";
-                               text += "<td>" + value.updated_at.substr(0, 10) + "</td>";
+                               text += "<td>" + value.pushed_at.substr(0, 10) + "</td>";
                                cnt += 1;
                             };
                             //changelog += value2.body + "<br>";
@@ -131,7 +131,7 @@ function codelist() {
                     request.send();
                     cnt = 0;
                 text += value.description + "<br>";
-                text += "last update<b> " + value.updated_at.substr(0, 10) + "</b><br>";
+                text += "last update<b> " + value.pushed_at.substr(0, 10) + "</b><br>";
                 text += changelog.substr(0, 120) + "..<br>";
                 text += "downloads: " + totaldownloads + "<br>";
                 text += '<a href="' + value.html_url + '">Source</a>' + " | ";
@@ -180,7 +180,7 @@ function codetile() {
                    text += '<div class="cardcontainer"><div class="column"><div class="card"><p>';
                 }
                 text += value.description + "<br>";
-                text += "last update: " + value.updated_at.substr(0, 10) + "<br>";
+                text += "last update: " + value.pushed_at.substr(0, 10) + "<br>";
                     // get release data
                     url = `https://api.github.com/repos/${repouser}/${value.name}/releases`;
                     request = new XMLHttpRequest();

@@ -136,8 +136,9 @@
     background-image: linear-gradient(to bottom, #eee, #bbb);
     min-height: 3.25rem;
     position: fixed;
-    top: 0.5rem;
-    width: 99%;
+    top: 0.0rem;
+    left: 0;
+    width: 100%;
 }
 
 .navdarkmode {
@@ -150,10 +151,9 @@
     position: fixed;
     height: 45px;
     top: calc( 100vh - 45px );
-    left: 5px;
-    width:98.5%;
+    left: 0;
+    width:100%;
     text-align: center;
-    border-radius: 5px;
 }
 
 .footerdarkmode {
