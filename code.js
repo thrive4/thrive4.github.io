@@ -17,7 +17,9 @@ function codedatatable() {
     request.overrideMimeType("text/html");
     request.onload = function () {
     text += "<table class='sortable' id='datatable'>";
-    text += '<thead><tr><th width=20px;>*</th>';
+    text += '<thead><tr><th width=20px;>';
+    text += '<div class="trdropdown"><button class="trdropbtn"></button><div class="trdropdown-content">';
+    text += '</div></div></th>';
     text += '<th>app</th>';
     text += '<th>update</th>';
     text += '<th>downloads</th>';
@@ -72,6 +74,7 @@ function codedatatable() {
         });
         text += "</table>";
         document.getElementById("reponame").innerHTML = text;
+        document.getElementById("srinput").focus();
         //window.alert(text);
     };
     request.send();

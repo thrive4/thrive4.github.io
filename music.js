@@ -78,6 +78,7 @@ function indexdatatable() {
         });
         text += "</table>";
         document.getElementById("reponame").innerHTML = text;
+        document.getElementById("srinput").focus();
         //window.alert(text);
     };
     request.send();

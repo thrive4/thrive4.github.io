@@ -1,0 +1,24 @@
+update v1.2 (pending)
+- added sticky table header for data tables
+  sticky tip courtesy https://codepen.io/stephen-george-west/pen/rNpjXYL
+
+update v1.1 04/11/2023
+- style tweaks
+- many code tweaks to json handeling
+
+ public release 1.0 26/09/2023
+- most pages are now data driven aka
+  data is gathered via json text file
+- added filter table javascript
+  courtesy to: https://www.w3schools.com/howto/howto_js_filter_table.asp
+  partially implemented filter on specific field
+- added slide show with ken burns effect
+- replaced sort routine for tables javascript
+  significant improvements in speed and number
+  of rows that can be handled by browser
+  many thanks to tofsjonas
+  see: https://github.com/tofsjonas/sortable
+- modified main.css less cluterd html table and other style tweaks
+- robots.txt set to allow crawlers
+- todo still issues with imageviewer and slideshow
+  javascript not setting focus on elements etc.
