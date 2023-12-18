@@ -143,3 +143,13 @@ function ytaudioplay(music, element) {
     }
     document.getElementById("result").innerHTML = music;
 }
+
+// sidebar navigation slide open and close from left to right
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+  document.getElementById("sidenavmain").style.marginLeft = "250px";
+}
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("sidenavmain").style.marginLeft= "0";
+}

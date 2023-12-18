@@ -366,8 +366,14 @@ table {
     z-index: 2;
   }
 }
+
 th {
   cursor: pointer;
+}
+
+.thnonsticky {
+  cursor: pointer;
+  z-index: 0;
 }
 
 th, td {
@@ -593,3 +599,52 @@ input.tablesearchboxdark:focus {
   cursor: pointer;
 }
 /* end modal imageviewer */
+
+/* sidebar navigation */
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  background-color: #333;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+  background-color: #818181;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 0px;
+  padding-right: 10px;
+  left: 0px;
+  font-size: 36px;
+  text-align: right;
+}
+
+#sidenavmain {
+  transition: margin-left .5s;
+  padding: 16px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+/* end sidebar navigation */

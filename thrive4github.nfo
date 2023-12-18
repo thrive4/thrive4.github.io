@@ -1,6 +1,10 @@
-update v1.2 (pending)
+update v1.2 18/12/2023
 - added sticky table header for data tables
   sticky tip courtesy https://codepen.io/stephen-george-west/pen/rNpjXYL
+- added side menu naviagtion
+- added search selection box automaticaly change to selected field
+- fixed issues with code.js
+- cleaned up divs and other small issues
 
 update v1.1 04/11/2023
 - style tweaks

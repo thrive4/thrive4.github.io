@@ -2,7 +2,26 @@
 function codedatatable() {
     let text           = "";
     let filterelement  = "app";
-   let changelog      = "";
+
+    // ui label for searchbox indicates which element will filter
+    if (window.localStorage.getItem('tdelement') === '1') {
+       filterelement = "app";
+    }
+    if (window.localStorage.getItem('tdelement') === '2') {
+       filterelement = "update";
+    }
+    if (window.localStorage.getItem('tdelement') === '3') {
+       filterelement = "downloads";
+    }
+    if (window.localStorage.getItem('tdelement') === '4') {
+       filterelement = "repo";
+    }
+    if (window.localStorage.getItem('tdelement') === null) {
+       window.localStorage.setItem('tdelement', '1');
+       filterelement = "app";
+    }
+
+    let changelog      = "";
     let totaldownloads = 0;
     let cnt            = 0;
     //let releaseTag = "latest"; // Using tag 'latest' for latest released download count
@@ -17,8 +36,12 @@ function codedatatable() {
     request.overrideMimeType("text/html");
     request.onload = function () {
     text += "<table class='sortable' id='datatable'>";
-    text += '<thead><tr><th width=20px;>';
+    text += '<thead><tr><th class="thnonsticky" width=20px;>';
     text += '<div class="trdropdown"><button class="trdropbtn"></button><div class="trdropdown-content">';
+    text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'1\')";>app</a>';
+    text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'2\')";>update</a>';
+    text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'3\')";>downloads</a>';
+    text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'4\')";>repo</a>';
     text += '</div></div></th>';
     text += '<th>app</th>';
     text += '<th>update</th>';
@@ -223,9 +246,50 @@ function codetile() {
     changelog = "";
 }
 
+// style sidenav
+function indexsidenav() {
+    let text           = "";
+
+    // get json data
+    url = `index.json`;
+    request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    // work around xml parsing error in firefox, etc
+    request.overrideMimeType("text/html");
+    request.onload = function () {
+        var objct = JSON.parse(this.response);
+        Object.entries(objct).forEach((entry) => {
+            const [key, value] = entry;
+            //window.alert(`${key}${value.name}`);
+            if (value.name.indexOf(".io") < 0 && value.visibility == "public" && value.private === false) {
+                if (window.localStorage.getItem('theme') === 'dark') {
+                   //text += '<div class="cardcontainer">';
+                   text += value.href;
+                   //text += '<div class="column"><div class="carddarkmode">';
+                } else {
+                   //text += '<div class="cardcontainer">';
+                   text += value.href;
+                   //text += '<div class="column"><div class="card">';
+                }
+                text += "<b>" + value.name.toLowerCase() + "</b></a>";
+                //text += "last update: " + value.updated_at.substr(0, 10) + "<br><br>";
+                //text += value.description + "</p>";
+                //text += '</div></div><span class="link"></span></a></div>';
+            };
+        });
+        document.getElementById("sidenavcontent").innerHTML = text;
+        //window.alert(text);
+    };
+    request.send();
+    // clean up
+    text = "";
+}
+
 // toggle list views
 switchlistview(listtype)
 function switchlistview(listtype) {
+   // used for main menu navigation
+   indexsidenav();
    switch(localStorage.getItem("listtype")) {
       case 'tile':
             codetile();

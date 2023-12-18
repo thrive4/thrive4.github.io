@@ -3,7 +3,7 @@
     "name": "mods",
     "private": false,
     "description": "Various mods made for an number of windows games hosted at nexus mods",
-    "href":  "<a href='https://www.nexusmods.com/users/4664747?tab=user+files&BH=0' target='_blank'>",
+    "href":  "<a href='https://www.nexusmods.com/users/4664747?tab=user+files&BH=0' target='_blank' onclick=closeNav();>",
     "updated_at": "2023-07-18T09:23:01Z",
     "disabled": false,
     "topics": [
@@ -18,7 +18,7 @@
     "name": "code",
     "private": false,
     "description": "Repositories of apps and utils written in freebasic and dll's like sdl2, sqlite and bass for windows",
-    "href":  "<a href='code.html'>",
+    "href":  "<a href='code.html' onclick=closeNav();>",
     "updated_at": "2023-07-18T09:23:01Z",
     "disabled": false,
     "topics": [
@@ -33,7 +33,7 @@
     "name": "music",
     "private": false,
     "description": "music wip",
-    "href":  "<a href='music.html'>",
+    "href":  "<a href='music.html' onclick=closeNav();>",
     "updated_at": "2023-07-18T09:23:01Z",
     "disabled": false,
     "topics": [
@@ -48,11 +48,26 @@
     "name": "gallery",
     "private": false,
     "description": "<img id='myImg' src='https://unsplash.it/300?random' alt='random image'>",
-    "href": "<a href='#' onclick=\"document.getElementById('myModal').style.display='block'\">",
+    "href": "<a href='#' onclick=\"document.getElementById('myModal').style.display='block'; closeNav();\">",
     "updated_at": "2023-07-18T09:23:01Z",
     "disabled": false,
     "topics": [
       "image viewer",
+      "examples",
+      "screenshots",
+      "info"
+    ],
+    "visibility": "public"
+  },
+  {
+    "name": "about",
+    "private": false,
+    "description": "info on site",
+    "href":  "<a href='about.html' onclick=closeNav();>",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "disabled": false,
+    "topics": [
+      "details",
       "examples",
       "screenshots",
       "info"

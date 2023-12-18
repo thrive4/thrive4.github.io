@@ -11,8 +11,18 @@
 <button id="darkmodeswitch" hidden>dark mode on/off</button>
 <p id="listtype"></p>
 <nav class="nav">
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <p id="sidenavcontent"></p>
+  </div>
   <div class="nav-left">
-    <a class="nav-item" href="index.html">THRIVE4</a>
+    <a class="nav-item" href="index.html">
+      <svg class="svglight" viewBox="-5 -5 34 34">
+        <path d="M12,14a3,3,0,0,0-3,3v7.026h6V17A3,3,0,0,0,12,14Z"/>
+        <path d="M13.338.833a2,2,0,0,0-2.676,0L0,10.429v10.4a3.2,3.2,0,0,0,3.2,3.2H7V17a5,5,0,0,1,10,0v7.026h3.8a3.2,3.2,0,0,0,3.2-3.2v-10.4Z"/>
+      </svg>
+    </a>
+    <a class="nav-item" style="cursor:pointer" onclick="openNav()">THRIVE4</a>
   </div>
 
   <label for="menu-toggle" class="nav-toggle">&equiv;</label>
@@ -59,30 +69,39 @@
 </footer>
 <!-- set myimg workaround for imageviewer link !-->
 <p id='myImg'></p>
-
-     </div>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-      <br><br>
-</div>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
 <!-- overlay for image navigation -->
 <div id="myModal" class="modal">
-<div id="imageoverlay"></div>
-<span class="close">&times;</span>
-<div class="w3-content w3-display-container">
-<div class="w3-display-container mySlides">
-<div class="demo" style="visibility: hidden;"></div>
-</div>
+     <div id="imageoverlay"></div>
+     <span class="close">&times;</span>
+     <div class="w3-content w3-display-container">
+          <div class="w3-display-container mySlides">
+               <div class="demo" style="visibility: hidden;"></div>
+          </div>
+     </div>
 </div>
 
 <script type="text/javascript" src="lib.js"></script>
 <script type="text/javascript" src="libtheme.js"></script>
 <script type="text/javascript" src="imageviewer.js"></script>
+<script>
+function include(filename)
+{
+   var head = document.getElementsByTagName('head')[0];
+   var script = document.createElement('script');
+   script.src = filename;
+   script.type = 'text/javascript';
+   head.appendChild(script)
+}
+window.onload = include("index.js");
+</script>
 </body>
 </html>
