@@ -5,14 +5,12 @@
     "description": "Various mods made for an number of windows games hosted at nexus mods",
     "href":  "<a href='https://www.nexusmods.com/users/4664747?tab=user+files&BH=0' target='_blank' onclick=closeNav();>",
     "updated_at": "2023-07-18T09:23:01Z",
-    "disabled": false,
     "topics": [
       "mods",
       "game",
       "tweaks",
       "nexus"
-    ],
-    "visibility": "public"
+    ]
   },
   {
     "name": "code",
@@ -20,14 +18,12 @@
     "description": "Repositories of apps and utils written in freebasic and dll's like sdl2, sqlite and bass for windows",
     "href":  "<a href='code.html' onclick=closeNav();>",
     "updated_at": "2023-07-18T09:23:01Z",
-    "disabled": false,
     "topics": [
       "freebasic",
       "apps",
       "util",
       "github"
-    ],
-    "visibility": "public"
+    ]
   },
   {
     "name": "music",
@@ -35,29 +31,77 @@
     "description": "music wip",
     "href":  "<a href='music.html' onclick=closeNav();>",
     "updated_at": "2023-07-18T09:23:01Z",
-    "disabled": false,
     "topics": [
       "fruityloops",
       "various music styles",
       "electronica",
       "released"
-    ],
-    "visibility": "public"
+    ]
+  },
+  {
+    "name": "resources",
+    "private": false,
+    "description": "links and other data sources",
+    "href":  "<a href='resource.html' onclick=closeNav();>",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "topics": [
+      "fruityloops",
+      "various music styles",
+      "electronica",
+      "released"
+    ]
+  },
+  {
+    "name": "paper",
+    "private": false,
+    "description": "book pages wip",
+    "href":  "<a href='paper.html' onclick=closeNav();>",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "topics": [
+      "fruityloops",
+      "various music styles",
+      "electronica",
+      "released"
+    ]
+  },
+  {
+    "name": "film",
+    "private": false,
+    "description": "film pages wip",
+    "href":  "<a href='film.html' onclick=closeNav();>",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "topics": [
+      "fruityloops",
+      "various music styles",
+      "electronica",
+      "released"
+    ]
+  },
+  {
+    "name": "game",
+    "private": false,
+    "description": "game pages wip",
+    "href":  "<a href='game.html' onclick=closeNav();>",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "topics": [
+      "fruityloops",
+      "various music styles",
+      "electronica",
+      "released"
+    ]
   },
   {
     "name": "gallery",
-    "private": false,
+    "private": true,
     "description": "<img id='myImg' src='https://unsplash.it/300?random' alt='random image'>",
     "href": "<a href='#' onclick=\"document.getElementById('myModal').style.display='block'; closeNav();\">",
     "updated_at": "2023-07-18T09:23:01Z",
-    "disabled": false,
     "topics": [
       "image viewer",
       "examples",
       "screenshots",
       "info"
-    ],
-    "visibility": "public"
+    ]
   },
   {
     "name": "about",
@@ -65,13 +109,11 @@
     "description": "info on site",
     "href":  "<a href='about.html' onclick=closeNav();>",
     "updated_at": "2023-07-18T09:23:01Z",
-    "disabled": false,
     "topics": [
       "details",
       "examples",
       "screenshots",
       "info"
-    ],
-    "visibility": "public"
+    ]
   }
 ]

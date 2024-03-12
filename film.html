@@ -2,16 +2,18 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
-    <meta name="keywords" content="code, mods, music, nexus, 3dmigoto, shaders, github, fruityloops">
-    <title>index</title>
+    <meta name="keywords" content="music, fruityloops, samples, vst, jazz, funk, dnb, latin, synth">
+    <title>film</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
     <link rel="stylesheet" href="font.css" />
     <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="paper.css" />
+<!--http://musicbrainz.org/ws/2/release-group/?query=artist:"michael jackson" AND primarytype:"album"-->
 </head>
 <body>
 <button id="darkmodeswitch" hidden>dark mode on/off</button>
 <p id="listtype"></p>
-<script>window.localStorage.setItem('tdelement', '1');</script>
+<p id="tdelement"></p>
 <nav class="nav">
   <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -137,7 +139,7 @@
 <script type="text/javascript" src="libtheme.js"></script>
 <script type="text/javascript" src="imageviewer.js"></script>
 <script>
-window.onload = include("index.js");
+window.onload = include("film.js");
 </script>
 </body>
 </html>

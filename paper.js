@@ -6,17 +6,17 @@ function indexdatatable() {
     let svgclass       = "svglight";
 
     // get json table
-    getjson('index.json', function(data){
+    getjson('paper.json', function(data){
     if (data)
         //console.log('json data : ' + JSON.stringify(data));
         text += "<table class='sortable' id='datatable'>";
         text += '<thead><tr><th class="thnonsticky" width=20px;>';
         text += '<div class="trdropdown"><button class="trdropbtn"></button><div class="trdropdown-content">';
         text += '</div></div></th>';
-        text += '<th>name</th>';
-        text += '<th>description</th>';
+        text += '<th>title</th>';
+        //text += '<th>description</th>';
         text += '<th>update</th>';
-        text += '<th>link</th>';
+        //text += '<th>link</th>';
         text += '</tr></thead>';
         if (window.localStorage.getItem('theme') === 'dark') {
            text += '<input class="tablesearchboxdark" type="text" id="srinput" onkeyup="searchandfilter()" placeholder="Search for ' + filterelement + '..">';
@@ -42,22 +42,24 @@ function indexdatatable() {
                           return;
                        };
                        const [key3, value3] = entry;
-                       if (value3.name === value.name) {
+                       if (value3.name === value.title) {
                           camera = true;
                        };
                    });
                 });
                 if (camera === true) {
-                   text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.name + '\')">' +
+                   text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.title + '\')">' +
                            '<svg class="' + svgclass + '" viewBox="-1 -12 44 44">' +
                                  svgcamera() +
                            '</svg></a>';
                            camera = false;
                 };
-                text += "</td><td>" + value.name + "</td>";
-                text += "<td>" + value.description + "</td>";
+                text += "<td>";
+                text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; paper2overlay(\'' + value.title + '\')">';
+                text += value.title + "</a></td>";
+                //text += "<td>" + value.description + "</td>";
                 text += "<td>" + value.updated_at.substr(0, 10) + "</td>";
-                text += '<td>' + value.href + 'Source</a></td>';
+                //text += '<td>' + value.href + 'Source</a></td>';
                 text += '</tr>';
             };
         });
@@ -77,13 +79,12 @@ function indexlist() {
     let svgclass       = "svglight";
 
     // get json list
-    getjson('index.json', function(data){
+    getjson('paper.json', function(data){
     if (data)
         Object.entries(data).forEach((entry) => {
             const [key, value] = entry;
             if (value.private === false) {
                 text += '<div class="cardcontainer">';
-                text += value.href;
                 if (window.localStorage.getItem('theme') === 'dark') {
                    text += '<div class="columnlist"><div class="cardlistdarkmode"><p>';
                    svgclass = "svgdarkmode";
@@ -91,8 +92,8 @@ function indexlist() {
                    text += '<div class="columnlist"><div class="cardlist"><p>';
                    svgclass = "svglight";
                 }
-                text += "<b>" + value.name + "</b><br></b>";
-                text += value.description + "</p>";
+                text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; paper2overlay(\'' + value.title + '\')">';
+                text += "<b>" + value.title + "</b><br></b></a>";
                 text += "last update<b> " + value.updated_at.substr(0, 10);
 
                 // get json image url
@@ -103,13 +104,13 @@ function indexlist() {
                           return;
                        };
                        const [key3, value3] = entry;
-                       if (value3.name === value.name) {
+                       if (value3.name === value.title) {
                           camera = true;
                        };
                    });
                 });
                 if (camera === true) {
-                   text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.name + '\')">' +
+                   text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.title + '\')">' +
                            '<svg class="' + svgclass + '" viewBox="-20 -22 44 44">' +
                                  svgcamera() +
                            '</svg></a>';
@@ -131,23 +132,23 @@ function indextile() {
     let svgclass       = "svglight";
 
     // get json tile
-    getjson('index.json', function(data){
+    getjson('paper.json', function(data){
     if (data)
         Object.entries(data).forEach((entry) => {
             const [key, value] = entry;
             if (value.private === false) {
-                text += '<div class="cardcontainer">';
-                text += value.href;
+                   text += '<div class="cardcontainer">';
                 if (window.localStorage.getItem('theme') === 'dark') {
                    text += '<div class="column"><div class="carddarkmode">';
                    svgclass = "svgdarkmode";
                 } else {
+                   text += '<div class="cardcontainer">';
                    text += '<div class="column"><div class="card">';
                    svgclass = "svglight";
                 }
-                text += "<b>" + value.name.toUpperCase() + "</b><p>";
-                text += "last update: " + value.updated_at.substr(0, 10) + "<br><br>";
-                text += value.description + "</p>";
+                text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; paper2overlay(\'' + value.title + '\')">';
+                text += "<b>" + value.title.toUpperCase() + "</b></a><p>";
+                text += "last update: " + value.updated_at.substr(0, 10) + "<br><br></p>";
                 // get json image url
                 getjson('imageviewer.json', function(data2){
                 if (data2)
@@ -156,13 +157,13 @@ function indextile() {
                           return;
                        };
                        const [key3, value3] = entry;
-                       if (value3.name === value.name) {
+                       if (value3.name === value.title) {
                           camera = true;
                        };
                    });
                 });
                 if (camera === true) {
-                   text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.name + '\')">' +
+                   text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.title + '\')">' +
                            '<svg class="' + svgclass + '" viewBox="-20 -22 44 44">' +
                                  svgcamera() +
                            '</svg></a>';

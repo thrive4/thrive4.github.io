@@ -1,8 +1,24 @@
+update v1.3 12/03/2024
+- fixed all images showing in imageviewer.js when loading page first time
+- imageviewer can now be used per sub section site
+- added mousescroll navigation imageviewer
+- added zoomin zoomout imageviewer
+- trimmed json datamodel most sections except code
+- unified sidenav code to lib.js
+- style tweaks
+- refactored most of the json handleing trimmed the fat
+- rewrite ken burns slide handeling plus added use of subsection
+- added sections resources, film and game
+- integrated wikipedia and musicbrainz rest api data in section music
+- removed github api calls in code section causes 403's te easy
+- total data tally items, 1500 music, 1500 film, 1300 game
+- site size 8 sections 70% data, 30% page render code
+
 update v1.2 18/12/2023
 - added sticky table header for data tables
   sticky tip courtesy https://codepen.io/stephen-george-west/pen/rNpjXYL
-- added side menu naviagtion
-- added search selection box automaticaly change to selected field
+- added side menu navigation
+- added search selection box automatically change to selected field
 - fixed issues with code.js
 - cleaned up divs and other small issues
 

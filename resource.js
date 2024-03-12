@@ -1,17 +1,35 @@
 // style data table
 function indexdatatable() {
     let text           = "";
-    let filterelement  = "item";
+    let filterelement  = "";
     let camera         = false;
     let svgclass       = "svglight";
 
+     // ui label for searchbox indicates which element will filter
+    if (window.localStorage.getItem('tdelement') === '1') {
+       filterelement = "name";
+    }
+    if (window.localStorage.getItem('tdelement') === '2') {
+       filterelement = "description";
+    }
+    if (window.localStorage.getItem('tdelement') === '3') {
+       filterelement = "update";
+    }
+    if (window.localStorage.getItem('tdelement') === null) {
+       window.localStorage.setItem('tdelement', '1');
+       filterelement = "name";
+    }
+
     // get json table
-    getjson('index.json', function(data){
+    getjson('resource.json', function(data){
     if (data)
         //console.log('json data : ' + JSON.stringify(data));
         text += "<table class='sortable' id='datatable'>";
         text += '<thead><tr><th class="thnonsticky" width=20px;>';
         text += '<div class="trdropdown"><button class="trdropbtn"></button><div class="trdropdown-content">';
+        text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'1\')";>name</a>';
+        text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'2\')";>description</a>';
+        text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'3\')";>update</a>';
         text += '</div></div></th>';
         text += '<th>name</th>';
         text += '<th>description</th>';
@@ -26,7 +44,7 @@ function indexdatatable() {
         Object.entries(data).forEach((entry) => {
             const [key, value] = entry;
             //window.alert(`${key}${value.name}`);
-            if (value.private === false) {
+            if (value.private === false || value.private === 'false') {
                if (window.localStorage.getItem('theme') === 'dark') {
                     text += "<tr class='trdarkmode'><td>";
                     svgclass = "svgdarkmode";
@@ -77,11 +95,11 @@ function indexlist() {
     let svgclass       = "svglight";
 
     // get json list
-    getjson('index.json', function(data){
+    getjson('resource.json', function(data){
     if (data)
         Object.entries(data).forEach((entry) => {
             const [key, value] = entry;
-            if (value.private === false) {
+            if (value.private === false || value.private === 'false') {
                 text += '<div class="cardcontainer">';
                 text += value.href;
                 if (window.localStorage.getItem('theme') === 'dark') {
@@ -131,11 +149,11 @@ function indextile() {
     let svgclass       = "svglight";
 
     // get json tile
-    getjson('index.json', function(data){
+    getjson('resource.json', function(data){
     if (data)
         Object.entries(data).forEach((entry) => {
             const [key, value] = entry;
-            if (value.private === false) {
+            if (value.private === false || value.private === 'false') {
                 text += '<div class="cardcontainer">';
                 text += value.href;
                 if (window.localStorage.getItem('theme') === 'dark') {

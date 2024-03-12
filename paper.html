@@ -3,15 +3,18 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
     <meta name="keywords" content="code, mods, music, nexus, 3dmigoto, shaders, github, fruityloops">
-    <title>index</title>
+    <title>paper</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
     <link rel="stylesheet" href="font.css" />
     <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="paper.css" />
+<!-- https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=miles_davis -->
+<!-- https://en.wikipedia.org/api/rest_v1/page/media-list/Oscar%20Peterson -->
 </head>
 <body>
 <button id="darkmodeswitch" hidden>dark mode on/off</button>
 <p id="listtype"></p>
-<script>window.localStorage.setItem('tdelement', '1');</script>
+<p id="tdelement"></p>
 <nav class="nav">
   <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -137,7 +140,9 @@
 <script type="text/javascript" src="libtheme.js"></script>
 <script type="text/javascript" src="imageviewer.js"></script>
 <script>
-window.onload = include("index.js");
+window.onload = include("paper.js");
 </script>
 </body>
 </html>
+
+

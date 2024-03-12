@@ -14,54 +14,9 @@
 <div id="slideshow">
    <p id="time" class="kbslidetime"></p>
    <p id="date" class="kbslidedate"></p>
-   <div id="schweinjson"></div>
-   <div id="tutorial"></div>
+   <p id="desc" class="kbslidedesc"></p>
+   <div id="slideshowcanvas"></div>
    <img src="">
-
-<script>
-    var refresh = window.localStorage.getItem('schweinjson');
-    //window.alert(refresh);
-    let text           = "";
-    let cnt            = 1;
-    text += '{"images": [{';
-    // get json data
-    url = `imageviewer.json`;
-    request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    // work around xml parsing error in firefox, etc
-    request.overrideMimeType("text/html");
-    request.send();
-
-    request.onload = function () {
-        var objct = JSON.parse(this.response);
-        Object.entries(objct).forEach((entry) => {
-            const [key, value] = entry;
-            //window.alert(`${key}${value.name}`);
-            if (cnt < objct.length) {
-               text += '"href": "' + value.href + '", "name": "' + value.name + '"}, {';
-            } else {
-               text += '"href": "' + value.href + '", "name": "' + value.name + '"}';
-            }
-            cnt += 1;
-        });
-        text += ']}';
-        window.localStorage.setItem('schweinjson',text);
-    };
-    if ( refresh === null) {
-      window.alert('start slideshow');
-      location.reload();
-    }
-
-    var data = JSON.parse(window.localStorage.getItem('schweinjson'));
-    data.images.forEach(function(obj) {
-        var image = new Image();
-        image.src = obj.href;
-        image.alt = obj.name;
-        //window.alert(image.alt);
-        document.getElementById("tutorial").appendChild(image);
-     });
-</script>
-
     <div class="fullscreen">
          <button onclick="togglefullscreen();" class="btn"><br><br><br>
          <svg class="svglight" height="32px" viewBox="0 0 32 32" width="32px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">

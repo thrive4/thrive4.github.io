@@ -1,3 +1,28 @@
+// include routine todo deprecate if possible
+function include(filename)
+{
+   var head = document.getElementsByTagName('head')[0];
+   var script = document.createElement('script');
+   script.src = filename;
+   script.type = 'text/javascript';
+   head.appendChild(script)
+}
+
+// get json data
+function getjson(url, callback) {
+    var request = new XMLHttpRequest();
+    // issue not advisable but will only work in some cases...
+    request.open('GET', url, false);
+    //request.open('GET', url, true);
+    request.overrideMimeType("application/json");
+    request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == "200") {
+          callback(JSON.parse(request.responseText));
+        }
+    };
+    request.send();
+}
+
 // clock time and date routines
 window.onload = setInterval(clock,1000);
 function addZero(i) {
@@ -22,13 +47,13 @@ function clock() {
   var sec  = addZero(d.getSeconds());
 
   if (document.getElementById("date") !== undefined &&   document.getElementById("date") !== null) {
-     document.getElementById("date").innerHTML=day+" "+date+" "+month+" "+year;
+     document.getElementById("date").innerHTML = day+" "+date+" "+month+" "+year;
   }
   if (document.getElementById("time") !== undefined &&   document.getElementById("time") !== null) {
-     document.getElementById("time").innerHTML=hour+":"+min;
+     document.getElementById("time").innerHTML = hour+":"+min;
   }
-  if (document.getElementById("date2") !== undefined &&   document.getElementById("date2") !== null) {
-     document.getElementById("date2").innerHTML='wah';
+  if (document.getElementById("desc") !== undefined &&   document.getElementById("desc") !== null) {
+     document.getElementById("desc").innerHTML = document.getElementById('slideshow').getElementsByTagName('img')[0].alt;
   }
 }
 
@@ -60,9 +85,10 @@ span.onclick = function() {
     modal.style.display = "none";
 }
 
-var slideIndex = 1;
+var slideIndex = 2;
+
 if (slideIndex == undefined || slideIndex == null) {
-   slideIndex = 1;
+   slideIndex = 2;
 }
 
 showDivs(slideIndex);
@@ -79,18 +105,20 @@ function showDivs(n) {
   var i;
   var x = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("demo");
-  if (n > x.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = x.length}
-  for (i = 0; i < x.length; i++) {
+  var lastslide = x.length - 1;
+  if (n > lastslide) {slideIndex = 1}
+  if (n < 1) {slideIndex = lastslide}
+  for (i = 0; i < lastslide; i++) {
     x[i].style.display = "none";
   }
-  for (i = 0; i < dots.length; i++) {
+  for (i = 0; i < lastslide; i++) {
     dots[i].className = dots[i].className.replace(" w3-opacity-off w3-border-orange w3-border-bottom", "");
   }
   x[slideIndex - 1].style.display = "block";
   dots[slideIndex - 1].className += " w3-opacity-off w3-border-orange w3-border-bottom";
 }
 
+// keyboard navigation
 document.onkeydown = function (event) {
     var kbpressed = event.key;
     if(kbpressed == "ArrowLeft") {
@@ -99,12 +127,58 @@ document.onkeydown = function (event) {
     if(kbpressed == "ArrowRight") {
         plusDivs(1);
     }
+    if(kbpressed == "ArrowUp") {
+        // simulate mouse click todo only does first image
+        var simclick = new MouseEvent("click", {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+        }), element = document.getElementById(slideIndex);
+        element.dispatchEvent(simclick);
+    }
     if(kbpressed == "Escape") {
         if (modal.style == undefined) {
            modal.style = "";
         }
         modal.style.display = "none";
     }
+}
+
+// mousescroll image navigation
+window.addEventListener('wheel', function (scrollnav) {
+    if (document.getElementById('myModal').style.display === 'block') {
+        if (scrollnav.deltaY < 100) {
+             plusDivs(1);
+        }
+        if (scrollnav.deltaY > 100) {
+             plusDivs(-1);
+        }
+    }
+});
+
+// style sidenav
+function indexsidenav() {
+    let text           = "";
+
+    // get json
+    getjson('index.json', function(data){
+    if (data)
+        Object.entries(data).forEach((entry) => {
+            const [key, value] = entry;
+            //window.alert(`${key}${value.name}`);
+            if (value.name.indexOf(".io") < 0 && value.private === false) {
+                if (window.localStorage.getItem('theme') === 'dark') {
+                   text += value.href;
+                } else {
+                   text += value.href;
+                }
+                text += "<b>" + value.name.toLowerCase() + "</b></a>";
+            };
+        });
+        document.getElementById("sidenavcontent").innerHTML = text;
+    });
+    // clean up
+    text = "";
 }
 
 // play audio source
@@ -152,4 +226,14 @@ function openNav() {
 function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
   document.getElementById("sidenavmain").style.marginLeft= "0";
+}
+
+// svg icons
+function svgcamera() {
+
+    return '<path d="M21,4c-1.402,0-2.867,0-2.867,0L17.2,2c-0.215-0.498-1.075-1-1.826-1H8.759' +
+    'C8.008,1,7.148,1.502,6.933,2L6,4c0,0-1.517,0-3,0C0.611,4,0,6,0,6v14c0,0,1.5,2,3,2s16.406,0,18,0s3-2,3-2V6C24,6,23.496,4,21,4z' +
+    'M12,19.001c-3.313,0-6-2.687-6-6.001c0-3.313,2.687-6,6-6c3.314,0,6,2.687,6,6C18,16.314,15.314,19.001,12,19.001z M12,9' +
+    'c-2.209,0-4,1.791-4,4s1.791,4,4,4s4-1.791,4-4S14.209,9,12,9z"/>';
+
 }

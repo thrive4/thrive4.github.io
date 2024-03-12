@@ -20,6 +20,10 @@
   box-sizing: border-box;
 }
 
+a:link {
+  text-decoration: none;
+}
+
 .dark {
   background-color: #0e1a25;
   color: white;
@@ -40,21 +44,18 @@
 .container {
   padding: 2px;
   margin: auto;
-  width: 80%;
+  width: 90%;
 }
 
 @media only screen and (max-width:768px) {
-  .container {width: 90%;}
+  .container {width: 95%;}
+  #menu-toggle:checked + .nav-menu {
+       display: block;
+   }
 }
 
 @media only screen and (min-width:1000px) {
-  .container {width: 60%;}
-}
-
-@media screen and (max-width: 768px) {
-       #menu-toggle:checked + .nav-menu {
-       display: block;
-   }
+  .container {width: 70%;}
 }
 
 .nav-toggle {
@@ -81,6 +82,12 @@
     padding: 0.25rem 0.5rem;
     text-decoration: none;
     font-weight: bold;
+    cursor: pointer;
+}
+
+.nav-camera {
+    align-items: bottom;
+    display: flex;
 }
 
 .nav-itemdarkmode {
@@ -132,8 +139,7 @@
 .nav {
     display: flex;
     align-items: stretch;
-    opacity:0.9;
-    background-image: linear-gradient(to bottom, #eee, #bbb);
+    background-color: rgba(215, 215, 215, .95);
     min-height: 3.25rem;
     position: fixed;
     top: 0.0rem;
@@ -143,12 +149,10 @@
 }
 
 .navdarkmode {
-    background-image: linear-gradient(to bottom, #aaa, #333);
+    background-color: rgba(75, 75, 75, .95);
 }
 
 .footer {
-    opacity:0.9;
-    background-image: linear-gradient(to bottom, #eee, #bbb);
     position: fixed;
     height: 45px;
     top: calc( 100vh - 45px );
@@ -158,7 +162,6 @@
 }
 
 .footerdarkmode {
-    background-image: linear-gradient(to bottom, #aaa, #333);
 }
 /* end navbar */
 
@@ -359,7 +362,7 @@ table {
 /* only keep table column header on top when width is larger than */
 @media screen and (min-width: 1000px) {
   th {
-    cursor: pointer;
+    /*cursor: pointer;*/
     /* sticky tip courtesy https://codepen.io/stephen-george-west/pen/rNpjXYL */
     position: sticky;
     top: -0.85em;
@@ -389,7 +392,7 @@ th, td {
 tbody tr:hover {
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.6);
   background: #3D85C6;
-  cursor: pointer;
+  /*cursor: pointer;*/
   transition: transform ease 700ms;
   transform: translate(0, -5px);
 }
@@ -432,13 +435,11 @@ tbody tr:hover {
 input.tablesearchboxlight:focus {
   background-color: #f2f2f2;
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
 }
 
 input.tablesearchboxdark:focus {
   background-color: #3D85C6;
   box-shadow: 0px 2px 8px 0px rgba(100, 100, 100, 0.8);
-  border-radius: 5px;
 }
 
 .trdropbtn {
@@ -507,6 +508,13 @@ input.tablesearchboxdark:focus {
   color: #f1f1f1;
   font-size: 22px;
 }
+#desc {
+  position: absolute;
+  top: 80px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 22px;
+}
 /* end date and time display */
 
 /* image and thumb box */
@@ -549,18 +557,34 @@ input.tablesearchboxdark:focus {
 
 /* modal imageviewer */
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 3; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+  display: none;
+  position: fixed;
+  z-index: 3;
+  padding-top: 100px;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0,0,0,0.9);
   text-align: center;
+}
+
+/* image zoom css only */
+/* courtesy https://stackoverflow.com/questions/39858998/zoom-in-and-out-on-mouse-click-with-css sambua */
+.click-zoom input[type=checkbox] {
+  display: none
+}
+
+.click-zoom img {
+  margin: 100px;
+  transition: transform 0.25s ease;
+  cursor: zoom-in
+}
+
+.click-zoom input[type=checkbox]:checked~img {
+  transform: scale(2.5);
+  cursor: zoom-out
 }
 
 /* Caption of Modal Image */
