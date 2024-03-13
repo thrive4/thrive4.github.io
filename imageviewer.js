@@ -66,11 +66,13 @@ function paperoverlay(section) {
  
     // get json data
     // work around for schwein cors issue
-    if (window.location.hostname === '127.0.0.1') {
-       url = 'https://cors-anywhere.herokuapp.com/http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' + section
-    } else {
-       url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' + section
-    }
+    //if (window.location.hostname === '127.0.0.1') {
+    //   url = 'https://cors-anywhere.herokuapp.com/http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' + section
+    //} else {
+    //   url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' + section;
+    //}
+    url = 'https://corsproxy.io/?https%3A%2F%2Fen.wikipedia.org%2Fw%2Fapi.php%3Fformat%3Djson%26action%3Dquery%26prop%3Dextracts%26exintro%26explaintext%26redirects%3D1%26titles%3D' + encodeURIComponent(section);
+
     //let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' + section
     getjson(url, function(data){
     if (data)
