@@ -1,3 +1,8 @@
+update v1.4 15/03/2024
+- removed nested json call for imageviewer json
+- reduced size html page size per section
+- todo follow up suggestions made by pagespeed and yellowlab
+
 update v1.3 12/03/2024
 - fixed all images showing in imageviewer.js when loading page first time
 - imageviewer can now be used per sub section site

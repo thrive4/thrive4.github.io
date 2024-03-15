@@ -9,19 +9,16 @@ function getUrlVars() {
 
 //See: http://www.css-101.org/articles/ken-burns_effect/css-transition.php
 function slide(section) {
-    // get json data
-    getjson('imageviewer.json', function(data){
-    if (data)
-        Object.entries(data).forEach((entry) => {
-            const [key, value] = entry;
-            if (value.private === false && value.name === section || section === 'all') {
-                var image = new Image();
-                image.src = value.href;
-                image.alt = value.name;
-                document.getElementById("slideshowcanvas").appendChild(image);
-            };
-         });
-    });
+    // parse json image url
+    Object.entries(imageurl).forEach((entry) => {
+        const [key, value] = entry;
+        if (value.private === false && value.name === section || section === 'all') {
+            var image = new Image();
+            image.src = value.href;
+            image.alt = value.name;
+            document.getElementById("slideshowcanvas").appendChild(image);
+        };
+     });
 
     document.getElementById('slideshow').getElementsByTagName('img')[0].className = "fx";
     // this calls the kenBurns function every 4 seconds
@@ -30,7 +27,6 @@ function slide(section) {
     var images          = document.getElementById('slideshow').getElementsByTagName('img'),
         numberOfImages  = images.length,
         i               = 1;
-
     function kenBurns() {
         if(i==numberOfImages){ i = 0;}
         images[i].className = "fx";

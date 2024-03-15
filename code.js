@@ -51,18 +51,15 @@ function codedatatable() {
                 } else {
                     text += "<tr class='trlight'><td>";
                 }
-                // get json image url
-                getjson('imageviewer.json', function(data2){
-                if (data2)
-                   Object.entries(data2).forEach((entry) => {
-                       if (camera === true) {
-                          return;
-                       };
-                       const [key3, value3] = entry;
-                       if (value3.name === value.name) {
-                          camera = true;
-                       };
-                   });
+                // parse json image url
+                Object.entries(imageurl).forEach((entry) => {
+                    if (camera === true) {
+                       return;
+                    };
+                    const [key2, value2] = entry;
+                    if (value2.name === value.name) {
+                       camera = true;
+                    };
                 });
                 if (camera === true) {
                    text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.name + '\')">' +
@@ -108,18 +105,15 @@ function codelist() {
                 text += "last update<b> " + value.updated_at.substr(0, 10) + "</b><br>";
                 text += '<a href="' + value.html_url + '">Source</a>' + " | ";
                 text += '  <a href="' + value.html_url + '/releases">Release</a>';
-                // get json image url
-                getjson('imageviewer.json', function(data2){
-                if (data2)
-                   Object.entries(data2).forEach((entry) => {
-                       if (camera === true) {
-                          return;
-                       };
-                       const [key3, value3] = entry;
-                       if (value3.name === value.name) {
-                          camera = true;
-                       };
-                   });
+                // parse json image url
+                Object.entries(imageurl).forEach((entry) => {
+                    if (camera === true) {
+                       return;
+                    };
+                    const [key2, value2] = entry;
+                    if (value2.name === value.name) {
+                       camera = true;
+                    };
                 });
                 if (camera === true) {
                    text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.name + '\')">' +
@@ -159,18 +153,15 @@ function codetile() {
                 text += "<b>" + value.current + "</b><br><br><br>";
                 text += '<a href="' + value.html_url + '">Source</a>' + " | ";
                 text += '  <a href="' + value.html_url + '/releases">Release</a>' + "<br><br>";
-                // get json image url
-                getjson('imageviewer.json', function(data2){
-                if (data2)
-                   Object.entries(data2).forEach((entry) => {
-                       if (camera === true) {
-                          return;
-                       };
-                       const [key3, value3] = entry;
-                       if (value3.name === value.name) {
-                          camera = true;
-                       };
-                   });
+                // parse json image url
+                Object.entries(imageurl).forEach((entry) => {
+                    if (camera === true) {
+                       return;
+                    };
+                    const [key2, value2] = entry;
+                    if (value2.name === value.name) {
+                       camera = true;
+                    };
                 });
                 if (camera === true) {
                    text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.name + '\')">' +

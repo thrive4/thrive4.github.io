@@ -33,12 +33,14 @@
   padding: 40px;
 }
 .bookpage::first-line {
-  font-size: 200%;
+  font-size: 135%;
+  //font-size: clamp(1rem, -0.875rem + 3.33333vw, 1.5rem);
   color: #000000;
   //font-style: italic;
 }
 .bookpagedark::first-line {
-  font-size: 200%;
+  font-size: 135%;
+  //font-size: clamp(1rem, -0.875rem + 3.33333vw, 1.5rem);
   color: #ffffff;
   //font-style: italic;
 }

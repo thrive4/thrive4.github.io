@@ -4,8 +4,6 @@ function imageoverlay(section) {
     let cnt            = 1;
 
     // get json data
-    getjson('imageviewer.json', function(data){
-    if (data)
         text += '  <span class="playslide">';
         text += '        <a href="slide.html?section=' + section + '" style="text-decoration: none;" target="_blank">';
         text += '            <svg class="svglight" viewBox="0 0 32 3" height="16px" width="16px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
@@ -16,7 +14,7 @@ function imageoverlay(section) {
         text += '   <p id="time"></p>';
         text += '   <p id="date"></p>';
         text += '    <div class="w3-content w3-display-container">';
-        Object.entries(data).forEach((entry) => {
+        Object.entries(imageurl).forEach((entry) => {
             const [key, value] = entry;
             //window.alert(`${key}${value.name}`);
             if (value.private === false && value.name === section || section === 'all') {
@@ -36,7 +34,7 @@ function imageoverlay(section) {
         });
         cnt = 1;
         text += '        <div class="ovthumbbox">';
-        Object.entries(data).forEach((entry) => {
+        Object.entries(imageurl).forEach((entry) => {
             const [key, value] = entry;
             if (value.private === false && value.name === section || section === 'all') {
                text += '        <img class="demo w3-opacity w3-hover-opacity-off ovthumb" data-src="' + value.href + '" onclick="currentDiv(' + cnt + ')">';
@@ -53,7 +51,6 @@ function imageoverlay(section) {
         // force focus on first image when loading page
         currentDiv(1);
         //console.log(text);
-    });
     // clean up
     text = "";
 }
@@ -73,7 +70,6 @@ function paperoverlay(section) {
     //}
     url = 'https://corsproxy.io/?https%3A%2F%2Fen.wikipedia.org%2Fw%2Fapi.php%3Fformat%3Djson%26action%3Dquery%26prop%3Dextracts%26exintro%26explaintext%26redirects%3D1%26titles%3D' + encodeURIComponent(section);
 
-    //let url = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' + section
     getjson(url, function(data){
     if (data)
         text += '  <span class="playslide">';

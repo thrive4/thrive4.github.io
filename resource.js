@@ -52,18 +52,15 @@ function indexdatatable() {
                     text += "<tr class='trlight'><td>";
                     svgclass = "svglight";
                 }
-                // get json image url
-                getjson('imageviewer.json', function(data2){
-                if (data2)
-                   Object.entries(data2).forEach((entry) => {
-                       if (camera === true) {
-                          return;
-                       };
-                       const [key3, value3] = entry;
-                       if (value3.name === value.name) {
-                          camera = true;
-                       };
-                   });
+                // parse json image url
+                Object.entries(imageurl).forEach((entry) => {
+                    if (camera === true) {
+                       return;
+                    };
+                    const [key2, value2] = entry;
+                    if (value2.name === value.name) {
+                       camera = true;
+                    };
                 });
                 if (camera === true) {
                    text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.name + '\')">' +
@@ -113,18 +110,15 @@ function indexlist() {
                 text += value.description + "</p>";
                 text += "last update<b> " + value.updated_at.substr(0, 10);
 
-                // get json image url
-                getjson('imageviewer.json', function(data2){
-                if (data2)
-                   Object.entries(data2).forEach((entry) => {
-                       if (camera === true) {
-                          return;
-                       };
-                       const [key3, value3] = entry;
-                       if (value3.name === value.name) {
-                          camera = true;
-                       };
-                   });
+                // parse json image url
+                Object.entries(imageurl).forEach((entry) => {
+                    if (camera === true) {
+                       return;
+                    };
+                    const [key2, value2] = entry;
+                    if (value2.name === value.name) {
+                       camera = true;
+                    };
                 });
                 if (camera === true) {
                    text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.name + '\')">' +
@@ -166,18 +160,15 @@ function indextile() {
                 text += "<b>" + value.name.toUpperCase() + "</b><p>";
                 text += "last update: " + value.updated_at.substr(0, 10) + "<br><br>";
                 text += value.description + "</p>";
-                // get json image url
-                getjson('imageviewer.json', function(data2){
-                if (data2)
-                   Object.entries(data2).forEach((entry) => {
-                       if (camera === true) {
-                          return;
-                       };
-                       const [key3, value3] = entry;
-                       if (value3.name === value.name) {
-                          camera = true;
-                       };
-                   });
+                // parse json image url
+                Object.entries(imageurl).forEach((entry) => {
+                    if (camera === true) {
+                       return;
+                    };
+                    const [key2, value2] = entry;
+                    if (value2.name === value.name) {
+                       camera = true;
+                    };
                 });
                 if (camera === true) {
                    text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.name + '\')">' +

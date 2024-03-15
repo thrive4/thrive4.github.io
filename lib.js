@@ -1,15 +1,49 @@
-// include routine todo deprecate if possible
-function include(filename)
-{
-   var head = document.getElementsByTagName('head')[0];
-   var script = document.createElement('script');
-   script.src = filename;
-   script.type = 'text/javascript';
-   head.appendChild(script)
+// get html body
+function includehtml() {
+  var z, i, elmnt, file, xhttp;
+  /* Loop through a collection of all HTML elements: */
+  z = document.getElementsByTagName("*");
+  for (i = 0; i < z.length; i++) {
+    elmnt = z[i];
+    /*search for elements with a certain atrribute:*/
+    file = elmnt.getAttribute("w3-include-html");
+    if (file) {
+      /* Make an HTTP request using the attribute value as the file name: */
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+          if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+          /* Remove the attribute, and call this function once more: */
+          elmnt.removeAttribute("w3-include-html");
+          includeHTML();
+        }
+      }
+      xhttp.open("GET", file, false);
+      xhttp.send();
+      /* Exit the function: */
+      return;
+    }
+  }
 }
+includehtml();
 
 // get json data
 function getjson(url, callback) {
+    var request = new XMLHttpRequest();
+    // issue not advisable but will only work in some cases...
+    request.open('GET', url, true);
+    //request.open('GET', url, true);
+    request.overrideMimeType("application/json");
+    request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == "200") {
+          callback(JSON.parse(request.responseText));
+        }
+    };
+    request.send();
+}
+
+function getjsonf(url, callback) {
     var request = new XMLHttpRequest();
     // issue not advisable but will only work in some cases...
     request.open('GET', url, false);
@@ -22,6 +56,16 @@ function getjson(url, callback) {
     };
     request.send();
 }
+
+// get json image url
+const imageurl = [];
+getjsonf('imageviewer.json', function(data2){
+if (data2)
+   Object.entries(data2).forEach((entry) => {
+       const [key2, value2] = entry;
+       imageurl[key2] = value2;
+   });
+});
 
 // clock time and date routines
 window.onload = setInterval(clock,1000);
@@ -236,4 +280,15 @@ function svgcamera() {
     'M12,19.001c-3.313,0-6-2.687-6-6.001c0-3.313,2.687-6,6-6c3.314,0,6,2.687,6,6C18,16.314,15.314,19.001,12,19.001z M12,9' +
     'c-2.209,0-4,1.791-4,4s1.791,4,4,4s4-1.791,4-4S14.209,9,12,9z"/>';
 
+}
+
+// courtesy https://stackoverflow.com/questions/32589197/how-can-i-capitalize-the-first-letter-of-each-word-in-a-string-using-javascript by somthinghere
+function titlecase(str) {
+   var splitStr = str.toLowerCase().split(' ');
+   for (var i = 0; i < splitStr.length; i++) {
+       // You do not need to check if i is larger than splitStr length, as your for does that for you
+       // Assign it back to the array
+       splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+   }
+   return splitStr.join(' ');
 }
