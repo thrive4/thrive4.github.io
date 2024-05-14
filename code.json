@@ -109,7 +109,7 @@
     "name": "utill.fb.cmdzip",
     "current": "cmdzip-v1.1.32bit windows",
     "private": false,
-    "html_url": "https://github.com/thrive4/cmdzip-v1.1.32bit windows",
+    "html_url": "https://github.com/thrive4/utill.fb.cmdzip",
     "description": "commandline zip packer / unpacker util written in freebasic with libzip",
     "updated_at": "2023-10-29T23:01:04Z",
     "topics": [

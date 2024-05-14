@@ -92,9 +92,9 @@
   },
   {
     "name": "gallery",
-    "private": true,
+    "private": false,
     "description": "<img id='myImg' src='https://unsplash.it/300?random' alt='random image'>",
-    "href": "<a href='#' onclick=\"document.getElementById('myModal').style.display='block'; closeNav();\">",
+    "href":  "<a href='gallery.html' onclick=closeNav();>",
     "updated_at": "2023-07-18T09:23:01Z",
     "topics": [
       "image viewer",

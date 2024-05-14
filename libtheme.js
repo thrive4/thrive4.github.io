@@ -82,17 +82,18 @@ document.addEventListener('click', function (e) {
   var regex_table = /\bsortable\b/
   var element     = e.target
 
-  function reClassify(element, dir) {
-    element.className = element.className.replace(regex_dir, '') + dir
-  }
-
-  function getValue(element) {
-    // If you aren't using data-sort and want to make it just the tiniest bit smaller/faster
-    // comment this line and uncomment the next one
-    return element.getAttribute('data-sort') || element.innerText
-  }
-
   if (element.nodeName === 'TH') {
+
+    function reClassify(element, dir) {
+      element.className = element.className.replace(regex_dir, '') + dir
+    }
+
+    function getValue(element) {
+      // If you aren't using data-sort and want to make it just the tiniest bit smaller/faster
+      // comment this line and uncomment the next one
+      return element.getAttribute('data-sort') || element.innerText
+    }
+
     try {
       var tr = element.parentNode
       // var table = element.offsetParent; // Fails with positioned table elements
@@ -109,6 +110,8 @@ document.addEventListener('click', function (e) {
             reClassify(nodes[i], '')
           }
         }
+        // pass selected column aka td to tag indicator
+        window.localStorage.setItem('tdsortelement', column_index);
         var dir = down_class
         // check if we're sorting up or down, and update the css accordingly
         if (element.className.indexOf(down_class) !== -1) {
@@ -166,4 +169,21 @@ function searchandfilter() {
       }
     }
   }
+}
+
+// svg icons
+function svgcamera() {
+
+    return '<path d="M21,4c-1.402,0-2.867,0-2.867,0L17.2,2c-0.215-0.498-1.075-1-1.826-1H8.759' +
+    'C8.008,1,7.148,1.502,6.933,2L6,4c0,0-1.517,0-3,0C0.611,4,0,6,0,6v14c0,0,1.5,2,3,2s16.406,0,18,0s3-2,3-2V6C24,6,23.496,4,21,4z' +
+    'M12,19.001c-3.313,0-6-2.687-6-6.001c0-3.313,2.687-6,6-6c3.314,0,6,2.687,6,6C18,16.314,15.314,19.001,12,19.001z M12,9' +
+    'c-2.209,0-4,1.791-4,4s1.791,4,4,4s4-1.791,4-4S14.209,9,12,9z"/>';
+
+}
+
+function windowslogo() {
+
+    return '<path d="M0 36.357L104.62 22.11l.045 100.914-104.57.595L0 36.358zm104.57 98.293l.08 101.002L.081 221.275l-.006-87.302' +
+    '104.494.677zm12.682-114.405L255.968 0v121.74l-138.716 1.1V20.246zM256 135.6l-.033 121.191-138.716-19.578-.194-101.84L256 135.6z"/>';
+
 }

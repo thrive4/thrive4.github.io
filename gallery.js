@@ -1,7 +1,6 @@
-localStorage.setItem("menuitem", 'film');
 function switchlistview(listtype) {
     let text           = "";
-    let filterelement  = "film";
+    let filterelement  = "title";
     let camera         = false;
     let svgclass       = "svglight";
     let cnt            = 0;
@@ -14,25 +13,19 @@ function switchlistview(listtype) {
     }
     // ui label for searchbox indicates which element will filter
     if (window.localStorage.getItem('tdelement') === '1') {
-       filterelement = "film";
-    }
-    if (window.localStorage.getItem('tdelement') === '2') {
-       filterelement = "genres";
-    }
-    if (window.localStorage.getItem('tdelement') === '3') {
-       filterelement = "release_date";
+       filterelement = "title";
     }
     if (window.localStorage.getItem('tdelement') === null) {
        window.localStorage.setItem('tdelement', '1');
     }
 
     // get json table
-    getjson('film.json', function(data){
+    getjson('gallery.json', function(data){
     if (data)
         // inital page load sort data
         data.sort(function (x, y) {
-          let a = x.file.toUpperCase(),
-              b = y.file.toUpperCase();
+          let a = x.title.toUpperCase(),
+              b = y.title.toUpperCase();
           return a == b ? 0 : a > b ? 1 : -1;
         });
 
@@ -41,13 +34,10 @@ function switchlistview(listtype) {
             text += "<table class='sortable' id='datatable'>";
             text += '<thead><tr><th class="thnonsticky" width=20px;>';
             text += '<div class="trdropdown"><button class="trdropbtn"></button><div class="trdropdown-content">';
-            text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'1\')";>film</a>';
-            text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'2\')";>genres</a>';
-            text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'3\')";>release</a>';
+            text += '<a href="" onclick="localStorage.setItem(\'tdelement\', \'1\')";>title</a>';
             text += '</div></div></th>';
-            text += '<th>film</th>';
-            text += '<th>genre</th>';
-            text += '<th>release</th>';
+            text += '<th>title</th>';
+            text += '<th>update</th>';
             text += '</tr></thead>';
             if (window.localStorage.getItem('theme') === 'dark') {
                text += '<input class="tablesearchboxdark" type="text" id="srinput" onkeyup="searchandfilter()" placeholder="Search for ' + filterelement + '..">';
@@ -58,7 +48,7 @@ function switchlistview(listtype) {
         Object.entries(data).forEach((entry) => {
             const [key, value] = entry;
             //window.alert(`${key}${value.name}`);
-            film = value.file;//.split('.').slice(0, -1).join('.');
+            film = value.title;//.split('.').slice(0, -1).join('.');
             //if (value.private === false || value.private === 'false') {
                 switch (listtype){
                   case 'data':
@@ -72,10 +62,9 @@ function switchlistview(listtype) {
                       //text += showcamera(imageurl, value.name, svgclass);
                       text += "<td></td><td>";
                       //text += '<a href="https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=';
-                      text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + titlecase(film) + '\', \'paper\',\'remote\')">';
+                      text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.href + '\', \'image\',\'local\')">';
                       text += film + "</a></td>";
-                      text += "<td>" + value.genres + "</td>";
-                      text += "<td>" + value.release_date + "</td>";
+                      text += "<td>" + value.updated_at.substr(0, 10) + "</td>";
                       text += '</tr>';
                       break;
                   case 'list':
@@ -89,16 +78,13 @@ function switchlistview(listtype) {
                                  "getdivletter(" + cnt + "); trletteron();' onmouseOut='trletteroff();'>";
                          svgclass = "svglight";
                       }
-                      text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + titlecase(film) + '\', \'paper\',\'remote\')">';
+                      text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.href + '\', \'image\',\'local\')">';
                       text += "<b>" + film + "</b></a><br>";
-                      text += value.genres + "<br>";
-                      text += value.release_date + "<br>";
                       // parse json image url
                       //text += showcamera(imageurl, value.name, svgclass);
                       text += '</div></div><span class="link"></span></a></div>';
                       cnt += 1;
                       break;
-
                  case 'tile':
                       text += '<div class="cardcontainer">';
                       if (window.localStorage.getItem('theme') === 'dark') {
@@ -106,10 +92,8 @@ function switchlistview(listtype) {
                       } else {
                          text += '<div class="column"><div class="card">';
                       }
-                      text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + titlecase(film) + '\', \'paper\',\'remote\')">';
+                      text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.href + '\', \'image\',\'local\')">';
                       text += "<b>" + film + "</b></a><p>";
-                      text += value.genres + '<br><br>';
-                      text += value.release_date;
                       // parse json image url
                       //text += showcamera(imageurl, value.name, svgclass);
                       text += '</div></div><span class="link"></span></a></div>';

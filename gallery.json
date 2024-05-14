@@ -1,0 +1,58 @@
+[
+ {
+    "private": false,
+    "title": "adriaen van de velde",
+    "href":  "../gallery/adriaenvandevelde.json",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "title": "aelbert cuyp",
+    "href":  "../gallery/aelbertcuyp.json",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "title": "ferdinand bol",
+    "href":  "../gallery/ferdinandbol.json",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "title": "frans hals",
+    "href":  "../gallery/franshals.json",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "title": "jan steen",
+    "href":  "../gallery/jansteen.json",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "title": "johannes vermeer",
+    "href":  "../gallery/johannesvermeer.json",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "title": "jan lievens",
+    "href":  "../gallery/janlievens.json",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "title": "willem van de velde the younger",
+    "href":  "../gallery/willemvandeveldetheyounger.json",
+    "updated_at": "2023-07-18T09:23:01Z",
+    "extract": ""
+ }
+]

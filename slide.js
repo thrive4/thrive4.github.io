@@ -9,10 +9,21 @@ function getUrlVars() {
 
 //See: http://www.css-101.org/articles/ken-burns_effect/css-transition.php
 function slide(section) {
+    // todo fix tricky hack to pass json list via section
+    if (section.indexOf(".json") > 0) {
+        getjsonf(section, function(data2){
+        if (data2)
+           Object.entries(data2).forEach((entry) => {
+               const [key2, value2] = entry;
+               imageurl[key2] = value2;
+           });
+        });
+     };
+
     // parse json image url
     Object.entries(imageurl).forEach((entry) => {
         const [key, value] = entry;
-        if (value.private === false && value.name === section || section === 'all') {
+        if (value.private === false && (value.name == section || section == 'all') || section.indexOf(".json") > 0) {
             var image = new Image();
             image.src = value.href;
             image.alt = value.name;
@@ -28,6 +39,8 @@ function slide(section) {
         numberOfImages  = images.length,
         i               = 1;
     function kenBurns() {
+        // hide spinner
+        document.getElementsByClassName('spinner')[0].style.visibility = 'hidden';
         if(i==numberOfImages){ i = 0;}
         images[i].className = "fx";
         //document.getElementById("date").innerHTML = document.getElementById("date").innerHTML + " - " + images[i].alt;

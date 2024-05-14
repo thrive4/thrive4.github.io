@@ -1,3 +1,14 @@
+update v1.5 14/05/2024
+- included data / list indicator (first letter selected)
+- small tweak to sorting routine make more specific to click on th
+- re-write of imageviewer.js more scalable
+- compacted code per list type
+- merged paper.css into main.css
+- further intregration wikipedia and musicbrainz
+  sections papers, film, game and music
+- added spinner aka loading... to slide show
+- misc bug fixes
+
 update v1.4 15/03/2024
 - removed nested json call for imageviewer json
 - reduced size html page size per section
@@ -15,7 +26,7 @@ update v1.3 12/03/2024
 - rewrite ken burns slide handeling plus added use of subsection
 - added sections resources, film and game
 - integrated wikipedia and musicbrainz rest api data in section music
-- removed github api calls in code section causes 403's te easy
+- removed github api calls in code section causes 403's to easy
 - total data tally items, 1500 music, 1500 film, 1300 game
 - site size 8 sections 70% data, 30% page render code
 

@@ -1,5 +1,4 @@
-// get html body
-function includehtml() {
+function includeHTML() {
   var z, i, elmnt, file, xhttp;
   /* Loop through a collection of all HTML elements: */
   z = document.getElementsByTagName("*");
@@ -10,6 +9,7 @@ function includehtml() {
     if (file) {
       /* Make an HTTP request using the attribute value as the file name: */
       xhttp = new XMLHttpRequest();
+      xhttp.overrideMimeType("text/html");
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4) {
           if (this.status == 200) {elmnt.innerHTML = this.responseText;}
@@ -26,14 +26,13 @@ function includehtml() {
     }
   }
 }
-includehtml();
+includeHTML();
 
 // get json data
 function getjson(url, callback) {
     var request = new XMLHttpRequest();
     // issue not advisable but will only work in some cases...
     request.open('GET', url, true);
-    //request.open('GET', url, true);
     request.overrideMimeType("application/json");
     request.onreadystatechange = function () {
         if (request.readyState == 4 && request.status == "200") {
@@ -66,6 +65,30 @@ if (data2)
        imageurl[key2] = value2;
    });
 });
+
+// parse json image url
+function showcamera(imageurl, check, svgclass){
+    let camera         = false;
+    let text = "";
+    // parse json image url
+    Object.entries(imageurl).forEach((entry) => {
+        if (camera === true) {
+           return;
+        };
+        const [key2, value2] = entry;
+        if (value2.name === check) {
+           camera = true;
+        };
+    });
+    if (camera === true) {
+       text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + check + '\', \'image\',\'remote\')">' +
+               '<svg class="' + svgclass + '" viewBox="-20 -22 44 44">' +
+                     svgcamera() +
+               '</svg></a>';
+               camera = false;
+    };
+    return text;
+}
 
 // clock time and date routines
 window.onload = setInterval(clock,1000);
@@ -104,19 +127,7 @@ function clock() {
 // image and slide routines
 // overlay images
 var modal = document.getElementById('myModal');
-if (modal == undefined) { modal = ""; }
-// Get the image and insert it inside the modal - use its "alt" text as a caption
-var img = document.getElementById('myImg');
-var modalImg = document.getElementById("ovimage");
-if (modalImg == undefined) { modalImg = ""; }
-var captionText = document.getElementById("caption");
-img.onclick = function() {
-  modal.style.display = "block";
-  modalImg.src = this.src;
-  if (captionText !== undefined && captionText !== null) {
-     captionText.innerHTML = this.alt;
-  }
-}
+if (modal == undefined) { modal = "flex"; }
 
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
@@ -127,78 +138,8 @@ if (span == undefined && span == null) {
 // When the user clicks on <span> (x), close the modal
 span.onclick = function() {
     modal.style.display = "none";
+    eventhandle.remove();
 }
-
-var slideIndex = 2;
-
-if (slideIndex == undefined || slideIndex == null) {
-   slideIndex = 2;
-}
-
-showDivs(slideIndex);
-
-function plusDivs(n) {
-  showDivs(slideIndex += n);
-}
-
-function currentDiv(n) {
-  showDivs(slideIndex = n);
-}
-
-function showDivs(n) {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("demo");
-  var lastslide = x.length - 1;
-  if (n > lastslide) {slideIndex = 1}
-  if (n < 1) {slideIndex = lastslide}
-  for (i = 0; i < lastslide; i++) {
-    x[i].style.display = "none";
-  }
-  for (i = 0; i < lastslide; i++) {
-    dots[i].className = dots[i].className.replace(" w3-opacity-off w3-border-orange w3-border-bottom", "");
-  }
-  x[slideIndex - 1].style.display = "block";
-  dots[slideIndex - 1].className += " w3-opacity-off w3-border-orange w3-border-bottom";
-}
-
-// keyboard navigation
-document.onkeydown = function (event) {
-    var kbpressed = event.key;
-    if(kbpressed == "ArrowLeft") {
-        plusDivs(-1);
-    }
-    if(kbpressed == "ArrowRight") {
-        plusDivs(1);
-    }
-    if(kbpressed == "ArrowUp") {
-        // simulate mouse click todo only does first image
-        var simclick = new MouseEvent("click", {
-            view: window,
-            bubbles: true,
-            cancelable: true,
-        }), element = document.getElementById(slideIndex);
-        element.dispatchEvent(simclick);
-    }
-    if(kbpressed == "Escape") {
-        if (modal.style == undefined) {
-           modal.style = "";
-        }
-        modal.style.display = "none";
-    }
-}
-
-// mousescroll image navigation
-window.addEventListener('wheel', function (scrollnav) {
-    if (document.getElementById('myModal').style.display === 'block') {
-        if (scrollnav.deltaY < 100) {
-             plusDivs(1);
-        }
-        if (scrollnav.deltaY > 100) {
-             plusDivs(-1);
-        }
-    }
-});
 
 // style sidenav
 function indexsidenav() {
@@ -224,6 +165,16 @@ function indexsidenav() {
     // clean up
     text = "";
 }
+// sidebar navigation slide open and close from left to right
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+}
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+}
+
+// used for main menu navigation
+indexsidenav();
 
 // play audio source
 function audioplay(music, element) {
@@ -262,26 +213,6 @@ function ytaudioplay(music, element) {
     document.getElementById("result").innerHTML = music;
 }
 
-// sidebar navigation slide open and close from left to right
-function openNav() {
-  document.getElementById("mySidenav").style.width = "250px";
-  document.getElementById("sidenavmain").style.marginLeft = "250px";
-}
-function closeNav() {
-  document.getElementById("mySidenav").style.width = "0";
-  document.getElementById("sidenavmain").style.marginLeft= "0";
-}
-
-// svg icons
-function svgcamera() {
-
-    return '<path d="M21,4c-1.402,0-2.867,0-2.867,0L17.2,2c-0.215-0.498-1.075-1-1.826-1H8.759' +
-    'C8.008,1,7.148,1.502,6.933,2L6,4c0,0-1.517,0-3,0C0.611,4,0,6,0,6v14c0,0,1.5,2,3,2s16.406,0,18,0s3-2,3-2V6C24,6,23.496,4,21,4z' +
-    'M12,19.001c-3.313,0-6-2.687-6-6.001c0-3.313,2.687-6,6-6c3.314,0,6,2.687,6,6C18,16.314,15.314,19.001,12,19.001z M12,9' +
-    'c-2.209,0-4,1.791-4,4s1.791,4,4,4s4-1.791,4-4S14.209,9,12,9z"/>';
-
-}
-
 // courtesy https://stackoverflow.com/questions/32589197/how-can-i-capitalize-the-first-letter-of-each-word-in-a-string-using-javascript by somthinghere
 function titlecase(str) {
    var splitStr = str.toLowerCase().split(' ');
@@ -291,4 +222,63 @@ function titlecase(str) {
        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
    }
    return splitStr.join(' ');
+}
+
+// create paragraphs in text block
+function createparagraph(dummy) {
+  let dummy2 = "";
+  let i = 0;
+
+  // build array on punctuation .!? ignore pattern T.S.Elliot, St.Louis etc
+  dummy = dummy.split(/([!?.]\s)/);
+  while (i < dummy.length) {
+        if (dummy[i].length > 100) {
+           dummy2 += dummy[i];
+           // last line
+           if (dummy[i+1] === undefined) {
+              dummy2 += "<br><br>";
+           } else {
+              dummy2 += dummy[i+1] + "<br><br>";
+           }
+        } else {
+           if (dummy[i].length =! 1) {
+              dummy2 += dummy[i] + dummy[i+1];
+           }
+        }
+        i++;
+  }
+
+  return dummy2;
+}
+
+// tag indicator list first letter selected search td or div element
+function gettrletter(x) {
+   //let dummy = document.getElementById("datatable").rows[x.rowIndex].cells[window.localStorage.getItem('tdelement')].innerHTML;
+   if (window.localStorage.getItem('tdsortelement') === null) {
+      window.localStorage.setItem('tdsortelement', 1);
+   }
+   let dummy = document.getElementById("datatable").rows[x.rowIndex].cells[window.localStorage.getItem('tdsortelement')].innerHTML;
+   // reduce to anchor text filter out ahref
+   dummy = dummy.slice(dummy.indexOf(">") + 1, dummy.lastIndexOf("<"));
+   document.getElementById("trletterplace").innerHTML = dummy.charAt(0).toUpperCase();
+}
+// todo needs better handling darkmode
+function getdivletter(x) {
+   let dummy = document.getElementsByClassName('cardlist')[x].innerHTML.toUpperCase();
+   dummy = document.getElementsByClassName('cardlist')[x].innerHTML.charAt(dummy.indexOf("<B>") + 3).toUpperCase();
+   document.getElementById("trletterplace").innerHTML = dummy;
+}
+
+function getdivdarkletter(x) {
+   let dummy = document.getElementsByClassName('cardlistdarkmode')[x].innerHTML.toUpperCase();
+   dummy = document.getElementsByClassName('cardlistdarkmode')[x].innerHTML.charAt(dummy.indexOf("<B>") + 3).toUpperCase();
+   document.getElementById("trletterplace").innerHTML = dummy;
+}
+
+function trletteron() {
+   document.getElementById("trletter").style.display = "block";
+}
+
+function trletteroff() {
+   document.getElementById("trletter").style.display = "none";
 }
