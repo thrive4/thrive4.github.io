@@ -32,9 +32,6 @@ function switchtheme() {
    //document.getElementById("result").innerHTML =  window.localStorage.getItem('theme');
 }
 
-const element = document.getElementById('darkmodeswitch');
-element.addEventListener("darkmodeswitch", switchtheme);
-
 if ( window.localStorage.getItem('theme') === 'dark') {
    document.body.classList.add('dark');
    var data = document.getElementsByClassName("card");
@@ -61,6 +58,7 @@ if ( window.localStorage.getItem('theme') === 'dark') {
    for (i = 0; i < data.length; i++) {
      data[i].classList.toggle("footerdarkmode")
    }
+   window.localStorage.setItem('theme', 'dark');
 }
 
 // sort table data

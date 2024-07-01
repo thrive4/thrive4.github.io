@@ -56,12 +56,14 @@ function imageoverlay(section, overlay, locale) {
                         } else {
                             if (data[3][key].indexOf(wikifilter) > 0 && data[3][key] !== undefined) {
                                section = data[3][key].substr(data[3][key].lastIndexOf('/') + 1);
-                               //console.log(data[3][key].substr(data[3][key].lastIndexOf('/') + 1));
                             } else {
-                               //section = data[1][key].substr(data[1][key].lastIndexOf('/') + 1);
-                               //console.log(data[1][key].substr(data[1][key].lastIndexOf('/') + 1));
+                               section = data[1][0];
                             }
                         }
+                     } else {
+                         if (data[1] !== undefined){
+                            section = data[1][0];
+                         }
                      }
                   });
               }
@@ -72,7 +74,7 @@ function imageoverlay(section, overlay, locale) {
 
         }
 
-        text += '              <div class="click-zoom">';
+        text += '              <div class="canvascenter click-zoom">';
         text += '                   <label>';
         text += '                      <input type="checkbox"  id="zoomcanvas">';
         text += '                      <img src="" alt="" id="canvas">';
@@ -143,7 +145,7 @@ function imageoverlay(section, overlay, locale) {
           const [key, value] = entry;
           //window.alert(`${key}${value.name}`);
           if (value.private === false && (value.name == section || section == 'all' && cnt == 0) || (section.indexOf(".json") > 0 && cnt == 0) ) {
-              text += '              <div class="click-zoom">';
+              text += '              <div class="canvascenter click-zoom">';
               text += '                   <label>';
               text += '                      <input type="checkbox"  id="zoomcanvas">';
               text += '                      <img src="' + value.href + '" alt="' + value.description + '" id="canvas">';
@@ -180,6 +182,7 @@ function imageoverlay(section, overlay, locale) {
               '%3D%22' + encodeURIComponent(section) + '%22&format=json';
         // default no image
         //image = 'images/noimage.jpg';
+        console.log(section);
         getjsonf(url, function(gamecover){
             if (gamecover) {
                 Object.entries(gamecover.cargoquery).forEach((entry) => {
@@ -233,6 +236,7 @@ function imageoverlay(section, overlay, locale) {
        document.getElementById("canvas").style.display = "none";
        document.getElementById("canvas").style.visibilty = "hidden";
     }
+
     // image carousel logic
     // courtesy https://codepen.io/supah/pen/VweRLrQ
     const lerp = (f0, f1, t) => (1 - t) * f0 + t * f1;
@@ -246,7 +250,7 @@ function imageoverlay(section, overlay, locale) {
         this.$bar = this.$el.querySelector(obj.bar);
         this.init();
       }
-    
+
       init() {
         this.progress = 0;
         this.speed = 0;
@@ -260,7 +264,7 @@ function imageoverlay(section, overlay, locale) {
         this.calculate();
         this.raf();
       }
-    
+
       bindings() {
         [
         'events',
@@ -278,12 +282,11 @@ function imageoverlay(section, overlay, locale) {
       }
 
       calculate() {
-        //this.progress = 0;
         if (this.$items[0] != null) {
           this.wrapWidth = this.$items[0].clientWidth * this.$items.length;
           this.$wrap.style.width = `${this.wrapWidth}px`;
           //this.maxScroll = this.wrapWidth - this.$el.clientWidth;
-          this.maxScroll = this.wrapWidth * 1.5 - this.$el.clientWidth;
+          this.maxScroll = this.wrapWidth * 1.035 - this.$el.clientWidth;
         }
       }
 
@@ -296,7 +299,7 @@ function imageoverlay(section, overlay, locale) {
            }
            document.getElementById('canvas').setAttribute('src', this.$items[Number(this.currentid)].querySelector('img').src);
            document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
-           this.progress += 50;
+           this.progress += this.$el.clientWidth * 0.05;
            this.move();
            //console.log(Number(this.currentid));
         }
@@ -308,7 +311,7 @@ function imageoverlay(section, overlay, locale) {
            }
            document.getElementById('canvas').setAttribute('src', this.$items[this.currentid].querySelector('img').src);
            document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
-           this.progress -= 50;
+           this.progress -= this.$el.clientWidth * 0.05;
            this.move();
            //console.log(Number(this.currentid));
         }
@@ -355,6 +358,7 @@ function imageoverlay(section, overlay, locale) {
                 document.getElementById("zoomcanvas").checked = false;
               } else {
                 document.getElementById("zoomcanvas").checked = true;
+    scaleimage();
               }
           } else {
               //console.log('paper '+document.getElementById("paper").style.display);
@@ -390,7 +394,7 @@ function imageoverlay(section, overlay, locale) {
            }
            document.getElementById('canvas').setAttribute('src', this.$items[Number(this.currentid)].querySelector('img').src);
            document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
-           this.progress += 50;
+           this.progress += this.$el.clientWidth * 0.05;
            this.move();
            //console.log(Number(this.currentid));
         }
@@ -402,7 +406,7 @@ function imageoverlay(section, overlay, locale) {
            }
            document.getElementById('canvas').setAttribute('src', this.$items[this.currentid].querySelector('img').src);
            document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
-           this.progress -= 50;
+           this.progress -= this.$el.clientWidth * 0.05;
            this.move();
            //console.log(Number(this.currentid));
         }
@@ -417,7 +421,7 @@ function imageoverlay(section, overlay, locale) {
             if (modal.style == undefined) {
                modal.style = "";
             }
-            modal.style.display = "none";
+            modal.style.display = "";
             this.removeevents();
         }
       }
@@ -428,7 +432,7 @@ function imageoverlay(section, overlay, locale) {
         this.startX = e.clientX || e.touches[0].clientX;
         this.$el.classList.add('dragging');
       }
-    
+
       handleTouchMove(e) {
         if (!this.dragging) return false;
         const x = e.clientX || e.touches[0].clientX;
@@ -456,9 +460,11 @@ function imageoverlay(section, overlay, locale) {
         //window.addEventListener('touchmove',    this.handleTouchMove);
         //window.addEventListener('touchend',     this.handleTouchEnd);
         //
-        window.addEventListener('mousedown',         this.handleTouchStart);
-        window.addEventListener('mousemove',         this.handleTouchMove);
-        window.addEventListener('mouseup',           this.handleTouchEnd);
+        if (overlay !== 'paper'){ // bypass to keep text selectable
+            window.addEventListener('mousedown',         this.handleTouchStart);
+            window.addEventListener('mousemove',         this.handleTouchMove);
+            window.addEventListener('mouseup',           this.handleTouchEnd);
+        }
         //document.body.addEventListener('mouseleave', this.handleTouchEnd);
       }
 
@@ -522,3 +528,15 @@ function imageoverlay(section, overlay, locale) {
         };
     };
 } // end overlay
+
+function scaleimage() {
+  var r   = document.querySelector(':root');
+  let w   = window.outerWidth  - 100;
+  let h   = window.outerHeight - 100;
+  var img = document.getElementById("canvas");
+  var iw  = img.naturalWidth;
+  //var ih  = img.naturalHeight;
+  //console.log('scale(' + w / h + ')');
+  //console.log('image width' + iw / w);
+  r.style.setProperty('--scaleimage', 1.3 + (iw / w));
+}

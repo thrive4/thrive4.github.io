@@ -1,7 +1,10 @@
-<button id="darkmodeswitch" hidden>dark mode on/off</button>
+<p id="darkmodeswitch" hidden>dark mode on/off</p>
 <p id="listtype"></p>
 <p id="tdelement"></p>
-<nav class="nav">
+<button onclick="topFunction()" id="backtotop" title="Go to top">
+<svg fill="#ffffff" height="16px" width="16px" viewBox="0 0 512 512"><g><g><path d="M505.752,358.248L271.085,123.582c-8.331-8.331-21.839-8.331-30.17,0L6.248,358.248c-8.331,8.331-8.331,21.839,0,30.17 s21.839,8.331,30.17,0L256,168.837l219.582,219.582c8.331,8.331,21.839,8.331,30.17,0S514.083,366.58,505.752,358.248z"/></g></g></svg>
+</button>
+<div class="nav">
   <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <p id="sidenavcontent"></p>
@@ -20,7 +23,7 @@
   <input type="checkbox" id="menu-toggle" class="is-hidden"/>
 
   <div class="nav-right nav-menu">
-    <a class="nav-item" onclick="document.getElementById('myModal').style.display='flex'; imageoverlay('all', 'image', 'local');">
+    <a class="nav-item" onclick="document.getElementById('myModal').style.display='block'; imageoverlay('all', 'image', 'local');">
       <svg class="svglight" viewBox="-5 -5 34 34">
           <path d="M21,4c-1.402,0-2.867,0-2.867,0L17.2,2c-0.215-0.498-1.075-1-1.826-1H8.759
           C8.008,1,7.148,1.502,6.933,2L6,4c0,0-1.517,0-3,0C0.611,4,0,6,0,6v14c0,0,1.5,2,3,2s16.406,0,18,0s3-2,3-2V6C24,6,23.496,4,21,4z
@@ -43,7 +46,7 @@
       </svg>
     </a>
   </div>
-</nav>
+</div>
 <br><br><br>
 <div class="container">
      <div class="row">
@@ -100,6 +103,7 @@
      <p id="trletterplace" class="trlettertext"></p>
 </div>
 
+<!-- optional audio player -->
 <footer class="footer">
       <div class="container-audio">
           <audio id="audio" title="" controls>
@@ -107,22 +111,9 @@
           </audio>
       </div>
 </footer>
-<!-- set myimg workaround for imageviewer link !-->
-<p id='myImg'></p>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
+
 <!-- overlay for image navigation -->
 <div id="myModal" class="modal">
      <div id="imageoverlay"></div>
      <span class="close">&times;</span>
-     <div class="mySlides">
-          <div class="demo" style="visibility: hidden;"></div>
-     </div>
 </div>

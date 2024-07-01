@@ -7,26 +7,52 @@ function includeHTML() {
     /*search for elements with a certain atrribute:*/
     file = elmnt.getAttribute("w3-include-html");
     if (file) {
-      /* Make an HTTP request using the attribute value as the file name: */
       xhttp = new XMLHttpRequest();
       xhttp.overrideMimeType("text/html");
-      xhttp.onreadystatechange = function() {
+      xhttp.onload = function() {
         if (this.readyState == 4) {
           if (this.status == 200) {elmnt.innerHTML = this.responseText;}
           if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
           /* Remove the attribute, and call this function once more: */
-          elmnt.removeAttribute("w3-include-html");
-          includeHTML();
+          //elmnt.removeAttribute("w3-include-html");
+          //includeHTML();
         }
       }
+      // todo set to true this is a pain in the ass....
       xhttp.open("GET", file, false);
       xhttp.send();
-      /* Exit the function: */
       return;
     }
   }
 }
+
+/*
+const includeHTMLj = async () => {
+    const response = await fetch('./body.html');
+    document.getElementById("w3-include-html").innerHTML = await response.text();
+}
+const includeHTMLg = fetch('./body.html').then(res => res.text()).then(json => document.getElementById("wah").innerHTML = json);
+
+async function includeHTMLi() {
+  try {
+    const requestoptions = {
+        method: "GET",
+            headers: { "Content-Type": "text/html" },
+            //body: JSON.stringify(data),
+            keepalive: true,
+    };
+    let response = await fetch('./body.html', requestoptions); // Gets a promise
+    if (response.status === 200) {
+       document.getElementById("w3-include-html").innerHTML = await response.text(); // Replaces body with response
+    }
+  } catch (err) {
+    console.log('Fetch error:' + err); // Error handling
+  }
+}
+*/
+
 includeHTML();
+
 
 // get json data
 function getjson(url, callback) {
@@ -34,7 +60,7 @@ function getjson(url, callback) {
     // issue not advisable but will only work in some cases...
     request.open('GET', url, true);
     request.overrideMimeType("application/json");
-    request.onreadystatechange = function () {
+    request.onload = function () {
         if (request.readyState == 4 && request.status == "200") {
           callback(JSON.parse(request.responseText));
         }
@@ -46,9 +72,8 @@ function getjsonf(url, callback) {
     var request = new XMLHttpRequest();
     // issue not advisable but will only work in some cases...
     request.open('GET', url, false);
-    //request.open('GET', url, true);
     request.overrideMimeType("application/json");
-    request.onreadystatechange = function () {
+    request.onload = function () {
         if (request.readyState == 4 && request.status == "200") {
           callback(JSON.parse(request.responseText));
         }
@@ -137,7 +162,7 @@ if (span == undefined && span == null) {
 
 // When the user clicks on <span> (x), close the modal
 span.onclick = function() {
-    modal.style.display = "none";
+    modal.style.display = "";
     eventhandle.remove();
 }
 
@@ -281,4 +306,21 @@ function trletteron() {
 
 function trletteroff() {
    document.getElementById("trletter").style.display = "none";
+}
+
+// back to top button todo filterout modal mode better
+let totop = document.getElementById("backtotop");
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+function scrollFunction() {
+  if ((document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) && modal.style.display === "") {
+    totop.style.display = "block";
+  } else {
+    totop.style.display = "none";
+  }
+}
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
 }

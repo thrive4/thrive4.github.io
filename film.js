@@ -72,6 +72,7 @@ function switchlistview(listtype) {
                       //text += showcamera(imageurl, value.name, svgclass);
                       text += "<td></td><td>";
                       //text += '<a href="https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=';
+                      // '_(' + value.release_date + '_film)' +  not all movies need a relase date (no ambiguty)
                       text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + titlecase(film) + '\', \'paper\',\'remote\')">';
                       text += film + "</a></td>";
                       text += "<td>" + value.genres + "</td>";

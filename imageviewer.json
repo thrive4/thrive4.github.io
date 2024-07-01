@@ -77,6 +77,13 @@
     "updated_at": "2023-07-18T09:23:01Z"
   },
   {
+    "name": "util.fb.cmdsqlite",
+    "private": false,
+    "description": "export mp3 cover art",
+    "href": "images/cmdsqlite_mp3coverart.jpg",
+    "updated_at": "2023-07-18T09:23:01Z"
+  },
+  {
     "name": "Amerzone",
     "private": true,
     "description": "page",

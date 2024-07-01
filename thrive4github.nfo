@@ -1,3 +1,11 @@
+update v1.6 01/07/2024
+- added to top button
+- added scaled image zoom in imageviewer (first draft)
+- restyled imageviewer, imagesize, text size etc.
+- fixed text not being selectable in modal mode, imageviewer, paper, etc.
+- slightly more accurate results from wikipedia for film, games and music
+- small bug fixes
+
 update v1.5 14/05/2024
 - included data / list indicator (first letter selected)
 - small tweak to sorting routine make more specific to click on th
