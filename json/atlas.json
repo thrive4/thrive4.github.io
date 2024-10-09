@@ -1,0 +1,192 @@
+[
+  {
+    "name": "index",
+    "private": false,
+    "sourcename": [
+      "",
+      ""
+    ],
+    "sourcehref": [
+      "",
+      ""
+    ],
+    "displayfields": [
+      "name",
+      "description",
+      "updated"
+    ]
+  },
+  {
+    "name": "mods",
+    "private": false,
+    "sourcename": [
+      "",
+      ""
+    ],
+    "sourcehref": [
+      "",
+      ""
+    ],
+    "displayfields": [
+      "mods",
+      "game",
+      "tweaks",
+      "nexus"
+    ]
+  },
+  {
+    "name": "code",
+    "private": false,
+    "sourcename": [
+      "",
+      ""
+    ],
+    "sourcehref": [
+      "",
+      ""
+    ],
+    "displayfields": [
+      "name",
+      "description",
+      "updated",
+      "html_url"
+    ]
+  },
+  {
+    "name": "docu",
+    "private": false,
+    "sourcename": [
+      "tmdb",
+      ""
+    ],
+    "sourcehref": [
+      "",
+      ""
+    ],
+    "displayfields": [
+      "name",
+      "broadcaster"
+    ]
+  },
+  {
+    "name": "music",
+    "private": false,
+    "sourcename": [
+      "ducky",
+      "musicbrainz"
+    ],
+    "sourcehref": [
+      "duckduck",
+      ""
+    ],
+    "displayfields": [
+      "name",
+      "title",
+      "album",
+      "genre",
+      "year"
+    ]
+  },
+  {
+    "name": "resource",
+    "private": false,
+    "sourcename": [
+      "",
+      ""
+    ],
+    "sourcehref": [
+      "",
+      ""
+    ],
+    "displayfields": [
+      "name",
+      "description",
+      "updated"
+    ]
+  },
+  {
+    "name": "paper",
+    "private": false,
+    "sourcename": [
+      "",
+      ""
+    ],
+    "sourcehref": [
+      "",
+      ""
+    ],
+    "displayfields": [
+      "name",
+      "updated"
+    ]
+  },
+  {
+    "name": "film",
+    "private": false,
+    "sourcename": [
+      "ducky",
+      ""
+    ],
+    "sourcehref": [
+      "duckduck",
+      ""
+    ],
+    "displayfields": [
+      "name",
+      "genres",
+      "release_date"
+    ]
+  },
+  {
+    "name": "game",
+    "private": false,
+    "sourcename": [
+      "ducky",
+      ""
+    ],
+    "sourcehref": [
+      "https://www.pcgamingwiki.com/w/api.php?action=cargoquery&tables=Infobox_game&fields=Infobox_game._pageName=Page,Infobox_game.Developers,Infobox_game.Released,Infobox_game.Cover_URL&where=Infobox_game._pageName%3D%22<name>%22&format=jsonfm",
+      ""
+    ],
+    "displayfields": [
+      "name",
+      "developer",
+      "publisher",
+      "genre"
+    ]
+  },
+  {
+    "name": "gallery",
+    "private": false,
+    "sourcename": [
+      "",
+      ""
+    ],
+    "sourcehref": [
+      "",
+      ""
+    ],
+    "displayfields": [
+      "name",
+      "updated"
+    ]
+  },
+  {
+    "name": "about",
+    "private": false,
+    "sourcename": [
+      "",
+      ""
+    ],
+    "sourcehref": [
+      "",
+      ""
+    ],
+    "displayfields": [
+      "details",
+      "examples",
+      "screenshots",
+      "info"
+    ]
+  }
+]
