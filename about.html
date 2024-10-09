@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
+    <title>about</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
+    <link rel="stylesheet" href="font.css" />
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+<button id="darkmodeswitch" hidden>dark mode on/off</button>
+<p id="listtype"></p>
+<nav class="nav">
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <p id="sidenavcontent"></p>
+  </div>
+  <div class="nav-left">
+    <a class="nav-item" href="index.html">
+      <svg class="svglight" viewBox="-5 -5 34 34">
+        <path d="M12,14a3,3,0,0,0-3,3v7.026h6V17A3,3,0,0,0,12,14Z"/>
+        <path d="M13.338.833a2,2,0,0,0-2.676,0L0,10.429v10.4a3.2,3.2,0,0,0,3.2,3.2H7V17a5,5,0,0,1,10,0v7.026h3.8a3.2,3.2,0,0,0,3.2-3.2v-10.4Z"/>
+      </svg>
+    </a>
+    <a class="nav-item" style="cursor:pointer" onclick="openNav()">THRIVE4</a>
+  </div>
+
+  <label for="menu-toggle" class="nav-toggle">&equiv;</label>
+  <input type="checkbox" id="menu-toggle" class="is-hidden"/>
+
+  <div class="nav-right nav-menu">
+    <a class="nav-item" href="" onclick="switchtheme(); id='darkmodeswitch';">
+      <svg class="svglight" viewBox="-5 -5 34 34">
+        <circle cx="12" cy="12" r="5"/>
+        <path d="M21,13H20a1,1,0,0,1,0-2h1a1,1,0,0,1,0,2Z
+        M4,13H3a1,1,0,0,1,0-2H4a1,1,0,0,1,0,2Z
+        M17.66,7.34A1,1,0,0,1,17,7.05a1,1,0,0,1,0-1.41l.71-.71a1,1,0,1,1,1.41,1.41l-.71.71A1,1,0,0,1,17.66,7.34Z
+        M5.64,19.36a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.41L5.64,17a1,1,0,0,1,1.41,1.41l-.71.71A1,1,0,0,1,5.64,19.36Z
+        M12,5a1,1,0,0,1-1-1V3a1,1,0,0,1,2,0V4A1,1,0,0,1,12,5Z
+        M12,22a1,1,0,0,1-1-1V20a1,1,0,0,1,2,0v1A1,1,0,0,1,12,22Z
+        M6.34,7.34a1,1,0,0,1-.7-.29l-.71-.71A1,1,0,0,1,6.34,4.93l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,6.34,7.34Z
+        M18.36,19.36a1,1,0,0,1-.7-.29L17,18.36A1,1,0,0,1,18.36,17l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,18.36,19.36Z"/>
+      </svg>
+    </a>
+  </div>
+</nav>
+<br><br><br><br>
+<div class="container">
+    <p><strong>ABOUT</strong></p>
+    <pre><code>
+<b>site content:</b>
+mods  created in the past years released on nexus
+code  created in the past years released on github
+music created in the past years to be released soon
+favorites film
+favorites music
+favorites games
+favorites documentaries
+list of url's to various resources
+
+<b>release notes site:</b>
+update v1.7 09/09/2024
+- refactored most of the logic for displaying
+  list, tile and data display plus more flexible
+  intergration of json
+- .js code base decreased with ~ 30%
+- added atlas.json used to determine which
+  fields are, and in which order, displayed
+- added documentary information
+- filter out year when querying wikipedia
+
+update v1.6 01/07/2024
+- added to top button
+- added scaled image zoom in imageviewer (first draft)
+- restyled imageviewer, imagesize, text size etc.
+- fixed text not being selectable in modal mode, imageviewer, paper, etc.
+- slightly more accurate results from wikipedia for film, games and music
+- small bug fixes
+
+update v1.5 14/05/2024
+- included data / list indicator (first letter selected)
+- small tweak to sorting routine make more specific to click on th
+- re-write of imageviewer.js more scalable
+- compacted code per list type
+- merged paper.css into main.css
+- further intregration wikipedia and musicbrainz
+  sections papers, film, game and music
+- added spinner aka loading... to slide show
+- misc bug fixes
+
+update v1.4 15/03/2024
+- removed nested json call for imageviewer json
+- reduced size html page size per section
+- todo follow up suggestions made by pagespeed and yellowlab
+
+update v1.3 12/03/2024
+- fixed all images showing in imageviewer.js when loading page first time
+- imageviewer can now be used per sub section site
+- added mousescroll navigation imageviewer
+- added zoomin zoomout imageviewer
+- trimmed json datamodel most sections except code
+- unified sidenav code to lib.js
+- style tweaks
+- refactored most of the json handleing trimmed the fat
+- rewrite ken burns slide handeling plus added use of subsection
+- added sections resources, film and game
+- integrated wikipedia and musicbrainz rest api data in section music
+- removed github api calls in code section causes 403's to easy
+- total data tally items, 1500 music, 1500 film, 1300 game
+- site size 8 sections 70% data, 30% page render code
+
+update v1.2 18/12/2023
+- added sticky table header for data tables
+  sticky tip courtesy https://codepen.io/stephen-george-west/pen/rNpjXYL
+- added side menu navigation
+- added search selection box automatically change to selected field
+- fixed issues with code.js
+- cleaned up divs and other small issues
+
+update v1.1 04/11/2023
+- style tweaks
+- many code tweaks to json handeling
+
+ public release 1.0 26/09/2023
+- most pages are now data driven aka
+  data is gathered via json text file
+- added filter table javascript
+  courtesy to: https://www.w3schools.com/howto/howto_js_filter_table.asp
+  partially implemented filter on specific field
+- added slide show with ken burns effect
+- replaced sort routine for tables javascript
+  significant improvements in speed and number
+  of rows that can be handled by browser
+  many thanks to tofsjonas
+  see: https://github.com/tofsjonas/sortable
+- modified main.css less cluterd html table and other style tweaks
+- robots.txt set to allow crawlers
+- todo still issues with imageviewer and slideshow
+  javascript not setting focus on elements etc.
+
+</code></pre>
+</div>
+<footer class="footer">
+      <div class="container-audio">
+          <audio id="audio" title="" controls>
+            Your browser dose not Support the audio Tag
+          </audio>
+      </div>
+</footer>
+<!-- set myimg workaround for imageviewer link !-->
+<p id='myImg'></p>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<!-- overlay for image navigation -->
+<div id="myModal" class="modal">
+     <div id="imageoverlay"></div>
+     <span class="close">&times;</span>
+     <div class="w3-content w3-display-container">
+          <div class="w3-display-container mySlides">
+               <div class="demo" style="visibility: hidden;"></div>
+          </div>
+     </div>
+</div>
+
+<script type="text/javascript" src="lib.js"></script>
+<script type="text/javascript" src="libtheme.js"></script>
+<script type="text/javascript" src="imageviewer.js"></script>
+</body>
+</html>

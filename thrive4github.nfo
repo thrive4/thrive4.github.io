@@ -1,3 +1,13 @@
+update v1.7 09/09/2024
+- refactored most of the logic for displaying
+  list, tile and data display plus more flexible
+  intergration of json
+- .js code base decreased with ~ 30%
+- added atlas.json used to determine which
+  fields are, and in which order, displayed 
+- added documentary information
+- filter out year when querying wikipedia
+
 update v1.6 01/07/2024
 - added to top button
 - added scaled image zoom in imageviewer (first draft)
