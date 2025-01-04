@@ -1,6 +1,9 @@
+// resize text paper view
 var onresize = function(e) {
     windowwidth = window.outerWidth;
-    orgtext = document.getElementById('bookpage').innerHTML;
+    if (document.getElementById('myModal').style.display == 'block'){
+       document.getElementById('bookpage').innerHTML = createparagraph(orgtext);
+    }
 }
 window.addEventListener("resize", onresize);
 
@@ -270,8 +273,8 @@ function createparagraph(dummy) {
   // todo needs some form of paging
   //console.log(windowwidth);
   //console.log(dummy.length);
-  if (dummy.length > windowwidth + 1500) {
-    dummy = dummy.substring(0, 3000);
+  if (dummy.length > window.outerWidth * 2) {
+    dummy = dummy.substring(0, window.outerWidth * 2);
     p = true;
   }
 

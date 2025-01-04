@@ -1,7 +1,3 @@
-function isobject(val) {
-    return val instanceof Object;
-}
-
 function tmdbgenreid(val) {
 /*
 TV SHOW
@@ -47,6 +43,7 @@ function imageoverlay(section, overlay, locale) {
     let url            = "";
     let vrl            = "";
     let wikifilter     = "";
+    orgtext            = "";
 
     var sourcename      = [];
     var sourcehref      = [];
@@ -67,11 +64,12 @@ function imageoverlay(section, overlay, locale) {
     if (overlay == 'paper'){
         // if needed get misc info
         if (section != 'all'){
-            //text += '<br><br><br><a class="w3-left" style="cursor:pointer" onclick="openNav()">';
-            text += '<br><br><br><a class="w3-left" style="cursor:pointer" onclick="document.getElementById(\'bookpage\').innerHTML = \'restore previous text\'";>';
-//                   text += '<a style="cursor:pointer; color:white" onclick="document.getElementById(\'bookpage\').innerHTML = \'' + extdummy + '\'";>' + sourcename[i] + '</a><br>';
-            //text += '<svg class="svglight" viewBox="-4 0 64 64">';
-            //text += svgdocument();
+            // todo better theme handling
+            if (window.localStorage.getItem('theme') === 'dark') {
+              text += '<br><br><br><a class="w3-left" style="cursor:pointer" onclick="document.getElementById(\'bookpagedark\').innerHTML = createparagraph(orgtext) ";>';
+            } else {
+              text += '<br><br><br><a class="w3-left" style="cursor:pointer" onclick="document.getElementById(\'bookpage\').innerHTML = createparagraph(orgtext) ";>';
+            }
             text += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<svg class="svglight" viewBox="-4 0 32 32">';
             text += svginfobox();
             text += '</svg></a>';
@@ -101,9 +99,7 @@ function imageoverlay(section, overlay, locale) {
                       if (data) {
                           Object.entries(data).forEach((entry) => {
                               const [key, value] = entry;
-                              //extdummy += data.Entity + '<br>';
-                              //&& isobject(data.Infobox.content[cnt].value) !== true
-                              if (data.Infobox.content[cnt] != undefined){
+                              if (data.Infobox.content !== undefined) {
                                   extdummy += '<i>' + data.Infobox.content[cnt].label + ':</i> ';
                                   extdummy += data.Infobox.content[cnt].value + '<br>';
                                   //extimage =  data.Image;
@@ -112,6 +108,8 @@ function imageoverlay(section, overlay, locale) {
                                   extdummy = extdummy.replaceAll('\n', '');
                                   extdummy = extdummy.replaceAll(';', '<br>');
                                   cnt += 1;
+                              } else {
+                                  extdummy = "";
                               }
                           });
                       }
@@ -155,7 +153,7 @@ function imageoverlay(section, overlay, locale) {
                         Object.entries(data).forEach((entry) => {
                             const [key, value] = entry;
                             if (data.results[0] === undefined) {
-                               extdummy = 'No info found at ' + bu;
+                               extdummy = 'No info found at tmdb';
                             } else {
                                 extdummy =  data.results[0].name + '<br>';
                                 //extdummy += '<i>genre&nbsp;</i>'      + data.results[0].id + '<br>';
@@ -170,6 +168,9 @@ function imageoverlay(section, overlay, locale) {
                         });
                     }
                   });
+                  data  = [];
+                  entry = [];
+                  cnt   = 0;
                 } // end if
                 if (window.localStorage.getItem('theme') === 'dark') {
                    text += '<a style="cursor:pointer" onclick="document.getElementById(\'bookpagedark\').innerHTML = \'' + extdummy + '\'";>' + sourcename[i] + '</a><br>';
@@ -192,7 +193,7 @@ function imageoverlay(section, overlay, locale) {
           // filter out year
           dummy = section.replace(/[0-9]{4}/g, '');
           vrl = 'https://corsproxy.io/?' +
-                encodeURIComponent('https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=') +
+                'https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
                 encodeURIComponent(dummy.replaceAll(' ', '_'));
           // todo still funky can result in false postives or no results when actually present at sources
           getjsonf(vrl, function(data){
@@ -239,7 +240,7 @@ function imageoverlay(section, overlay, locale) {
               }
           });
           url = 'https://corsproxy.io/?' +
-                encodeURIComponent('https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=') +
+                'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' +
                 encodeURIComponent(section);
 
         }
@@ -266,8 +267,9 @@ function imageoverlay(section, overlay, locale) {
                         const [key, value] = entry;
                         text += textb;
                         text += value.title + '<br><br>';
-                        dummy = value.title;
-                        if (value.extract === undefined) { value.extract = extdummy; } else { orgtext = value.extract; }
+                        orgtext += value.title;
+                        if (value.extract === undefined) { value.extract = extdummy; }// else { //nop }
+                        orgtext += '<br><br>' + value.extract;
                         text += createparagraph(value.extract);
                         text += '                   </div>';
                         text += '              </div>';
@@ -281,7 +283,9 @@ function imageoverlay(section, overlay, locale) {
                         if (value.private === false && value.name == section || section == 'all') {
                             text += textb;
                             text += value.name + '<br><br>';
+                            orgtext += value.name;
                             text += createparagraph(value.extract);
+                            orgtext += '<br><br>' + value.extract;
                             text += '                   </div>';
                             text += '              </div>';
                             text += '        </div>';
@@ -333,6 +337,7 @@ function imageoverlay(section, overlay, locale) {
     text += '  <div class="carousel">';
     text += '     <div class="carousel--wrap">';
     // todo figure out missing thumbnail this.$items[0] is undefined
+if (window.localStorage.getItem('menuitem') != 'paper'){
     Object.entries(imageurl).forEach((entry) => {
         const [key, value] = entry;
         if (value.private === false && (value.name == section || section == 'all') || section.indexOf(".json") > 0) {
@@ -342,12 +347,14 @@ function imageoverlay(section, overlay, locale) {
           cnt += 1;
         };
     });
+}
+
 /*
     // if needed get game cover
     if (window.localStorage.getItem('menuitem') == 'game' && section != 'all'){
         // get json table
         url = 'https://corsproxy.io/?' +
-              encodeURIComponent('https://www.pcgamingwiki.com/w/api.php?action=cargoquery&tables=Infobox_game&fields=Infobox_game._pageName=Page,Infobox_game.Developers,Infobox_game.Publishers,Infobox_game.Genres,Infobox_game.Released,Infobox_game.Cover_URL&where=Infobox_game._pageName') +
+              'https://www.pcgamingwiki.com/w/api.php?action=cargoquery&tables=Infobox_game&fields=Infobox_game._pageName=Page,Infobox_game.Developers,Infobox_game.Publishers,Infobox_game.Genres,Infobox_game.Released,Infobox_game.Cover_URL&where=Infobox_game._pageName' +
               '%3D%22' + encodeURIComponent(section) + '%22&format=json';
         // default no image
         if (extimage != "") {
@@ -371,32 +378,42 @@ function imageoverlay(section, overlay, locale) {
     }
  */
     // if needed get movie poster or music art
-    if (section != 'all'){
+    //console.log(locale);
+    //if (section != 'all'){
         // get media
-        url = 'https://corsproxy.io/?' + encodeURIComponent('https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages|pageterms&piprop=thumbnail&pithumbsize=600&pilicense=any&titles=') +
+        url = 'https://corsproxy.io/?' + 'https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages|pageterms&piprop=thumbnail&pithumbsize=600&pilicense=any&titles=' +
               encodeURIComponent(dummy);
         // default no image
         if (extimage != "") {
             image = extimage;
         } else {
-            image = 'images/noimage.jpg';
+            //image = 'images/noimage.jpg';
         }
-        getjsonf(url, function(gamecover){
-            if (gamecover) {
-                Object.entries(gamecover.query.pages).forEach((entry) => {
-                  const [key3, value3] = entry;
-                  if (value3.thumbnail != null) {
-                     image = value3.thumbnail.source;
-                  }
-                });
+        //if (window.localStorage.getItem('menuitem') == 'game'){
+        cnt = 0;
+        getjsonf(url, function(data){
+            if (data) {
+               if (data.query === undefined) {
+                  // nop
+               } else {
+                  Object.entries(data.query.pages).forEach((entry) => {
+                    const [key3, value3] = entry;
+                    if (value3.thumbnail != null) {
+                       image = value3.thumbnail.source;
+                    }
+                  });
+                }
             }
             if (image != "") {
                 text += '          <div class="carousel--item">';
                 text += '               <figure><img src="' + image + '" alt="' + section + '" id="' + cnt + '"/></figure>';
                 text += '          </div>';
+                cnt += 1;
+
             }
         }); // get json
-    }
+        //}
+    //}
 
     text += '     </div>';
     text += '     <div class="carousel--progress">';
@@ -471,7 +488,7 @@ function imageoverlay(section, overlay, locale) {
 
       handletest(e) {
         if (e == 'ArrowRight') {
-           if (Number(this.currentid) < this.$items.length) {
+           if (Number(this.currentid) < this.$items.length - 1) {
              this.currentid = Number(this.currentid) + 1;
            } else {
              this.currentid = this.$items.length - 1;
@@ -678,7 +695,7 @@ function imageoverlay(section, overlay, locale) {
           i.querySelector('img').style.transform = `scaleX(${1 + Math.abs(this.speed) * 0.004})`;
         });
       }} // end class
-    
+
     // Instances
     const scroll = new dragscroll({
       el: '.carousel',
