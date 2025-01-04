@@ -3,42 +3,42 @@
     "name": "mods",
     "private": false,
     "description": "Various mods made for an number of windows games hosted at nexus mods",
-    "href":  "https://unsplash.it/1600/1400?image=492",
+    "href":  "https://picsum.photos/1600/1400?image=492",
     "updated_at": "2023-07-18T09:23:01Z"
   },
   {
     "name": "mods",
     "private": false,
     "description": "more mods",
-    "href":  "https://unsplash.it/1600/1400?image=392",
+    "href":  "https://picsum.photos/1600/1400?image=392",
     "updated_at": "2023-07-18T09:23:01Z"
   },
   {
     "name": "code",
     "private": false,
     "description": "Repositories of apps and utils written in freebasic and dll's like sdl2, sqlite and bass for windows",
-    "href":  "https://unsplash.it/1600/1400?image=487",
+    "href":  "https://picsum.photos/1600/1400?image=487",
     "updated_at": "2023-07-18T09:23:01Z"
   },
   {
     "name": "music",
     "private": false,
     "description": "music wip",
-    "href":  "https://unsplash.it/1600/1400?image=483",
+    "href":  "https://picsum.photos/1600/1400?image=483",
     "updated_at": "2023-07-18T09:23:01Z"
   },
   {
     "name": "gallery",
     "private": false,
     "description": "image gallery",
-    "href": "https://unsplash.it/1600/1400?image=478",
+    "href": "https://picsum.photos/1600/1400?image=478",
     "updated_at": "2023-07-18T09:23:01Z"
   },
   {
     "name": "documentary",
     "private": false,
     "description": "documentary material",
-    "href": "https://unsplash.it/1600/1400?image=473",
+    "href": "https://picsum.photos/1600/1400?image=473",
     "updated_at": "2023-07-18T09:23:01Z"
   },
   {
@@ -84,6 +84,20 @@
     "updated_at": "2023-07-18T09:23:01Z"
   },
   {
+    "name": "app.fb.slideshow",
+    "private": false,
+    "description": "promo",
+    "href": "images/slideshowdemo.jpg",
+    "updated_at": "2024-11-11T09:23:01Z"
+  },
+  {
+    "name": "app.fb.slideshow",
+    "private": false,
+    "description": "promo",
+    "href": "images/slideshowdemo02.jpg",
+    "updated_at": "2024-11-11T09:23:01Z"
+  },
+  {
     "name": "Amerzone",
     "private": true,
     "description": "page",
@@ -94,7 +108,7 @@
     "name": "refrence",
     "private": false,
     "description": "refrence material",
-    "href": "https://unsplash.it/1600/1400?image=468",
+    "href": "https://picsum.photos/1600/1400?image=468",
     "updated_at": "2023-07-18T09:23:01Z"
   }
 ]
