@@ -10,6 +10,24 @@ window.addEventListener("resize", onresize);
 function passmusicalbum(a){
     window.localStorage.setItem('name', a);
 }
+function passrelaseyear(a){
+    window.localStorage.setItem('year', a);
+}
+
+// Define the handleClick function
+function handleClick(name, releaseDate, year) {
+  document.getElementById('myModal').style.display = 'block';
+  passmusicalbum(name);
+  switch (window.localStorage.getItem('menuitem')){
+    case 'film':
+      passrelaseyear(releaseDate);
+      break;
+    case 'music':
+      passrelaseyear(year);
+      break;
+  }
+  imageoverlay(titlecase(name), 'paper', 'remote');
+}
 
 function includeHTML() {
   var z, i, elmnt, file, xhttp;
@@ -67,6 +85,7 @@ async function includeHTMLi() {
 includeHTML();
 
 // get json data
+/*
 function getjson(url, callback) {
     var request = new XMLHttpRequest();
     // issue not advisable but will only work in some cases...
@@ -79,18 +98,58 @@ function getjson(url, callback) {
     };
     request.send();
 }
+*/
+/*
+async function getjsonf(url, callback) {
+  if (url.startsWith('http')) {
+    // Remote URL, use fetch
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      const data = JSON.parse(text);
+
+      return data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      throw error;
+    }
+
+  } else {
+      // Local file, use XMLHttpRequest
+      var request = new XMLHttpRequest();
+      request.open('GET', url, false);
+      request.overrideMimeType("application/json");
+      request.onload = function() {
+          if (request.readyState == 4 && request.status == "200") {
+              callback(JSON.parse(request.responseText));
+          }
+      };
+      request.send();
+    }
+}
+*/
+
 
 function getjsonf(url, callback) {
-    var request = new XMLHttpRequest();
-    // issue not advisable but will only work in some cases...
-    request.open('GET', url, false);
-    request.overrideMimeType("application/json");
-    request.onload = function () {
-        if (request.readyState == 4 && request.status == "200") {
-          callback(JSON.parse(request.responseText));
-        }
-    };
-    request.send();
+  if (url.startsWith('hhttp')) {
+      // Remote URL, use fetch
+       fetch(url, {signal: AbortSignal.timeout(5000)})
+          .then(response => response.text())
+          .then(text => {
+            const data = JSON.parse(text);
+      });
+  } else {
+      // Local file, use XMLHttpRequest
+      var request = new XMLHttpRequest();
+      request.open('GET', url, false);
+      request.overrideMimeType("application/json");
+      request.onload = function() {
+          //if (request.readyState == 4 && request.status == "200") {
+              callback(JSON.parse(request.responseText));
+          //}
+      };
+      request.send();
+    }
 }
 
 // get json image url
@@ -181,7 +240,7 @@ span.onclick = function() {
 // style sidenav
 function indexsidenav() {
     let text           = "";
-    getjson('json/index.json', function(data){
+    getjsonf('json/index.json', function(data){
     if (data)
         Object.entries(data).forEach((entry) => {
             const [key, value] = entry;
@@ -256,48 +315,54 @@ function ytaudioplay(music, element) {
 function titlecase(str) {
    var splitStr = str.toLowerCase().split(' ');
    for (var i = 0; i < splitStr.length; i++) {
-       // You do not need to check if i is larger than splitStr length, as your for does that for you
-       // Assign it back to the array
        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
    }
    return splitStr.join(' ');
 }
 
-
-// create paragraphs in text block
-function createparagraph(dummy) {
-  let dummy2 = "";
-  let i = 0;
+function createparagraph(text) {
+  const paragraphs = [];
+  let currentParagraph = '';
+  let paragraphLength = 0;
+  let insideSentence = false;
   let p = false;
 
   // todo needs some form of paging
-  //console.log(windowwidth);
-  //console.log(dummy.length);
-  if (dummy.length > window.outerWidth * 2) {
-    dummy = dummy.substring(0, window.outerWidth * 2);
+  if (text.length > window.outerWidth * 2) {
+    text = text.substring(0, window.outerWidth * 2);
     p = true;
   }
 
-  // build array on punctuation .!? ignore pattern T.S.Elliot, St.Louis etc
-  dummy = dummy.split(/([!?.]\s)/);
-  while (i < dummy.length) {
-        if (dummy[i].length > 100) {
-           dummy2 += dummy[i];
-           // last line
-           if (dummy[i+1] === undefined) {
-              dummy2 += "<br><br>";
-           } else {
-              dummy2 += dummy[i+1] + "<br><br>";
-           }
-        } else {
-           if (dummy[i].length =! 1) {
-              dummy2 += dummy[i] + dummy[i+1];
-           }
-        }
-        i++;
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (char === ' ') {
+      if (insideSentence) {
+        currentParagraph += char;
+        paragraphLength++;
+      }
+    } else {
+      currentParagraph += char;
+      paragraphLength++;
+      if (char === '.' || char === '!' || char === '?') {
+        insideSentence = false;
+      } else {
+        insideSentence = true;
+      }
+      if (paragraphLength > 100 + text[i]) {
+        paragraphs.push(currentParagraph.trim() + '<br><br>');
+        currentParagraph = '';
+        paragraphLength = 0;
+      }
+    }
   }
-  if (p) { dummy2 += ' .....';}
-  return dummy2;
+  // check text size and add the last paragraph to the list of paragraphs
+  if (p) {
+    paragraphs.push(currentParagraph.trim() + '<br>   .....');
+  } else {
+    paragraphs.push(currentParagraph.trim() + '<br><br>');
+  }
+  // Join the paragraphs into a single string and return the result
+  return paragraphs.join('');
 }
 
 // tag indicator list first letter selected search td or div element

@@ -109,17 +109,13 @@ function switchlistview(listtype, pagetype) {
                                      case 'updated':
                                           text += '<td>' + value[keys[i]].substr(0, 10) + '</td>' + '\r\n';
                                      break;
-                                     case 'html_url':
-                                          text += '<td><a href="' + value.html_url + '">Source</a>' + " | ";
-                                          text += '<a href="' + value.html_url + '/releases">Release</a>' + "</td>";
-                                     break;
                                      case 'href':
                                         text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.href + '\', \'image\',\'local\')">';
                                         text += value.name + "</a></td>";
                                      break;
                                      case 'name':
                                           if (value.href === undefined) {
-                                             text += '<td><a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; passmusicalbum(\'' + value.name + '\'); imageoverlay(\'' + titlecase(value.name) + '\', \'paper\',\'remote\')">';
+                                             text += '<td><a class="cardcontainer" onclick="handleClick(\'' + value.name + '\', \'' + value.release_date + '\', \'' + value.year + '\')">';
                                              text += value[keys[i]] + '</a></td>' + '\r\n';
                                           } else {
                                              if (value.href.indexOf("<a") != -1){
@@ -165,17 +161,14 @@ function switchlistview(listtype, pagetype) {
                                      case 'updated':
                                           text += "<br>last update <b>" + value.updated.substr(0, 10) + "</b>&nbsp;&nbsp;";
                                      break;
-                                     case 'html_url':
-                                          text += '<td><a href="' + value.html_url + '">Source</a>' + " | ";
-                                          text += '<a href="' + value.html_url + '/releases">Release</a>' + "</td>";
-                                     break;
                                      case 'href':
                                         text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.href + '\', \'image\',\'local\')">';
                                         text += value.name + "</a></td>";
                                      break;
                                      case 'name':
                                           if (value.href === undefined) {
-                                             text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; passmusicalbum(\'' + value.name + '\'); imageoverlay(\'' + titlecase(value.name) + '\', \'paper\',\'remote\')">';
+                                             text += '<a class="cardcontainer" onclick="handleClick(\'' + value.name + '\', \'' + value.release_date + '\', \'' + value.year + '\')">';
+                                             //text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; passmusicalbum(\'' + value.name + '\'); imageoverlay(\'' + titlecase(value.name) + '\', \'paper\',\'remote\')">';
                                              text += '<b>' + value[keys[i]] + '</a></b><br>' + '\r\n';
                                           } else {
                                              if (value.href.indexOf("<a") != -1){
@@ -220,17 +213,14 @@ function switchlistview(listtype, pagetype) {
                                    case 'updated':
                                         text += "<br>last update <b>" + value.updated.substr(0, 10) + "</b><br>";
                                    break;
-                                   case 'html_url':
-                                        text += '<td><a href="' + value.html_url + '">Source</a>' + " | ";
-                                        text += '<a href="' + value.html_url + '/releases">Release</a>' + "</td>";
-                                   break;
                                    case 'href':
                                       text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.href + '\', \'image\',\'local\')">';
                                       text += value.name + "</a></td>";
                                    break;
                                    case 'name':
                                         if (value.href === undefined) {
-                                           text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; passmusicalbum(\'' + value.name + '\'); imageoverlay(\'' + titlecase(value.name) + '\', \'paper\',\'remote\')">';
+                                           text += '<a class="cardcontainer" onclick="handleClick(\'' + value.name + '\', \'' + value.release_date + '\', \'' + value.year + '\')">';
+                                           //text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; passmusicalbum(\'' + value.name + '\'); imageoverlay(\'' + titlecase(value.name) + '\', \'paper\',\'remote\')">';
                                            text += '<b>' + value[keys[i]] + '</a></b><br><br>' + '\r\n';
                                         } else {
                                            if (value.href.indexOf("<a") != -1){

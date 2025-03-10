@@ -1,28 +1,8 @@
 function tmdbgenreid(val) {
-/*
-TV SHOW
-Action & Adventure  10759
-Animation           16
-Comedy              35
-Crime               80
-Documentary         99
-Drama               18
-Family              10751
-Kids                10762
-Mystery             9648
-News                10763
-Reality             10764
-Sci-Fi & Fantasy    10765
-Soap                10766
-Talk                10767
-War & Politics      10768
-Western             37
-*/
-
     switch(val) {
-    case 1:
-    dummy = '';
-    break;
+       case 1:
+          dummy = '';
+          break;
     }
     return dummy;
 }
@@ -40,6 +20,7 @@ function imageoverlay(section, overlay, locale) {
     let dummy          = "";
     let extdummy       = "";
     let extimage       = "";
+    let refducky       = "";
     let url            = "";
     let vrl            = "";
     let wikifilter     = "";
@@ -47,7 +28,6 @@ function imageoverlay(section, overlay, locale) {
 
     var sourcename      = [];
     var sourcehref      = [];
-
 
     text += '  <span class="playslide">';
     text += '        <a href="slide.html?section=' + section + '" style="text-decoration: none;" target="_blank">';
@@ -89,30 +69,70 @@ function imageoverlay(section, overlay, locale) {
             data = [];
             entry = [];
 
+// todo abstract various sources extdummy
+//let ref = {};
+//for (i = 0; i < sourcename.length; i += 1) {
+//    console.log(sourcename[i])
+//    ref[sourcename[i]] = "test" + i;
+//    console.log(ref[sourcename[i]]);
+//}
+
             // get sources
             for (i = 0; i < sourcename.length; i += 1) {
                 if (sourcename[i] === "ducky") {
                   extdummy = "";
-                  url =  'https://corsproxy.io/?' + 
+                  url =  'https://corsproxy.io/?' +
                          'http://api.duckduckgo.com/?q=' + window.localStorage.getItem('name') + '&format=json&pretty=1';
                   getjsonf(url, function(data){
                       if (data) {
-                          Object.entries(data).forEach((entry) => {
-                              const [key, value] = entry;
-                              if (data.Infobox.content !== undefined) {
-                                  extdummy += '<i>' + data.Infobox.content[cnt].label + ':</i> ';
-                                  extdummy += data.Infobox.content[cnt].value + '<br>';
-                                  //extimage =  data.Image;
-                                  extdummy = extdummy.replaceAll('"', '');
-                                  extdummy = extdummy.replaceAll('\'', '');
-                                  extdummy = extdummy.replaceAll('\n', '');
-                                  extdummy = extdummy.replaceAll(';', '<br>');
-                                  cnt += 1;
-                              } else {
-                                  extdummy = "";
+                      // get related info if present
+                      if (typeof data.RelatedTopics === 'object' && data.RelatedTopics !== null) {
+                          data.RelatedTopics.forEach((entry) => {
+                            for (const key in entry) {
+                              if (entry.hasOwnProperty(key)) {
+                                if (key === 'FirstURL') {
+                                  refducky += '<i><a href="' + entry[key] + '" target="blank"></i> ';
+                                } else if (key === 'Text') {
+                                  if (Array.isArray(entry[key])) {
+                                    refducky += entry[key].join(', ') + '<br>';
+                                  } else if (typeof entry[key] === 'object') {
+                                    refducky += Object.values(entry[key]).join(', ') + '<br>';
+                                  } else {
+                                    refducky += entry[key] + '<br>';
+                                  }
+                                }
                               }
+                            }
                           });
                       }
+                      if (typeof data.Infobox.content === 'object' && data.Infobox.content !== null) {
+                          data.Infobox.content.forEach((entry) => {
+                            for (const key in entry) {
+                              if (entry.hasOwnProperty(key)) {
+                                if (key === 'label') {
+                                  extdummy += '<i>' + entry[key] + ':</i> ';
+                                } else if (key === 'value') {
+                                  if (Array.isArray(entry[key])) {
+                                    extdummy += entry[key].join(', ') + '<br>';
+                                  } else if (typeof entry[key] === 'object') {
+                                    extdummy += Object.values(entry[key]).join(', ') + '<br>';
+                                  } else {
+                                    extdummy += entry[key] + '<br>';
+                                  }
+                                }
+                                //extimage =  data.Image;
+                                extdummy = extdummy.replaceAll('"', '');
+                                extdummy = extdummy.replaceAll('\'', '');
+                                extdummy = extdummy.replaceAll('\n', '');
+                                extdummy = extdummy.replaceAll(';', '<br>');
+                                //console.log(key, entry[key]);
+                              }
+                            }
+                          });
+                        } else {
+                          console.log('data.Infobox.content is not an object');
+                        }
+                      } // data
                   });
                   data  = [];
                   entry = [];
@@ -133,10 +153,93 @@ function imageoverlay(section, overlay, locale) {
                               extdummy = extdummy.replaceAll('\'', '');
                               extdummy = extdummy.replaceAll('\n', '');
                               extdummy = extdummy.replaceAll(';', '<br>');
-                              cnt += 1;
+                              //cnt += 1;
                           });
                       }
                   });
+                  data  = [];
+                  entry = [];
+                  cnt   = 0;
+                } // end if
+                if (sourcename[i] === "reference") {
+                  // todo refducky needs to be abstracted and number of br's is a bit funky
+                  let br = '<br>';
+                  switch (window.localStorage.getItem('menuitem')){
+                         case 'docu':
+                              wikifilter = '';
+                              extdummy = window.localStorage.getItem('name') + '<br><br><br><br><br><br>' + br.repeat(refducky.split('<br>').length + 5);
+                              extdummy += '<a href=https://www.youtube.com/results?search_query=' +
+                                          window.localStorage.getItem('name').replaceAll(' ', '+') +
+                                          '+music+hq target="_blank">' + 'youtube video list<br>';
+                              extdummy += '<a href=https://music.youtube.com/search?q=' +
+                                          window.localStorage.getItem('name').replaceAll(' ', '+').toLowerCase() +
+                                          ' target="_blank">' + 'youtube music list<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
+                                           window.localStorage.getItem('year') +
+                                          ' target="_blank">' + 'historic events year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_film' +
+                                          ' target="_blank">' + 'movies year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_music' +
+                                          ' target="_blank">' + 'music year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_video_games' +
+                                          ' target="_blank">' + 'video games year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<br>' + refducky;
+                              break;
+                         case 'film':
+                              extdummy = window.localStorage.getItem('name') + '<br><br><br><br><br><br>' + br.repeat(refducky.split('<br>').length + 5);
+                              extdummy += '<a href=https://www.youtube.com/results?search_query=' +
+                                          window.localStorage.getItem('name').replaceAll(' ', '+') +
+                                          '+' + window.localStorage.getItem('year') +
+                                          '+music+hq target="_blank">' + 'youtube video list<br>';
+                              extdummy += '<a href=https://music.youtube.com/search?q=' +
+                                          window.localStorage.getItem('name').replaceAll(' ', '+').toLowerCase() +
+                                          '+' + window.localStorage.getItem('year') +
+                                          ' target="_blank">' + 'youtube music list<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
+                                           window.localStorage.getItem('year') +
+                                          ' target="_blank">' + 'historic events year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_film' +
+                                          ' target="_blank">' + 'movies year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_music' +
+                                          ' target="_blank">' + 'music year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_video_games' +
+                                          ' target="_blank">' + 'video games year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<br>' + refducky;
+                              break;
+                         case 'game':
+                              wikifilter = 'game';
+                              break;
+                         case 'music':
+                              extdummy = window.localStorage.getItem('name') + '<br><br><br><br><br><br>' + br.repeat(refducky.split('<br>').length + 5);
+                              extdummy += '<a href=https://www.youtube.com/results?search_query=' +
+                                          window.localStorage.getItem('name').replaceAll(' ', '+') +
+                                          '+music+hq target="_blank">' + 'youtube video list<br>';
+                              extdummy += '<a href=https://music.youtube.com/search?q=' +
+                                          window.localStorage.getItem('name').replaceAll(' ', '+').toLowerCase() +
+                                          ' target="_blank">' + 'youtube music list<br>';
+                              extdummy += '<a href=https://genius.com/search?q=' +
+                                          window.localStorage.getItem('name').replaceAll(' ', '%20') +
+                                          ' target="_blank">' + 'genius lyrics list<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
+                                           window.localStorage.getItem('year') +
+                                          ' target="_blank">' + 'historic events year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_film' +
+                                          ' target="_blank">' + 'movies year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_music' +
+                                          ' target="_blank">' + 'music year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_video_games' +
+                                          ' target="_blank">' + 'video games year ' + window.localStorage.getItem('year') + '<br>';
+                              extdummy += '<br>' + refducky;
+                              // todo need song title see passmusicalbum
+                              //extdummy += '<a href=https:///genius.com/' + window.localStorage.getItem('name').replaceAll(' ', '-') +
+                              //            '-' + window.localStorage.getItem('title').replaceAll(' ', '%20') + 'target="_blank">' + 'genius lyrics list<br>';
+                              //https://genius.com/search?q=diana%20ross
+                              break;
+                  }
+                  extdummy = extdummy.replaceAll('"', '');
+                  extdummy = extdummy.replaceAll('\'', '');
+                  extdummy = extdummy.replaceAll('\n', '');
+                  extdummy = extdummy.replaceAll(';', '<br>');
                   data  = [];
                   entry = [];
                   cnt   = 0;
@@ -181,10 +284,6 @@ function imageoverlay(section, overlay, locale) {
             data  = [];
             entry = [];
             dummy = '';
-            //         text += '          <div class="carousel--item">';
-            //          text += '               <figure><img src="../images/doc.png" alt="album info" id="' + cnt + '"/>';
-            //          text += '               <a href=\'http://musicbrainz.org/ws/2/release-group/?query=artist:"' + dummy + '" AND primarytype:"album"\' target="_blank"></a></figure>';
-            //          text += '          </div>';
         } // not all
         if (locale == 'local'){ url = 'json/paper.json';}
         if (locale == 'remote'){
@@ -200,7 +299,7 @@ function imageoverlay(section, overlay, locale) {
               if (data) {
                   switch (window.localStorage.getItem('menuitem')){
                          case 'docu':
-                              wikifilter = '';
+                              wikifilter = 'docu';
                               break;
                          case 'film':
                               wikifilter = 'film';
@@ -268,7 +367,7 @@ function imageoverlay(section, overlay, locale) {
                         text += textb;
                         text += value.title + '<br><br>';
                         orgtext += value.title;
-                        if (value.extract === undefined) { value.extract = extdummy; }// else { //nop }
+                        if (value.extract === undefined) { value.extract = "no info"; }
                         orgtext += '<br><br>' + value.extract;
                         text += createparagraph(value.extract);
                         text += '                   </div>';
@@ -301,6 +400,9 @@ function imageoverlay(section, overlay, locale) {
     if (overlay == 'image'){
       // todo fix tricky hack to pass json list via section
       if (section.indexOf(".json") > 0) {
+          // clear the imageurl
+          Object.keys(imageurl).forEach(key => delete imageurl[key]);
+
           getjsonf(section, function(data2){
           if (data2)
              Object.entries(data2).forEach((entry) => {
@@ -337,83 +439,48 @@ function imageoverlay(section, overlay, locale) {
     text += '  <div class="carousel">';
     text += '     <div class="carousel--wrap">';
     // todo figure out missing thumbnail this.$items[0] is undefined
-if (window.localStorage.getItem('menuitem') != 'paper'){
-    Object.entries(imageurl).forEach((entry) => {
-        const [key, value] = entry;
-        if (value.private === false && (value.name == section || section == 'all') || section.indexOf(".json") > 0) {
-          text += '          <div class="carousel--item">';
-          text += '               <figure><img src="' + value.href + '" alt="' + value.description + '" id="' + cnt + '"/></figure>';
-          text += '          </div>';
-          cnt += 1;
-        };
-    });
-}
-
-/*
-    // if needed get game cover
-    if (window.localStorage.getItem('menuitem') == 'game' && section != 'all'){
-        // get json table
-        url = 'https://corsproxy.io/?' +
-              'https://www.pcgamingwiki.com/w/api.php?action=cargoquery&tables=Infobox_game&fields=Infobox_game._pageName=Page,Infobox_game.Developers,Infobox_game.Publishers,Infobox_game.Genres,Infobox_game.Released,Infobox_game.Cover_URL&where=Infobox_game._pageName' +
-              '%3D%22' + encodeURIComponent(section) + '%22&format=json';
-        // default no image
-        if (extimage != "") {
-            image = extimage;
-        } else {
-            image = 'images/noimage.jpg';
-        }
-        getjsonf(url, function(gamecover){
-            if (gamecover) {
-                Object.entries(gamecover.cargoquery).forEach((entry) => {
-                  const [key3, value3] = entry;
-                  image = value3.title['Cover URL'];
-                });
-            }
-            if (image != "") {
-                text += '          <div class="carousel--item">';
-                text += '               <figure><img src="' + image + '" alt="' + section + '" id="' + cnt + '"/></figure>';
-                text += '          </div>';
-            }
-        }); // get json
+    if (window.localStorage.getItem('menuitem') != 'paper'){
+        Object.entries(imageurl).forEach((entry) => {
+            const [key, value] = entry;
+            if (value.private === false && (value.name == section || section == 'all') || section.indexOf(".json") > 0) {
+              text += '          <div class="carousel--item">';
+              text += '               <figure><img src="' + value.href + '" alt="' + value.description + '" id="' + cnt + '"/></figure>';
+              text += '          </div>';
+              cnt += 1;
+            };
+        });
     }
- */
-    // if needed get movie poster or music art
-    //console.log(locale);
-    //if (section != 'all'){
-        // get media
-        url = 'https://corsproxy.io/?' + 'https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages|pageterms&piprop=thumbnail&pithumbsize=600&pilicense=any&titles=' +
-              encodeURIComponent(dummy);
-        // default no image
-        if (extimage != "") {
-            image = extimage;
-        } else {
-            //image = 'images/noimage.jpg';
-        }
-        //if (window.localStorage.getItem('menuitem') == 'game'){
-        cnt = 0;
-        getjsonf(url, function(data){
-            if (data) {
-               if (data.query === undefined) {
-                  // nop
-               } else {
-                  Object.entries(data.query.pages).forEach((entry) => {
-                    const [key3, value3] = entry;
-                    if (value3.thumbnail != null) {
-                       image = value3.thumbnail.source;
-                    }
-                  });
+    // get media
+    url = 'https://corsproxy.io/?' + 'https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages|pageterms&piprop=thumbnail&pithumbsize=600&pilicense=any&titles=' +
+          encodeURIComponent(dummy);
+    // default no image
+    if (extimage != "") {
+        image = extimage;
+    } else {
+        //image = 'images/noimage.jpg';
+    }
+    cnt = 0;
+    getjsonf(url, function(data){
+        if (data) {
+           if (data.query === undefined) {
+              // nop
+           } else {
+              Object.entries(data.query.pages).forEach((entry) => {
+                const [key3, value3] = entry;
+                if (value3.thumbnail != null) {
+                   image = value3.thumbnail.source;
                 }
+              });
             }
-            if (image != "") {
-                text += '          <div class="carousel--item">';
-                text += '               <figure><img src="' + image + '" alt="' + section + '" id="' + cnt + '"/></figure>';
-                text += '          </div>';
-                cnt += 1;
+        }
+        if (image != "") {
+            text += '          <div class="carousel--item">';
+            text += '               <figure><img src="' + image + '" alt="' + section + '" id="' + cnt + '"/></figure>';
+            text += '          </div>';
+            cnt += 1;
 
-            }
-        }); // get json
-        //}
-    //}
+        }
+    }); // get json
 
     text += '     </div>';
     text += '     <div class="carousel--progress">';
@@ -486,36 +553,6 @@ if (window.localStorage.getItem('menuitem') != 'paper'){
         }
       }
 
-      handletest(e) {
-        if (e == 'ArrowRight') {
-           if (Number(this.currentid) < this.$items.length - 1) {
-             this.currentid = Number(this.currentid) + 1;
-           } else {
-             this.currentid = this.$items.length - 1;
-           }
-           document.getElementById('canvas').setAttribute('src', this.$items[Number(this.currentid)].querySelector('img').src);
-           document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
-           this.progress += this.$el.clientWidth * 0.05;
-           this.move();
-        }
-        if (e == 'ArrowLeft') {
-           if (Number(this.currentid) > 0) {
-             this.currentid = Number(this.currentid) - 1;
-           } else {
-             this.currentid = 0;
-           }
-           document.getElementById('canvas').setAttribute('src', this.$items[this.currentid].querySelector('img').src);
-           document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
-           this.progress -= this.$el.clientWidth * 0.05;
-           this.move();
-        }
-      }
-
-     //imagemove(e){
-        //console.log(e.pageX - document.getElementById('canvas').width);
-        //document.querySelector(':root').style.setProperty('--transform-origin', e.pageX - document.getElementById('canvas').width) * 100 + '%';
-     //}
-
      handleWheel(e) {
         // work around for small scroll delta seamonkey and possibly other browsers
         var dummy = e.deltaY;
@@ -547,17 +584,23 @@ if (window.localStorage.getItem('menuitem') != 'paper'){
         this.progress += dummy;
         this.move();
       }
-    
+
       handleclick(e) {
         if (e.target.src == undefined) {
-           // nop
+            // todo refine to broad responds to all links onpage console.log(e.target.src);
+            document.getElementById("paper").style.display = "block";
+            document.getElementById("paper").style.visibilty = "visible";
+            document.getElementById("canvas").style.display = "none";
+            document.getElementById("canvas").style.visibilty = "hidden";
+          // nop
         } else {
           if (e.target.id == 'zoomcanvas' || e.target.id == 'canvas') {
               if (document.getElementById("zoomcanvas").checked) {
                 document.getElementById("zoomcanvas").checked = false;
+                document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
               } else {
                 document.getElementById("zoomcanvas").checked = true;
-                scaleimage();
+                document.getElementById('canvas').style.transform = 'translate(0, 0) scale(2)';
               }
           } else {
               if (overlay == 'paper'){
@@ -571,12 +614,40 @@ if (window.localStorage.getItem('menuitem') != 'paper'){
                      document.getElementById("paper").style.visibilty = "visible";
                      document.getElementById("canvas").style.display = "none";
                      document.getElementById("canvas").style.visibilty = "hidden";
-                  }
+                 }
               }
               document.getElementById('canvas').setAttribute('src', e.target.src);
               document.getElementById("title").innerHTML = e.target.alt.split('_').join(' ');
+              document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
               this.currentid = e.target.id;
           }
+        }
+      }
+
+      handletest(e) {
+        if (e == 'ArrowRight') {
+           if (Number(this.currentid) < this.$items.length - 1) {
+             this.currentid = Number(this.currentid) + 1;
+           } else {
+             this.currentid = this.$items.length - 1;
+           }
+           document.getElementById('canvas').setAttribute('src', this.$items[Number(this.currentid)].querySelector('img').src);
+           document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
+           document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
+           this.progress += this.$el.clientWidth * 0.05;
+           this.move();
+        }
+        if (e == 'ArrowLeft') {
+           if (Number(this.currentid) > 0) {
+             this.currentid = Number(this.currentid) - 1;
+           } else {
+             this.currentid = 0;
+           }
+           document.getElementById('canvas').setAttribute('src', this.$items[this.currentid].querySelector('img').src);
+           document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
+           document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
+           this.progress -= this.$el.clientWidth * 0.05;
+           this.move();
         }
       }
 
@@ -589,6 +660,7 @@ if (window.localStorage.getItem('menuitem') != 'paper'){
            }
            document.getElementById('canvas').setAttribute('src', this.$items[Number(this.currentid)].querySelector('img').src);
            document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
+           document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
            this.progress += this.$el.clientWidth * 0.05;
            this.move();
         }
@@ -600,14 +672,17 @@ if (window.localStorage.getItem('menuitem') != 'paper'){
            }
            document.getElementById('canvas').setAttribute('src', this.$items[this.currentid].querySelector('img').src);
            document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
+           document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
            this.progress -= this.$el.clientWidth * 0.05;
            this.move();
         }
         if(e.key == "ArrowUp") {
             if (document.getElementById("zoomcanvas").checked) {
               document.getElementById("zoomcanvas").checked = false;
+              document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
             } else {
               document.getElementById("zoomcanvas").checked = true;
+              document.getElementById('canvas').style.transform = 'translate(0, 0) scale(2)';
             }
         }
         if(e.key == "Escape") {
@@ -627,13 +702,32 @@ if (window.localStorage.getItem('menuitem') != 'paper'){
       }
 
       handleTouchMove(e) {
+        // zoom main image and move if needed
+        const image = document.querySelector('img');
+        const rect = image.getBoundingClientRect();
+        if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+            const imageCenterX = rect.left + rect.width / 2;
+            const imageCenterY = rect.top + rect.height / 2;
+            const deltaX = e.clientX - imageCenterX;
+            const deltaY = e.clientY - imageCenterY;
+            const moveX = -deltaX * 0.1; // Adjust the multiplier for sensitivity
+            const moveY = -deltaY * 0.1; // Adjust the multiplier for sensitivity
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            const scaleFactor = 2 + Math.min(distance / 10, 0.125); // Scale up to 1.5x at a distance of 200px
+            //const scaleFactor = 2 + Math.min(distance / 200, 0.5); // Scale up to 1.5x at a distance of 200px
+            image.style.transform = `translate(${moveX}px, ${moveY}px) scale(${scaleFactor})`;
+        } else {
+            image.style.transform = 'translate(0, 0)';
+            image.style.transform = 'translate(0, 0) scale(1)';
+        }
+        // move thumbnails
         if (!this.dragging) return false;
         const x = e.clientX || e.touches[0].clientX;
-        this.progress += (this.startX - x) * 2.5;
+        this.progress += (this.startX - x) * 1.5;
         this.startX = x;
         this.move();
       }
-    
+
       handleTouchEnd() {
         this.dragging = false;
         this.$el.classList.remove('dragging');
@@ -648,34 +742,23 @@ if (window.localStorage.getItem('menuitem') != 'paper'){
         window.addEventListener('wheel',   this.handleWheel);
         window.addEventListener('keydown', this.handlekey);
         window.addEventListener('click',   this.handleclick);
-        //
-        //this.$el.addEventListener('touchstart', this.handleTouchStart);
-        //window.addEventListener('touchmove',    this.handleTouchMove);
-        //window.addEventListener('touchend',     this.handleTouchEnd);
-        //
         if (overlay !== 'paper'){ // bypass to keep text selectable
             window.addEventListener('mousedown',         this.handleTouchStart);
             window.addEventListener('mousemove',         this.handleTouchMove);
-            //window.addEventListener('mousemove',         this.imagemove);
             window.addEventListener('mouseup',           this.handleTouchEnd);
+            window.addEventListener('mouseleave',        this.handleTouchEnd);
         }
-        //document.body.addEventListener('mouseleave', this.handleTouchEnd);
       }
 
       removeevents() {
-        window.removeEventListener('resize',  this.calculate);
-        window.removeEventListener('wheel',   this.handleWheel);
-        window.removeEventListener('keydown', this.handlekey);
-        window.removeEventListener('click',   this.handleclick);
-        //
-        //this.$el.addEventListener('touchstart', this.handleTouchStart);
-        //window.addEventListener('touchmove',    this.handleTouchMove);
-        //window.addEventListener('touchend',     this.handleTouchEnd);
-        //
-        window.removeEventListener('mousedown',         this.handleTouchStart);
-        window.removeEventListener('mousemove',         this.handleTouchMove);
-        window.removeEventListener('mouseup',           this.handleTouchEnd);
-        //document.body.addEventListener('mouseleave', this.handleTouchEnd);
+        window.removeEventListener('resize',     this.calculate);
+        window.removeEventListener('wheel',      this.handleWheel);
+        window.removeEventListener('keydown',    this.handlekey);
+        window.removeEventListener('click',      this.handleclick);
+        window.removeEventListener('mousedown',  this.handleTouchStart);
+        window.removeEventListener('mousemove',  this.handleTouchMove);
+        window.removeEventListener('mouseup',    this.handleTouchEnd);
+        window.removeEventListener('mouseleave',    this.handleTouchEnd);
       }
 
       raf() {
@@ -702,7 +785,7 @@ if (window.localStorage.getItem('menuitem') != 'paper'){
       wrap: '.carousel--wrap',
       item: '.carousel--item',
       bar: '.carousel--progress-bar' });
-    
+
     // One raf to rule em all
     const raf = () => {
       requestAnimationFrame(raf);
@@ -722,15 +805,3 @@ if (window.localStorage.getItem('menuitem') != 'paper'){
         };
     };
 } // end overlay
-
-function scaleimage() {
-  var r   = document.querySelector(':root');
-  let w   = window.outerWidth  - 100;
-  let h   = window.outerHeight - 100;
-  var img = document.getElementById("canvas");
-  var iw  = img.naturalWidth;
-  //var ih  = img.naturalHeight;
-  //console.log('scale(' + w / h + ')');
-  //console.log('image width' + iw / w);
-  r.style.setProperty('--scaleimage', 1.3 + (iw / w));
-}
