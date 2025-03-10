@@ -48,19 +48,19 @@
     "displayfields": [
       "name",
       "description",
-      "updated",
-      "html_url"
+      "updated"
     ]
   },
   {
     "name": "docu",
     "private": false,
     "sourcename": [
+      "ducky",
       "tmdb",
-      ""
+      "reference"
     ],
     "sourcehref": [
-      "",
+      "duckduck",
       ""
     ],
     "displayfields": [
@@ -73,7 +73,8 @@
     "private": false,
     "sourcename": [
       "ducky",
-      "musicbrainz"
+      "musicbrainz",
+      "reference"
     ],
     "sourcehref": [
       "duckduck",
@@ -84,6 +85,7 @@
       "title",
       "album",
       "genre",
+      "theme",
       "year"
     ]
   },
@@ -125,7 +127,7 @@
     "private": false,
     "sourcename": [
       "ducky",
-      ""
+      "reference"
     ],
     "sourcehref": [
       "duckduck",

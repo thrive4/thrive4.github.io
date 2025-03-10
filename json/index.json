@@ -17,7 +17,7 @@
     "private": false,
     "description": "Repositories of apps and utils written in freebasic and dll's like sdl2, sqlite and bass for windows",
     "href":  "<a href='code.html' onclick=closeNav();>",
-    "updated": "2023-07-18T09:23:01Z",
+    "updated": "2025-02-07T09:23:01Z",
     "topics": [
       "freebasic",
       "apps",
@@ -120,7 +120,7 @@
     "private": false,
     "description": "info on site",
     "href":  "<a href='about.html' onclick=closeNav();>",
-    "updated": "2023-07-18T09:23:01Z",
+    "updated": "2025-02-07T09:23:01Z",
     "topics": [
       "details",
       "examples",

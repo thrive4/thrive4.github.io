@@ -3,7 +3,7 @@
     "name": "app.fb.audioplayer-bass",
     "current": "audioplayer-bass-v1.6.32bit windows",
     "private": false,
-    "html_url": "https://github.com/thrive4/app.fb.audioplayer-bass",
+    "href": "<a href=\"https://github.com/thrive4/app.fb.audioplayer-bass\" target=\"_blank\">",
     "description": "audioplayer in freebasic and lib bass un4seen",
     "updated": "2024-09-20T04:52:37Z",
     "topics": [
@@ -17,7 +17,7 @@
     "name": "app.fb.audioplayer-sdlmixer",
     "current": "audioplayer-sdlmixer-v1.6.32bit windows",
     "private": false,
-    "html_url": "https://github.com/thrive4/app.fb.audioplayer-sdlmixer",
+    "href": "<a href=\"https://github.com/thrive4/app.fb.audioplayer-sdlmixer\" target=\"_blank\">",
     "description": "audioplayer with freebasic and lib sdl2 mixer",
     "updated": "2024-09-20T04:52:47Z",
     "topics": [
@@ -31,7 +31,7 @@
     "name": "app.fb.imageviewer",
     "current": "imageviewer-sdl2-v1.5.32bit windows",
     "private": false,
-    "html_url": "https://github.com/thrive4/app.fb.imageviewer",
+    "href": "<a href=\"https://github.com/thrive4/app.fb.imageviewer\" target=\"_blank\">",
     "description": "imageviewer in freebasic and lib sdl2_image",
     "updated": "2024-02-29T04:52:44Z",
     "topics": [
@@ -45,7 +45,7 @@
     "name": "app.fb.slideshow",
     "current": "slideshow-sdl2-v1.3.32bit windows",
     "private": false,
-    "html_url": "https://github.com/thrive4/app.fb.slideshow",
+    "href": "<a href=\"https://github.com/thrive4/app.fb.slideshow\" target=\"_blank\">",
     "description": "slideshow in freebasic and lib sdl2_image",
     "updated": "2023-07-18T09:32:21Z",
     "topics": [
@@ -59,7 +59,7 @@
     "name": "util.fb.cmdsqlite",
     "current": "cmdsqlite-v1.2.32bit windows",
     "private": false,
-    "html_url": "https://github.com/thrive4/util.fb.cmdsqlite",
+    "href": "<a href=\"https://github.com/thrive4/util.fb.cmdsqlite\" target=\"_blank\">",
     "description": "import and export tool for sqlite written in freebasic with sqlite3",
     "updated": "2023-12-18T13:14:51Z",
     "topics": [
@@ -82,7 +82,7 @@
     "name": "util.fb.gamepad2mkb",
     "current": "gamepad2mkb-sdl2-v1.2.32bit windows",
     "private": false,
-    "html_url": "https://github.com/thrive4/util.fb.gamepad2mkb",
+    "href": "<a href=\"https://github.com/thrive4/util.fb.gamepad2mkb\" target=\"_blank\">",
     "description": "basic mouse and keyboard emulator via gamepad in freebasic and sdl2",
     "updated": "2023-07-18T09:44:13Z",
     "topics": [
@@ -96,7 +96,7 @@
     "name": "util.fb.mp3cover",
     "current": "mp3cover-v1.0.32bit windows",
     "private": false,
-    "html_url": "https://github.com/thrive4/util.fb.mp3cover",
+    "href": "<a href=\"https://github.com/thrive4/util.fb.mp3cover\" target=\"_blank\">",
     "description": "exports the mp3 cover art, if present, from a mp3",
     "updated": "2023-06-28T13:23:34Z",
     "topics": [
@@ -109,7 +109,7 @@
     "name": "utill.fb.cmdzip",
     "current": "cmdzip-v1.1.32bit windows",
     "private": false,
-    "html_url": "https://github.com/thrive4/utill.fb.cmdzip",
+    "href": "<a href=\"https://github.com/thrive4/utill.fb.cmdzip\" target=\"_blank\">",
     "description": "commandline zip packer / unpacker util written in freebasic with libzip",
     "updated": "2023-10-29T23:01:04Z",
     "topics": [

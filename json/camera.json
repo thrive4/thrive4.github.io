@@ -86,14 +86,14 @@
   {
     "name": "app.fb.slideshow",
     "private": false,
-    "description": "promo",
+    "description": "promo image",
     "href": "images/slideshowdemo.jpg",
     "updated_at": "2024-11-11T09:23:01Z"
   },
   {
     "name": "app.fb.slideshow",
     "private": false,
-    "description": "promo",
+    "description": "promo shadertoy shader",
     "href": "images/slideshowdemo02.jpg",
     "updated_at": "2024-11-11T09:23:01Z"
   },
