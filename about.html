@@ -4,32 +4,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
     <title>about</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
-    <link rel="stylesheet" href="font.css" />
     <link rel="stylesheet" href="main.css" />
 </head>
 <body>
-<button id="darkmodeswitch" hidden>dark mode on/off</button>
 <p id="listtype"></p>
-<nav class="nav">
-  <div id="mySidenav" class="sidenav">
+<p id="tdelement"></p>
+<button onclick="topFunction()" id="backtotop" title="Go to top">
+<svg fill="#ffffff" height="16px" width="16px" viewBox="0 0 512 512"><g><g>
+     <path d="M505.752,358.248L271.085,123.582c-8.331-8.331-21.839-8.331-30.17,0L6.248,358.248c-8.331,8.331-8.331,21.839,
+     0,30.17 s21.839,8.331,30.17,0L256,168.837l219.582,219.582c8.331,8.331,21.839,8.331,30.17,0S514.083,366.58,505.752,358.248z"/>
+     </g></g>
+</svg>
+</button>
+<div class="nav">
+  <div id="mySidenav" class="sidenav left">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <p id="sidenavcontent"></p>
   </div>
+
   <div class="nav-left">
-    <a class="nav-item" href="index.html">
+    <a class="nav-item" style="cursor:pointer" onclick="openNav('left')">
       <svg class="svglight" viewBox="-5 -5 34 34">
-        <path d="M12,14a3,3,0,0,0-3,3v7.026h6V17A3,3,0,0,0,12,14Z"/>
-        <path d="M13.338.833a2,2,0,0,0-2.676,0L0,10.429v10.4a3.2,3.2,0,0,0,3.2,3.2H7V17a5,5,0,0,1,10,0v7.026h3.8a3.2,3.2,0,0,0,3.2-3.2v-10.4Z"/>
+           <path d="M4 6H20M4 12H20M4 18H20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </a>
-    <a class="nav-item" style="cursor:pointer" onclick="openNav()">THRIVE4</a>
+    <a class="nav-item" style="cursor:pointer" href="index.html">THRIVE4</a>
   </div>
 
   <label for="menu-toggle" class="nav-toggle">&equiv;</label>
   <input type="checkbox" id="menu-toggle" class="is-hidden"/>
 
-  <div class="nav-right nav-menu">
-    <a class="nav-item" href="" onclick="switchtheme(); id='darkmodeswitch';">
+  <div class="nav-right">
+    <a class="nav-item" href="" onclick="switchtheme();">
       <svg class="svglight" viewBox="-5 -5 34 34">
         <circle cx="12" cy="12" r="5"/>
         <path d="M21,13H20a1,1,0,0,1,0-2h1a1,1,0,0,1,0,2Z
@@ -42,8 +48,18 @@
         M18.36,19.36a1,1,0,0,1-.7-.29L17,18.36A1,1,0,0,1,18.36,17l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,18.36,19.36Z"/>
       </svg>
     </a>
+    <a class="nav-item" style="cursor:pointer" onclick="openNav('right')">
+       <svg class="svglight" viewBox="-8 -11 52 52">
+            <path d="M23.265,24.381l.9-.894c4.164.136,4.228-.01,4.411-.438l1.144-2.785L29.805,20l-.093-.231c-.049-.122-.2-.486-2.8-2.965V15.5c3-2.89,
+            2.936-3.038,2.765-3.461L28.538,9.225c-.171-.422-.236-.587-4.37-.474l-.9-.93a20.166,20.166,0,0,0-.141-4.106l-.116-.263-2.974-1.3c-.438-.2-.592-.272-3.4,
+            2.786l-1.262-.019c-2.891-3.086-3.028-3.03-3.461-2.855L9.149,3.182c-.433.175-.586.237-.418,4.437l-.893.89c-4.162-.136-4.226.012-4.407.438L2.285,
+            11.733,2.195,12l.094.232c.049.12.194.48,2.8,2.962l0,1.3c-3,2.89-2.935,3.038-2.763,3.462l1.138,2.817c.174.431.236.584,4.369.476l.9.935a20.243,20.243,0,
+            0,0,.137,4.1l.116.265,2.993,1.308c.435.182.586.247,3.386-2.8l1.262.016c2.895,3.09,3.043,3.03,3.466,2.859l2.759-1.115C23.288,28.644,23.44,
+            28.583,23.265,24.381ZM11.407,17.857a4.957,4.957,0,1,1,6.488,2.824A5.014,5.014,0,0,1,11.407,17.857Z"/>
+       </svg>
+    </a>
   </div>
-</nav>
+</div>
 <br><br><br><br>
 <div class="container">
     <p><strong>ABOUT</strong></p>
@@ -57,9 +73,19 @@ favorites film
 favorites music
 favorites games
 favorites documentaries
+gallery (for slideshow various sources)
 list of url's to various resources
 
 <b>release notes site:</b>
+
+update 2.0 10/04/2025
+- less padding td elements data display
+- added audioplayer list play
+- added config option primaraly to toggle list play
+  shuffle / linear
+- rewrite of css deprecated seperate font.css
+- rewrite parts of .js libs deprecated libtheme.js
+- fixed a number of small bugs
 
 update 1.9 10/03/2025
 - updated json files
@@ -156,6 +182,13 @@ update v1.1 04/11/2023
 
 </code></pre>
 </div>
+<!--tag indicator -->
+<p id="tdelement"></p>
+<div id="trletter">
+     <p id="trletterplace" class="trlettertext"></p>
+</div>
+
+<!-- optional audio player -->
 <footer class="footer">
       <div class="container-audio">
           <audio id="audio" title="" controls>
@@ -163,30 +196,12 @@ update v1.1 04/11/2023
           </audio>
       </div>
 </footer>
-<!-- set myimg workaround for imageviewer link !-->
-<p id='myImg'></p>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-<br><br>
+
 <!-- overlay for image navigation -->
 <div id="myModal" class="modal">
      <div id="imageoverlay"></div>
      <span class="close">&times;</span>
-     <div class="w3-content w3-display-container">
-          <div class="w3-display-container mySlides">
-               <div class="demo" style="visibility: hidden;"></div>
-          </div>
-     </div>
 </div>
-
 <script type="text/javascript" src="lib.js"></script>
-<script type="text/javascript" src="libtheme.js"></script>
-<script type="text/javascript" src="imageviewer.js"></script>
 </body>
 </html>

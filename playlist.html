@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
+    <meta name="keywords" content="music, mp3 play list">
+    <title>playlist</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+<div w3-include-html="body.html"></div>
+<br><br><br>
+<div class="container">
+<script type="text/javascript" src="lib.js"></script>
+<script type="text/javascript" src="imageviewer.js"></script>
+<script type="text/javascript" src="indexcode.js"></script>
+<!-- rough audio init !-->
+<script>
+    // audio player routines todo needs optimization and further tweaks
+    let trElements = document.querySelectorAll('tr.trlight');
+    const audio      = document.getElementById('audio');
+    let currentIndex = 0;
+    let urls         = [];
+    let titles       = [];
+    let shuffle      = false;
+    let lastPickIndex = -1;
+    let previousPicks = [];
+    audio.volume     = 0.5;
+
+    if (typeof onclickAttribute != 'undefined') {
+      trElements.forEach(trElement => {
+          const onclickAttribute = trElement.getAttribute('onclick');
+          const urlMatch = onclickAttribute.match(/audioplay\('([^']+)'/);
+          if (urlMatch && urlMatch[1]) {
+              urls.push(urlMatch[1]);
+              const titleElement = trElement.querySelector('td:nth-child(3)');
+              titles.push(titleElement ? titleElement.textContent : 'Unknown Title');
+          }
+      });
+    }
+
+    function shuffleplay(set) {
+        if (previousPicks.length === set) {
+            // reset picks
+            previousPicks = [];
+            lastPickIndex = -1;
+        }
+    
+        let shuffleindex;
+        do {
+            shuffleindex = Math.floor(Math.random() * set);
+        } while (previousPicks.includes(shuffleindex));
+
+        previousPicks.push(shuffleindex);
+        lastPickIndex = previousPicks.length - 1;
+        //console.log('pick: ', shuffleindex);
+        return shuffleindex;
+    }
+
+    audio.addEventListener('ended', () => {
+        //console.log('Playback ended!');
+        if (currentIndex == trElements.length) {
+           currentIndex = 0;
+        }
+        // shuffle play
+        if (shuffle) {
+           currentIndex = shuffleplay(trElements.length);
+        }
+        audioplay(urls[currentIndex], trElements[currentIndex]);
+    });
+
+    // keyboard navigation audio player
+    document.onkeydown = function (event) {
+        var kbpressed = event.key;
+        // tricky overrides browser shortcut keys
+        //event.preventDefault();
+        // todo harmonize with audio end
+        if (currentIndex == trElements.length) {
+           currentIndex = 0;
+        }
+
+        // audio previous
+        if(kbpressed == "ArrowLeft") {
+            if (shuffle) {
+               if (lastPickIndex > 0) {
+                   lastPickIndex--;
+                   currentIndex = previousPicks[lastPickIndex];
+                   audioplay(urls[currentIndex], trElements[currentIndex]);
+               }
+            } else {
+                if (currentIndex >  1) {
+                   audioplay(urls[currentIndex - 2], trElements[currentIndex - 2]);
+                }
+            }
+        }
+
+        // audio next
+        if(kbpressed == "ArrowRight") {
+            if (shuffle) {
+               currentIndex = shuffleplay(trElements.length);
+            }
+            audioplay(urls[currentIndex], trElements[currentIndex]);
+        }
+
+        // audio pause / play
+        if(kbpressed == "p") {
+            if (document.getElementById("audio").paused) {
+               document.getElementById("audio").play();
+            } else {
+               document.getElementById("audio").pause();
+            }
+        }
+
+        // audio seek
+        if(kbpressed == ".") {
+            document.getElementById("audio").currentTime = document.getElementById("audio").currentTime + 5;
+        }
+        if(kbpressed == ",") {
+            document.getElementById("audio").currentTime = document.getElementById("audio").currentTime - 5;
+        }
+
+        // audio volume
+        if(kbpressed == "+") {
+            if (document.getElementById("audio").volume < 0.9) {
+               document.getElementById("audio").volume = document.getElementById("audio").volume + 0.1;
+            }
+        }
+        if(kbpressed == "-") {
+            if (document.getElementById("audio").volume >= 0.1) {
+               document.getElementById("audio").volume = document.getElementById("audio").volume - 0.1;
+            }
+        }
+    }
+</script>
+</body>
+</html>

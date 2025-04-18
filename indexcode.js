@@ -12,7 +12,7 @@ function download(filename, text) {
   document.body.removeChild(element);
 }
 
-function switchlistview(listtype, pagetype) {
+function switchlistview(listtype, pagetype, extatype = "") {
     let text            = "";
     let camera          = false;
     let svgclass        = "svglight";
@@ -43,8 +43,13 @@ function switchlistview(listtype, pagetype) {
     data = [];
     entry = [];
 
+    let temptype = 'json/' + pagetype;
+    if (extatype != "") {
+        temptype = 'playlist/' + extatype;
+    }
+
     // get json data per section site
-    getjsonf('json/' + pagetype + '.json', function(data){
+    getjsonf(temptype + '.json', function(data){
     if (data)
         // inital page load sort data
         data.sort(function (x, y) {
@@ -55,31 +60,38 @@ function switchlistview(listtype, pagetype) {
 
         var k = JSON.parse(JSON.stringify( data, fields , 4));
         // map fieldnames aka columns aka keys
-        const keys = Object.keys(k[0]);
+        var keys = Object.keys(k[0]);
         // use k to reorder json file then save on os
         //download('hello.json', JSON.stringify(k, null, 2));
 
+// todo needs better handling when using audioplayer
+//console.table(data.map(item => item.file));
+// create a temporary data structure without the 'file' column
+// syntax file, album, ...rest  add columns if needed
+if (pagetype === 'musiclist'){
+    const tempdata = data.map(item => {
+        const { file, ...rest } = item;
+        return rest;
+    });
+    keys = Object.keys(tempdata[0]);
+}
         switch (listtype){
           case 'data':
             text += "<table class='sortable' id='datatable'>";
             text += '<thead><tr><th class="thnonsticky" width=20px;>';
             text += '<div class="trdropdown"><button class="trdropbtn"></button><div class="trdropdown-content">' + '\r\n';
             for (let i = 0; i < keys.length; i++) {
-                 text += '<a href="" onclick="localStorage.setItem(\'tdelement\',' + item + ')";>' + keys[i] + '</a>' + '\r\n';
-                 filterelement[i + 1] = keys[i];
-                 item += 1;
+                   text += '<a href="#" onclick="localStorage.setItem(\'tdelement\',' + item + '); searchon(\'' + keys[i] + '\')' + '\";>' + keys[i] + '</a>' + '\r\n';
+                   filterelement[i + 1] = keys[i];
+                   item += 1;
             }
             text += '</div></div></th>' + '\r\n';
 
             for (let i = 0; i < keys.length; i++) {
-                 text += '<th>' + keys[i] + '</th>' + '\r\n';
+                text += '<th>' + keys[i] + '</th>' + '\r\n';
             }
             text += '</tr></thead>';
-            if (window.localStorage.getItem('theme') === 'dark') {
-               text += '<input class="tablesearchboxdark" type="text" id="srinput" onkeyup="searchandfilter()" placeholder="Search for ' + filterelement[window.localStorage.getItem('tdelement')] + '..">';
-            } else {
-               text += '<input class="tablesearchboxlight" type="text" id="srinput" onkeyup="searchandfilter()" placeholder="Search for ' + filterelement[window.localStorage.getItem('tdelement')] + '..">';
-            }
+            text += '<input class="tablesearchboxlight" type="text" id="srinput" onkeyup="searchandfilter()" placeholder="Search for ' + filterelement[window.localStorage.getItem('tdelement')] + '..">';
             break;
         }
 
@@ -88,17 +100,16 @@ function switchlistview(listtype, pagetype) {
             if (value.private === false || value.private === 'false' || value.private === null || value.private == undefined) {
                 switch (listtype){
                   case 'data':
-                        if (window.localStorage.getItem('theme') === 'dark') {
-                             // todo find better solution onclick can not deal with target = _blank...
-                             text += "<tr class='trdarkmode' onmouseOver='gettrletter(this); trletteron();' onmouseOut='trletteroff();'><td>";
-                            svgclass = "svgdarkmode";
-                        } else {
-                             text += "<tr class='trlight' onmouseOver='gettrletter(this); trletteron();' onmouseOut='trletteroff();'><td>";
-                            svgclass = "svglight";
-                        }
-                        // parse json image url
-                        text += showcamera(imageurl, value.name, svgclass);
-                        text += "</td>";
+                         // todo tricky way of bypassing audioplayer if no file is defined
+                         if (value.file != undefined) {
+                            text += "<tr class='trlight' onclick=\"audioplay('" + value.file + "', this);\"; onmouseOver='gettrletter(this); trletteron();' onmouseOut='trletteroff();'><td><div class=\'audiobutton\'></td>";
+                         } else {
+                            text += "<tr class='trlight' onmouseOver='gettrletter(this); trletteron();' onmouseOut='trletteroff();'><td>";
+                             svgclass = "svglight";
+                            // parse json image url
+                            text += showcamera(imageurl, value.name, svgclass);
+                            text += "</td>";
+                         }
                         for (let i = 0; i < keys.length; i++) {
                               switch (keys[i]){
                                      case 'private':
@@ -121,18 +132,22 @@ function switchlistview(listtype, pagetype) {
                                              if (value.href.indexOf("<a") != -1){
                                                 text += '<td>' + value.href + value.name + '</a></td>' + '\r\n';
                                              } else {
+                                                if (pagetype === 'playlist') {
+                                                   text += '<td><a class="cardcontainer" onclick="switchlistview(\'' + listtype + '\', \'musiclist\', \'' + value.name + '\')">'
+                                                } else {
                                                 text += '<td><a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + value.href + '\', \'image\',\'local\')">';
-                                                text += value.name + "</a></td>";
+                                                }
+                                                text += value.name + "</a></td>" + '\r\n';
                                              }
                                           }
                                      break;
                                      case 'album':
                                          text += '<td><a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; passmusicalbum(\'' + value.name + '\'); + imageoverlay(\''
-                                         text += titlecase(value.name) + '\', \'paper\',\'remote\')">' + value.album + '</a></td>';
+                                         text += titlecase(value.name) + '\', \'paper\',\'remote\')">' + value.album + '</a></td>' + '\r\n';
                                      break;
                                      case 'genre':
                                          text += '<td><a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; passmusicgenre(\'' + value.genre + '\'); + imageoverlay(\''
-                                         text += titlecase(value.genre) + '\', \'paper\',\'remote\')">' + value.genre + '</a></td>';
+                                         text += titlecase(value.genre) + '\', \'paper\',\'remote\')">' + value.genre + '</a></td>' + '\r\n';
                                      break;
                                      default:
                                           text += '<td>' + value[keys[i]] + '</td>' + '\r\n';
@@ -142,18 +157,13 @@ function switchlistview(listtype, pagetype) {
                         text += '</tr>';
                   break;
                   case 'list':
-                        if (window.localStorage.getItem('theme') === 'dark') {
-                           text += '<div class="columnlist"><div class="cardlistdarkmode" onmouseOver=\'' +
-                                   "getdivdarkletter(" + cnt + "); trletteron();' onmouseOut='trletteroff();'>";
-                           svgclass = "svgdarkmode";
-                        } else {
                            text += '<div class="columnlist"><div class="cardlist" onmouseOver=\'' +
                                    "getdivletter(" + cnt + "); trletteron();' onmouseOut='trletteroff();'>";
                            svgclass = "svglight";
-                        }
                         for (let i = 0; i < keys.length; i++) {
                               switch (keys[i]){
                                      case 'private':
+                                     case 'file':
                                      case 'topics':
                                      case 'extract':
                                           // nop
@@ -198,14 +208,11 @@ function switchlistview(listtype, pagetype) {
                         cnt += 1;
                 break;
                 case 'tile':
-                      if (window.localStorage.getItem('theme') === 'dark') {
-                         text += '<div class="cardcontainer"><div class="column"><div class="carddarkmode"><p>';
-                      } else {
-                         text += '<div class="cardcontainer"><div class="column"><div class="card"><p>';
-                      }
+                      text += '<div class="cardcontainer"><div class="column"><div class="card"><p>';
                       for (let i = 0; i < keys.length; i++) {
                             switch (keys[i]){
                                    case 'private':
+                                   case 'file':
                                    case 'topics':
                                    case 'extract':
                                         // nop
@@ -262,13 +269,34 @@ function switchlistview(listtype, pagetype) {
         });
         text += "</table>";
         document.getElementById("reponame").innerHTML = text;
-        if (listtype == 'data') { document.getElementById("srinput").focus();}
+        //if (listtype == 'data') { document.getElementById("srinput").focus();}
+
+        // todo resolve hack for audioplayer reset playlist
+        if (typeof trElements != 'undefined') {
+            trElements = document.querySelectorAll('tr.trlight');
+            trElements.forEach(trElement => {
+                const onclickAttribute = trElement.getAttribute('onclick');
+                const urlMatch = onclickAttribute.match(/audioplay\('([^']+)'/);
+                if (urlMatch && urlMatch[1]) {
+                    urls.push(urlMatch[1]);
+                    const titleElement = trElement.querySelector('td:nth-child(3)');
+                    titles.push(titleElement ? titleElement.textContent : 'Unknown Title');
+                }
+            });
+        }
+
     });
+    //console.log(text);
     // clean up
     text = "";
 }
 
-localStorage.setItem("menuitem", document.title);
+// set search field and focus on input box
+function searchon(item){
+   document.getElementById("srinput").placeholder = 'Search for ' + item + '..'; //filterelement[window.localStorage.getItem('tdelement')] + '..';
+   document.getElementById("srinput").focus();
+}
 
+localStorage.setItem("menuitem", document.title);
 // toggle list views
 switchlistview(localStorage.getItem("listtype"), document.title);

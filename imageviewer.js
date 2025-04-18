@@ -44,12 +44,7 @@ function imageoverlay(section, overlay, locale) {
     if (overlay == 'paper'){
         // if needed get misc info
         if (section != 'all'){
-            // todo better theme handling
-            if (window.localStorage.getItem('theme') === 'dark') {
-              text += '<br><br><br><a class="w3-left" style="cursor:pointer" onclick="document.getElementById(\'bookpagedark\').innerHTML = createparagraph(orgtext) ";>';
-            } else {
-              text += '<br><br><br><a class="w3-left" style="cursor:pointer" onclick="document.getElementById(\'bookpage\').innerHTML = createparagraph(orgtext) ";>';
-            }
+            text += '<br><br><br><a class="w3-left" style="cursor:pointer" onclick="document.getElementById(\'bookpage\').innerHTML = createparagraph(orgtext) ";>';
             text += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<svg class="svglight" viewBox="-4 0 32 32">';
             text += svginfobox();
             text += '</svg></a>';
@@ -174,16 +169,6 @@ function imageoverlay(section, overlay, locale) {
                               extdummy += '<a href=https://music.youtube.com/search?q=' +
                                           window.localStorage.getItem('name').replaceAll(' ', '+').toLowerCase() +
                                           ' target="_blank">' + 'youtube music list<br>';
-                              extdummy += '<a href=https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
-                                           window.localStorage.getItem('year') +
-                                          ' target="_blank">' + 'historic events year ' + window.localStorage.getItem('year') + '<br>';
-                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_film' +
-                                          ' target="_blank">' + 'movies year ' + window.localStorage.getItem('year') + '<br>';
-                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_music' +
-                                          ' target="_blank">' + 'music year ' + window.localStorage.getItem('year') + '<br>';
-                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_video_games' +
-                                          ' target="_blank">' + 'video games year ' + window.localStorage.getItem('year') + '<br>';
-                              extdummy += '<br>' + refducky;
                               break;
                          case 'film':
                               extdummy = window.localStorage.getItem('name') + '<br><br><br><br><br><br>' + br.repeat(refducky.split('<br>').length + 5);
@@ -195,20 +180,11 @@ function imageoverlay(section, overlay, locale) {
                                           window.localStorage.getItem('name').replaceAll(' ', '+').toLowerCase() +
                                           '+' + window.localStorage.getItem('year') +
                                           ' target="_blank">' + 'youtube music list<br>';
-                              extdummy += '<a href=https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
-                                           window.localStorage.getItem('year') +
-                                          ' target="_blank">' + 'historic events year ' + window.localStorage.getItem('year') + '<br>';
-                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_film' +
-                                          ' target="_blank">' + 'movies year ' + window.localStorage.getItem('year') + '<br>';
-                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_music' +
-                                          ' target="_blank">' + 'music year ' + window.localStorage.getItem('year') + '<br>';
-                              extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_video_games' +
-                                          ' target="_blank">' + 'video games year ' + window.localStorage.getItem('year') + '<br>';
-                              extdummy += '<br>' + refducky;
                               break;
                          case 'game':
                               wikifilter = 'game';
                               break;
+                         case 'playlist':
                          case 'music':
                               extdummy = window.localStorage.getItem('name') + '<br><br><br><br><br><br>' + br.repeat(refducky.split('<br>').length + 5);
                               extdummy += '<a href=https://www.youtube.com/results?search_query=' +
@@ -220,6 +196,18 @@ function imageoverlay(section, overlay, locale) {
                               extdummy += '<a href=https://genius.com/search?q=' +
                                           window.localStorage.getItem('name').replaceAll(' ', '%20') +
                                           ' target="_blank">' + 'genius lyrics list<br>';
+                              // todo need song title see passmusicalbum
+                              //extdummy += '<a href=https:///genius.com/' + window.localStorage.getItem('name').replaceAll(' ', '-') +
+                              //            '-' + window.localStorage.getItem('title').replaceAll(' ', '%20') + 'target="_blank">' + 'genius lyrics list<br>';
+                              //https://genius.com/search?q=diana%20ross
+                              break;
+                  }
+                  // generic
+                  switch (window.localStorage.getItem('menuitem')){
+                         case 'docu':
+                         case 'film':
+                         case 'playlist':
+                         case 'music':
                               extdummy += '<a href=https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
                                            window.localStorage.getItem('year') +
                                           ' target="_blank">' + 'historic events year ' + window.localStorage.getItem('year') + '<br>';
@@ -230,10 +218,6 @@ function imageoverlay(section, overlay, locale) {
                               extdummy += '<a href=https://en.wikipedia.org/wiki/' + window.localStorage.getItem('year') + '_in_video_games' +
                                           ' target="_blank">' + 'video games year ' + window.localStorage.getItem('year') + '<br>';
                               extdummy += '<br>' + refducky;
-                              // todo need song title see passmusicalbum
-                              //extdummy += '<a href=https:///genius.com/' + window.localStorage.getItem('name').replaceAll(' ', '-') +
-                              //            '-' + window.localStorage.getItem('title').replaceAll(' ', '%20') + 'target="_blank">' + 'genius lyrics list<br>';
-                              //https://genius.com/search?q=diana%20ross
                               break;
                   }
                   extdummy = extdummy.replaceAll('"', '');
@@ -275,11 +259,7 @@ function imageoverlay(section, overlay, locale) {
                   entry = [];
                   cnt   = 0;
                 } // end if
-                if (window.localStorage.getItem('theme') === 'dark') {
-                   text += '<a style="cursor:pointer" onclick="document.getElementById(\'bookpagedark\').innerHTML = \'' + extdummy + '\'";>' + sourcename[i] + '</a><br>';
-                } else {
-                   text += '<a style="cursor:pointer; color:white" onclick="document.getElementById(\'bookpage\').innerHTML = \'' + extdummy + '\'";>' + sourcename[i] + '</a><br>';
-                }
+                text += '<a style="cursor:pointer; color:white" onclick="document.getElementById(\'bookpage\').innerHTML = \'' + extdummy + '\'";>' + sourcename[i] + '</a><br>';
             } // end for get sources
             data  = [];
             entry = [];
@@ -354,13 +334,8 @@ function imageoverlay(section, overlay, locale) {
         getjsonf(url, function(data){
             if (data) {
                 textb += '         <div class="mySlides" id="paper">';
-                if (window.localStorage.getItem('theme') === 'dark') {
-                    textb += '              <div class="centerpaper w3-animate-left ovpagedark">';
-                    textb += '                   <div id="bookpagedark">';
-                } else {
-                    textb += '              <div class="centerpaper w3-animate-left ovpage">';
-                    textb += '                   <div id="bookpage">';
-                }
+                textb += '              <div class="centerpaper w3-animate-left ovpage">';
+                textb += '                   <div id="bookpage">';
                 if (locale == 'remote'){
                     Object.entries(data.query.pages).forEach((entry) => {
                         const [key, value] = entry;
@@ -398,7 +373,7 @@ function imageoverlay(section, overlay, locale) {
 
     // generate image overlay data
     if (overlay == 'image'){
-      // todo fix tricky hack to pass json list via section
+     // todo fix tricky hack to pass json list via section
       if (section.indexOf(".json") > 0) {
           // clear the imageurl
           Object.keys(imageurl).forEach(key => delete imageurl[key]);
@@ -492,8 +467,8 @@ function imageoverlay(section, overlay, locale) {
     // force focus on first image when loading page
     // clean up
     text = "";
-    // reset toggle image and paper
-    if (overlay == 'paper'){
+    // reset toggle image and paper todo fix paper canvas issue
+    if (overlay === 'paper'){
        document.getElementById("paper").style.display = 'block';
        document.getElementById("paper").style.visibilty = 'visible';
        document.getElementById("canvas").style.display = "none";

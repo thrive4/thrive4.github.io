@@ -1,3 +1,21 @@
+update 2.0 10/04/2025
+- less padding td elements data display
+- added audioplayer list play
+   navigation player
+   next     arrow right
+   previous arrow left
+   toggle   pause / play p
+   volume   up +
+   volume   down -
+   seek     plus .
+   seek     min ,
+  note: name in playlist.json and href of playlist need to match
+- added config option primaraly to toggle list play
+  shuffle / linear
+- rewrite of css deprecated separate font.css
+- rewrite parts of .js libs deprecated libtheme.js
+- fixed a number of small bugs
+
 update 1.9 10/03/2025
 - updated json files
 - tweaks to various .js files
