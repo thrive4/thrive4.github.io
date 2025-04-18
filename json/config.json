@@ -1,0 +1,40 @@
+[
+  {
+    "name": "shuffle",
+    "private": false,
+    "description": "audio shuffle play",
+    "href":  "<a href='#' onclick=toggleplaytype('shuffle');>",
+    "updated": "2023-07-18T09:23:01Z",
+    "topics": [
+      "mods",
+      "game",
+      "tweaks",
+      "nexus"
+    ]
+  },
+  {
+    "name": "linear",
+    "private": false,
+    "description": "audio linear play",
+    "href":  "<a href='#' onclick=toggleplaytype('linear');>",
+    "updated": "2025-02-07T09:23:01Z",
+    "topics": [
+      "freebasic",
+      "apps",
+      "util",
+      "github"
+    ]
+  },
+  {
+    "name": "theme",
+    "private": true,
+    "description": "documentaries",
+    "href":  "<a href='docu.html' onclick=closeNav();>",
+    "updated": "2023-07-18T09:23:01Z",
+    "topics": [
+      "information",
+      "report",
+      "global"
+    ]
+  }
+]

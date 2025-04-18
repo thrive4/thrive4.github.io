@@ -1,0 +1,23 @@
+[
+ {
+    "private": true,
+    "name": "beatless",
+    "href":  "../playlist/beatless.json",
+    "updated": "2025-04-15T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "name": "usaf",
+    "href":  "../playlist/usaf.json",
+    "updated": "2025-04-15T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "name": "classical",
+    "href":  "../playlist/classical.json",
+    "updated": "2025-04-15T09:23:01Z",
+    "extract": ""
+ }
+]

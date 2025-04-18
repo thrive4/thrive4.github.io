@@ -116,6 +116,19 @@
     ]
   },
   {
+    "name": "playlist",
+    "private": false,
+    "description": "play audio files",
+    "href":  "<a href='playlist.html' onclick=closeNav();>",
+    "updated": "2023-07-18T09:23:01Z",
+    "topics": [
+      "image viewer",
+      "examples",
+      "screenshots",
+      "info"
+    ]
+  },
+  {
     "name": "about",
     "private": false,
     "description": "info on site",
