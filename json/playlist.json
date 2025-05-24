@@ -8,9 +8,30 @@
  },
  {
     "private": false,
+    "name": "007",
+    "href":  "../playlist/007.json",
+    "updated": "2025-04-15T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "name": "rock",
+    "href":  "../playlist/rock.json",
+    "updated": "2025-04-15T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
     "name": "usaf",
     "href":  "../playlist/usaf.json",
     "updated": "2025-04-15T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "name": "pop",
+    "href":  "../playlist/pop.json",
+    "updated": "2025-04-18T09:23:01Z",
     "extract": ""
  },
  {

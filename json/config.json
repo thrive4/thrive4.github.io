@@ -26,6 +26,16 @@
     ]
   },
   {
+    "name": "toggle drc",
+    "private": false,
+    "description": "auto gain",
+    "href":  "<a href='#' onclick=toggledrc('on');>",
+    "updated": "2025-02-07T09:23:01Z",
+    "topics": [
+      "drc"
+    ]
+  },
+  {
     "name": "theme",
     "private": true,
     "description": "documentaries",

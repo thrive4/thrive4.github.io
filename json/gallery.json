@@ -57,6 +57,41 @@
  },
  {
     "private": false,
+    "name": "john singer sargent",
+    "href":  "../gallery/johnsingersargent.json",
+    "updated": "2025-10-05T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "name": "albert edelfelt",
+    "href":  "../gallery/albertedelfelt.json",
+    "updated": "2025-10-05T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "name": "jean beraud",
+    "href":  "../gallery/jeanberaud.json",
+    "updated": "2025-10-05T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "name": "giovanni boldini",
+    "href":  "../gallery/giovanniboldini.json",
+    "updated": "2025-10-05T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
+    "name": "james tissot",
+    "href":  "../gallery/jamestissot.json",
+    "updated": "2025-10-05T09:23:01Z",
+    "extract": ""
+ },
+ {
+    "private": false,
     "name": "local",
     "href":  "../gallery/local.json",
     "updated": "2023-07-18T09:23:01Z",
