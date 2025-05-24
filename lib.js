@@ -10,6 +10,7 @@ function switchtheme() {
    }
    //location.reload();
 }
+
 // needed to affect switch theme
 document.documentElement.className = window.localStorage.getItem('theme');
 
@@ -17,7 +18,11 @@ document.documentElement.className = window.localStorage.getItem('theme');
 var onresize = function(e) {
     windowwidth = window.outerWidth;
     if (document.getElementById('myModal').style.display == 'block'){
-       document.getElementById('bookpage').innerHTML = createparagraph(orgtext);
+      currentPage  = 0;
+      totalPages   = 0;
+      start        = 0;
+      end          = 0
+      renderpage(orgtext);
     }
 }
 window.addEventListener("resize", onresize);
@@ -67,6 +72,8 @@ function includeHTML() {
       // todo set to true this is a pain in the ass....
       xhttp.open("GET", file, false);
       xhttp.send();
+      // reset column letter indicator
+      window.localStorage.setItem('tdsortelement', 1);
       return;
     }
   }
@@ -75,15 +82,24 @@ function includeHTML() {
 includeHTML();
 
 function getjsonf(url, callback) {
+
+  const controller = new AbortController();
+  const signal = controller.signal;
+  // abort the fetch request workaround
+  const timeoutId = setTimeout(() => {
+      controller.abort();
+  }, 5000);
+
   if (url.startsWith('hhttp')) {
-      // Remote URL, use fetch
-       fetch(url, {signal: AbortSignal.timeout(5000)})
+    fetch(url, {signal})
           .then(response => response.text())
           .then(text => {
-            const data = JSON.parse(text);
+            const data = JSON.stringify(JSON.parse(text));
+            //console.log('Response Text:', data); // Log the response text
+            callback(data);
       });
   } else {
-      // Local file, use XMLHttpRequest
+      // local file, use XMLHttpRequest
       var request = new XMLHttpRequest();
       request.open('GET', url, false);
       request.overrideMimeType("application/json");
@@ -175,7 +191,7 @@ if (span == undefined && span == null) {
    span = 0;
 }
 
-// When the user clicks on <span> (x), close the modal
+// <span> (x), close the modal
 span.onclick = function() {
     modal.style.display = "";
     eventhandle.remove();
@@ -191,7 +207,8 @@ function indexsidenav(navdir = "") {
        source = 'json/config.json';
     }
     if (document.title != 'playlist' && navdir === 'right') {
-        document.getElementById("sidenavcontent").innerHTML = '<div class="cardlist">no options</div>';
+        document.getElementById("sidenavcontent").innerHTML = '<div class="cardlist">| no options | items ' +
+        window.localStorage.getItem('nritems') + ' </div>';
         return;
     }
 
@@ -210,6 +227,7 @@ function indexsidenav(navdir = "") {
            + '<br>   next     arrow right'
            + '<br>   previous arrow left'
            + '<br>   toggle   pause / play p'
+           + '<br>   toggle   drc on / off d'
            + '<br>   volume   up +'
            + '<br>   volume   down -'
            + '<br>   seek     plus .'
@@ -237,6 +255,7 @@ function openNav(navdir) {
     }
     if (document.getElementById("mySidenav").style.width == "0px" || document.getElementById("mySidenav").style.width == "") {
         document.getElementById("mySidenav").style.width = "250px";
+        navth('open');
     } else {
         document.getElementById("mySidenav").style.width = "0px";
     }
@@ -245,29 +264,62 @@ function openNav(navdir) {
 
 function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
+  navth('close');
+}
+
+// work around hide headers
+function navth(state) {
+
+  const thelm = document.getElementsByTagName("th");
+  for (let i = 1; i < thelm.length; i++) {
+      if (state === 'close') {
+         thelm[i].style.zIndex = "1";
+      } else {
+         thelm[i].style.zIndex = "0";
+      }
+  }
+
 }
 
 // play audio source
 function toggleplaytype(playtype) {
     if (playtype === 'shuffle') {
        shuffle = true;
+       document.getElementById("playtype").innerHTML = 'shuffle';
     } else {
        shuffle = false;
+       document.getElementById("playtype").innerHTML = 'linear';
+    }
+    closeNav();
+}
+
+function toggledrc(state) {
+    autoGainEnabled = !autoGainEnabled;
+    autoGainToggle.textContent = autoGainEnabled ? 'Disable Auto Gain' : 'Enable Auto Gain';
+    if (!autoGainEnabled) {
+      // Optionally reset gain to unity when disabling
+       gainNode.gain.value = 1;
+       volumeSlider.value  = 1;
+      // updateGainIndicator();
     }
     closeNav();
 }
 
 function audioplay(music, element) {
     currentIndex = element.closest('tr').rowIndex -1;
+    const audio  = document.getElementById("audio");
     //console.log(element);
     //console.log('Playing:', titles[element.closest('tr').rowIndex - 1]);
-    document.getElementById("audio").pause();
-    document.getElementById("audio").setAttribute('src', music);
-    document.getElementById("audio").setAttribute('type', 'audio/mpeg');
-    document.getElementById("audio").load();
-    document.getElementById("audio").play();
-    //document.getElementById("audio").volume = 0.5;
-    document.getElementById("audio").style.visibility = "visible";
+    // reset gain
+    gainNode.gain.value = 1;
+    volumeSlider.value  = 1;
+
+    audio.pause();
+    audio.setAttribute('src', music);
+    audio.setAttribute('type', 'audio/mpeg');
+    audio.load();
+    audio.play();
+    audio.style.visibility = "visible";
     // set or remove play button
     var data = document.getElementsByClassName("audiobutton");
     for (i = 0; i < data.length; i++) {
@@ -283,7 +335,161 @@ function audioplay(music, element) {
         data[i].style.visibility = "visible";
     }
 
+    // get mp3 tags and cover art
+    const tagsDiv = document.getElementById('tags');
+    const img     = document.getElementById('coverArt');
+    const spinner = document.getElementById('spinner');
+    let text = "";
+
+    img.src               = "";
+    img.style.display     = 'none';
+    spinner.style.display = 'block';
+    document.getElementById("svg").innerHTML = "";
+    tagsDiv.innerHTML     = "";
+    text = '<svg class="svglight" viewBox="0 0 28 28">';
+    text += svgnoinfo();
+    text += '</svg>';
+
+//if (!('body' in Response.prototype && 'getReader' in ReadableStream.prototype)) {
+//  alert('Your browser does not fully support streaming downloads. For the best experience, please use a modern browser like Firefox or Chrome.');
+  // Optionally, disable or simplify features that require streaming
+//} else {
+  // Your existing fetch + stream reading code here
+//}
+    if (audio.src.indexOf('127.0.0.1') === -1 ) {
+      // tricky
+      const controller = new AbortController();
+      const signal = controller.signal;
+      const timeoutId = setTimeout(() => {
+          controller.abort();
+          //console.log('wah');
+          spinner.style.display = 'none';
+      }, 10000);
+
+      fetch(audio.src, {signal})
+        .then(response => {
+          var contentLength   = +response.headers.get('Content-Length');
+          const reader          = response.body.getReader();
+          let receivedLength    = 0;
+          let chunks            = [];
+          // hack some browsers can report 0 for content length
+          if (contentLength < 1) { contentLength = 100000;}
+          //console.log(contentLength);
+          function read() {
+            return reader.read().then(({ done, value }) => {
+              if (done) {
+                return;
+              }
+              chunks.push(value);
+              receivedLength += value.length;
+              // todo tricky 0.25 might be better = 450KB @ 3MB mp3; 0.10 = 150KB @ 3MB mp3
+              if (contentLength && receivedLength >= contentLength * 0.10) {
+                reader.cancel();
+                const partial = new Blob(chunks);
+                processPartial(partial, text);
+                spinner.style.display = 'none';
+                return;
+              }
+              return read();
+            });
+          }
+          return read();
+      });
+    } else {
+      var request = new XMLHttpRequest();
+      request.open('GET', audio.src, true);
+  
+      request.onerror = function() {
+          console.log('Request error');
+          spinner.style.display = 'none';
+      };
+  
+      request.responseType = 'blob';
+      request.onload = function() {
+          spinner.style.display = 'none';
+          img.style.display = 'none';
+          svg.style.display = 'none';
+          var reader = new FileReader();
+          reader.readAsArrayBuffer(request.response);
+          reader.onload =  function(e){
+              const arrayBuffer = e.target.result;
+  
+              const tags = {
+                title:  getMp3Tag('TITLE', arrayBuffer),
+                album:  getMp3Tag('ALBUM', arrayBuffer),
+                artist: getMp3Tag('ARTIST', arrayBuffer),
+                track:  getMp3Tag('TRACK', arrayBuffer),
+                genre:  getMp3Tag('GENRE', arrayBuffer),
+                year:   getMp3Tag('YEAR', arrayBuffer)
+              };
+  
+              tagsDiv.innerHTML = `
+                 title  ${tags.title}
+                 album  ${tags.album}
+                 artist ${tags.artist}
+                 track  ${tags.track}
+                 genre  ${tags.genre}
+                 year   ${tags.year}
+              `;
+  
+            const dataView = new DataView(arrayBuffer);
+            const id3Header = readID3Header(dataView);
+            if (id3Header) {
+                const coverArt = extractCoverArt(dataView, id3Header);
+                document.getElementById("svg").innerHTML = text;
+                if (coverArt) {
+                    img.src = coverArt.url;
+                    img.style.display = 'block';
+                }
+            }
+         };
+      };
+      request.send();
+    } // end if fetch or xmlhttprequest
     currentIndex++;
+}
+
+// get mp3 tags and cover art
+function processPartial(blob, text) {
+    const tagsDiv     = document.getElementById('tags');
+    const img         = document.getElementById('coverArt');
+    const reader      = new FileReader();
+
+    reader.onload = function(e) {
+      const arrayBuffer = e.target.result;
+      const tags = {
+        title:  getMp3Tag('TITLE', arrayBuffer),
+        album:  getMp3Tag('ALBUM', arrayBuffer),
+        artist: getMp3Tag('ARTIST', arrayBuffer),
+        track:  getMp3Tag('TRACK', arrayBuffer),
+        genre:  getMp3Tag('GENRE', arrayBuffer),
+        year:   getMp3Tag('YEAR',  arrayBuffer)
+      };
+
+      tagsDiv.innerHTML = `
+         title  ${tags.title}
+         album  ${tags.album}
+         artist ${tags.artist}
+         track  ${tags.track}
+         genre  ${tags.genre}
+         year   ${tags.year}
+      `;
+
+      const dataView  = new DataView(arrayBuffer);
+      const id3Header = readID3Header(dataView);
+      if (id3Header) {
+          const coverArt = extractCoverArt(dataView, id3Header);
+          document.getElementById("svg").innerHTML = text;
+          if (coverArt) {
+              img.src = coverArt.url;
+              img.style.display = 'block';
+              document.getElementById("svg").innerHTML = "";
+          }
+      }
+  };
+
+  reader.readAsArrayBuffer(blob);
+
 }
 
 // play youtube audio source
@@ -305,18 +511,21 @@ function titlecase(str) {
    return splitStr.join(' ');
 }
 
+function wordcount(text) {
+    // split words
+    words = text.split(/\s+/);
+    totalPages = Math.ceil(words.length / wordsPerPage);
+    start = currentPage * wordsPerPage;
+    end = start + wordsPerPage;
+    return words.slice(start, end).join(' ');
+
+}
+
 function createparagraph(text) {
   const paragraphs = [];
   let currentParagraph = '';
   let paragraphLength = 0;
   let insideSentence = false;
-  let p = false;
-
-  // todo needs some form of paging
-  if (text.length > window.outerWidth * 2) {
-    text = text.substring(0, window.outerWidth * 2);
-    p = true;
-  }
 
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
@@ -340,23 +549,17 @@ function createparagraph(text) {
       }
     }
   }
-  // check text size and add the last paragraph to the list of paragraphs
-  if (p) {
-    paragraphs.push(currentParagraph.trim() + '<br>   .....');
-  } else {
-    paragraphs.push(currentParagraph.trim() + '<br><br>');
-  }
-  // Join the paragraphs into a single string and return the result
+
+  paragraphs.push(currentParagraph.trim() + '<br><br>');
+
+  // join paragraphs
   return paragraphs.join('');
 }
 
 // tag indicator list first letter selected search td or div element
 function gettrletter(x) {
-   //let dummy = document.getElementById("datatable").rows[x.rowIndex].cells[window.localStorage.getItem('tdelement')].innerHTML;
-   if (window.localStorage.getItem('tdsortelement') === null) {
-      window.localStorage.setItem('tdsortelement', 1);
-   }
-   let dummy = document.getElementById("datatable").rows[x.rowIndex].cells[window.localStorage.getItem('tdsortelement')].innerHTML;
+   const tdsort = window.localStorage.getItem('tdsortelement');
+   let dummy = document.getElementById("datatable").rows[x.rowIndex].cells[tdsort].innerHTML;
    // reduce to anchor text filter out ahref
    dummy = dummy.slice(dummy.indexOf(">") + 1, dummy.lastIndexOf("<"));
    document.getElementById("trletterplace").innerHTML = dummy.charAt(0).toUpperCase();
@@ -387,15 +590,13 @@ function scrollFunction() {
     totop.style.display = "none";
   }
 }
-// When the user clicks on the button, scroll to the top of the document
+// go to the top of the document
 function topFunction() {
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
 }
 
 // sort table data
-// todo figure out why these functions can not be placed in lib.js
-// in lib.js music dataview no longer sorts...
 /**
  * sortable 1.0
  * Makes html tables sortable, ie9+
@@ -509,7 +710,7 @@ function svgcamera() {
     'c-2.209,0-4,1.791-4,4s1.791,4,4,4s4-1.791,4-4S14.209,9,12,9z"/>';
 }
 
-function windowslogo() {
+function svgwindowslogo() {
     return '<path d="M0 36.357L104.62 22.11l.045 100.914-104.57.595L0 36.358zm104.57 98.293l.08 101.002L.081 221.275l-.006-87.302' +
     '104.494.677zm12.682-114.405L255.968 0v121.74l-138.716 1.1V20.246zM256 135.6l-.033 121.191-138.716-19.578-.194-101.84L256 135.6z"/>';
 }
@@ -519,4 +720,15 @@ function svginfobox() {
            '2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22Z"></path>' +
            '<path d="M12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75Z" fill="#1C274C">' +
            '</path> <path d="M12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z" fill="#1C274C"></path>';
+}
+
+function svgnoinfo() {
+    return `<path d="M30,3.4141,28.5859,2,2,28.5859,3.4141,30l2-2H26a2.0027,2.0027,0,0,0,2-2V5.4141ZM26,26H7.4141l7.7929-7.793,2.3788,2.3787a2,2,0,0,0,
+           2.8284,0L22,19l4,3.9973Zm0-5.8318-2.5858-2.5859a2,2,0,0,0-2.8284,0L19,19.1682l-2.377-2.3771L26,7.4141Z"/></path>
+           <path d="M6,22V19l5-4.9966,1.3733,1.3733,1.4159-1.416-1.375-1.375a2,2,0,0,0-2.8284,0L6,16.1716V6H22V4H6A2.002,2.002,0,0,0,4,6V22Z"/>`;
+}
+
+function svgplay() {
+    return `<path d="M1,14c0,0.547,0.461,1,1,1c0.336,0,0.672-0.227,1-0.375L14.258,9C14.531,8.867,15,8.594,15,8s-0.469-0.867-0.742-1L3,
+            1.375  C2.672,1.227,2.336,1,2,1C1.461,1,1,1.453,1,2V14z"/>`;
 }

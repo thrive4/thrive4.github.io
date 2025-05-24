@@ -9,7 +9,47 @@ function tmdbgenreid(val) {
 
 // globals todo check and move
 let orgtext     = ""
-let windowwidth = window.outerWidth;
+
+function cleanuptext(text) {
+    text = text.replaceAll('"', '');
+    text = text.replaceAll('\'', '');
+    text = text.replaceAll('\n', '');
+    text = text.replaceAll(';', '<br>');
+    return text;
+}
+
+// init wordcount
+let words        = "";
+let wordsPerPage = 300;
+let currentPage  = 0;
+let totalPages   = 0;
+let start        = 0;
+let end          = 0
+
+// render book page
+function renderpage(text) {
+  // resize window size dependent
+  document.getElementById("bookpage").style.columnCount = "2";
+  document.getElementById("ovpage").style.top         = "-40px";
+  switch (true) {
+    case (window.innerWidth < 600):
+      wordsPerPage = 70;
+      document.getElementById("bookpage").style.columnCount = "1";
+      document.getElementById("ovpage").style.top         = "10px";
+      break;
+    case (window.innerWidth < 900):
+      wordsPerPage = 100;
+      break;
+    default:
+      wordsPerPage = 300;
+  }
+
+  totalPages = Math.ceil(words.length / wordsPerPage);
+  start = currentPage * wordsPerPage;
+  end   = start + wordsPerPage;
+
+  document.getElementById("bookpage").innerHTML = createparagraph(words.slice(start, end).join(' ')) + '<br><br><p style="text-align:right">' + (currentPage + 1) + ' / ' + totalPages + '</p>';
+}
 
 // generate image overlay data
 function imageoverlay(section, overlay, locale) {
@@ -31,8 +71,8 @@ function imageoverlay(section, overlay, locale) {
 
     text += '  <span class="playslide">';
     text += '        <a href="slide.html?section=' + section + '" style="text-decoration: none;" target="_blank">';
-    text += '            <svg class="svglight" viewBox="0 0 32 3" height="16px" width="16px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
-    text += '            <path d="M1,14c0,0.547,0.461,1,1,1c0.336,0,0.672-0.227,1-0.375L14.258,9C14.531,8.867,15,8.594,15,8s-0.469-0.867-0.742-1L3,1.375  C2.672,1.227,2.336,1,2,1C1.461,1,1,1.453,1,2V14z"/>';
+    text += '            <svg class="svglight" viewBox="0 0 32 3" height="16px" width="16px">';
+    text += svgplay();
     text += '            </svg>';
     text += '         </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     text += '  </span>';
@@ -66,7 +106,7 @@ function imageoverlay(section, overlay, locale) {
 
 // todo abstract various sources extdummy
 //let ref = {};
-//for (i = 0; i < sourcename.length; i += 1) {
+//for (let i = 0; i < sourcename.length; i += 1) {
 //    console.log(sourcename[i])
 //    ref[sourcename[i]] = "test" + i;
 //    console.log(ref[sourcename[i]]);
@@ -77,7 +117,7 @@ function imageoverlay(section, overlay, locale) {
                 if (sourcename[i] === "ducky") {
                   extdummy = "";
                   url =  'https://corsproxy.io/?' +
-                         'http://api.duckduckgo.com/?q=' + window.localStorage.getItem('name') + '&format=json&pretty=1';
+                         'http://api.duckduckgo.com/?q=' + window.localStorage.getItem('name').replaceAll(" ", "%20") + '&format=json&pretty=1';
                   getjsonf(url, function(data){
                       if (data) {
                       // get related info if present
@@ -93,7 +133,10 @@ function imageoverlay(section, overlay, locale) {
                                   } else if (typeof entry[key] === 'object') {
                                     refducky += Object.values(entry[key]).join(', ') + '<br>';
                                   } else {
-                                    refducky += entry[key] + '<br>';
+                                    if (cnt < 7) {
+                                       refducky += entry[key] + '<br>';
+                                       cnt ++;
+                                    }
                                   }
                                 }
                               }
@@ -115,17 +158,13 @@ function imageoverlay(section, overlay, locale) {
                                     extdummy += entry[key] + '<br>';
                                   }
                                 }
-                                //extimage =  data.Image;
-                                extdummy = extdummy.replaceAll('"', '');
-                                extdummy = extdummy.replaceAll('\'', '');
-                                extdummy = extdummy.replaceAll('\n', '');
-                                extdummy = extdummy.replaceAll(';', '<br>');
-                                //console.log(key, entry[key]);
+                                extummy = cleanuptext(extdummy);
                               }
                             }
                           });
                         } else {
-                          console.log('data.Infobox.content is not an object');
+                          extdummy = 'No info at duck duck';
+                          //console.log('data.Infobox.content is not an object');
                         }
                       } // data
                   });
@@ -143,12 +182,7 @@ function imageoverlay(section, overlay, locale) {
                               extdummy += value.title + '<br>';
                               extdummy += '<i>' + value["primary-type"] + ' ';
                               extdummy += value["first-release-date"] + '</i><br><br>';
-                              //extimage =  IMG_URL + data.results[0].poster_path;
-                              extdummy = extdummy.replaceAll('"', '');
-                              extdummy = extdummy.replaceAll('\'', '');
-                              extdummy = extdummy.replaceAll('\n', '');
-                              extdummy = extdummy.replaceAll(';', '<br>');
-                              //cnt += 1;
+                              extdummy = cleanuptext(extdummy);
                           });
                       }
                   });
@@ -160,6 +194,7 @@ function imageoverlay(section, overlay, locale) {
                   // todo refducky needs to be abstracted and number of br's is a bit funky
                   let br = '<br>';
                   switch (window.localStorage.getItem('menuitem')){
+                         case 'paper':
                          case 'docu':
                               wikifilter = '';
                               extdummy = window.localStorage.getItem('name') + '<br><br><br><br><br><br>' + br.repeat(refducky.split('<br>').length + 5);
@@ -206,6 +241,7 @@ function imageoverlay(section, overlay, locale) {
                   switch (window.localStorage.getItem('menuitem')){
                          case 'docu':
                          case 'film':
+                         case 'paper':
                          case 'playlist':
                          case 'music':
                               extdummy += '<a href=https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
@@ -220,10 +256,7 @@ function imageoverlay(section, overlay, locale) {
                               extdummy += '<br>' + refducky;
                               break;
                   }
-                  extdummy = extdummy.replaceAll('"', '');
-                  extdummy = extdummy.replaceAll('\'', '');
-                  extdummy = extdummy.replaceAll('\n', '');
-                  extdummy = extdummy.replaceAll(';', '<br>');
+                  extdummy = cleanuptext(extdummy);
                   data  = [];
                   entry = [];
                   cnt   = 0;
@@ -239,7 +272,7 @@ function imageoverlay(section, overlay, locale) {
                     if (data) {
                         Object.entries(data).forEach((entry) => {
                             const [key, value] = entry;
-                            if (data.results[0] === undefined) {
+                            if (data.results[0] == null) {
                                extdummy = 'No info found at tmdb';
                             } else {
                                 extdummy =  data.results[0].name + '<br>';
@@ -248,9 +281,7 @@ function imageoverlay(section, overlay, locale) {
                                 extdummy += '<i>original name: </i>' + data.results[0].original_name + '<br><br>';
                                 extdummy += data.results[0].overview;
                                 extimage =  iu + data.results[0].poster_path;
-                                extdummy = extdummy.replaceAll('"', '');
-                                extdummy = extdummy.replaceAll('\'', '');
-                                extdummy = extdummy.replaceAll('\n', '')
+                                extdummy = cleanuptext(extdummy);
                             }
                         });
                     }
@@ -259,6 +290,7 @@ function imageoverlay(section, overlay, locale) {
                   entry = [];
                   cnt   = 0;
                 } // end if
+                extdummy = cleanuptext(extdummy);
                 text += '<a style="cursor:pointer; color:white" onclick="document.getElementById(\'bookpage\').innerHTML = \'' + extdummy + '\'";>' + sourcename[i] + '</a><br>';
             } // end for get sources
             data  = [];
@@ -267,65 +299,65 @@ function imageoverlay(section, overlay, locale) {
         } // not all
         if (locale == 'local'){ url = 'json/paper.json';}
         if (locale == 'remote'){
-          //todo deal with & etc .replaceAll('&', ' and ') also check tears for fears
-          //url = 'https://corsproxy.io/?https%3A%2F%2Fen.wikipedia.org%2Fw%2Fapi.php%3Fformat%3Djson%26action%3Dquery%26prop%3Dextracts%26exintro%26explaintext%26redirects%3D1%26titles%3D' + encodeURIComponent(section);
-          // filter out year
-          dummy = section.replace(/[0-9]{4}/g, '');
-          vrl = 'https://corsproxy.io/?' +
-                'https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
-                encodeURIComponent(dummy.replaceAll(' ', '_'));
-          // todo still funky can result in false postives or no results when actually present at sources
-          getjsonf(vrl, function(data){
-              if (data) {
-                  switch (window.localStorage.getItem('menuitem')){
-                         case 'docu':
-                              wikifilter = 'docu';
-                              break;
-                         case 'film':
-                              wikifilter = 'film';
-                              break;
-                         case 'game':
-                              wikifilter = 'game';
-                              break;
-                         case 'music':
-                              wikifilter = 'band';
-                              //musician
-                              break;
-                  }
-                  Object.entries(data).forEach((entry) => {
-                      const [key, value] = entry;
-                      if (data[0][0] !== undefined){
-                         section = data[0].replaceAll(' ', '_');
-                      }
-                      if (data[3][1] !== undefined && data[3][key] !== undefined){
-                        if (data[3][1].indexOf(wikifilter) > 0) {
-                           section = data[3][1].substr(data[3][1].lastIndexOf('/') + 1);
-                        } else {
-                            if (data[3][key].indexOf(wikifilter) > 0) {
-                               section = data[3][key].substr(data[3][key].lastIndexOf('/') + 1);
-                            } else {
-                               section = data[1][0];
-                            }
+            //todo deal with & etc .replaceAll('&', ' and ') also check tears for fears
+            //url = 'https://corsproxy.io/?https%3A%2F%2Fen.wikipedia.org%2Fw%2Fapi.php%3Fformat%3Djson%26action%3Dquery%26prop%3Dextracts%26exintro%26explaintext%26redirects%3D1%26titles%3D' + encodeURIComponent(section);
+            // filter out year
+            dummy = section.replace(/[0-9]{4}/g, '');
+            vrl = 'https://corsproxy.io/?' +
+                  'https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
+                  encodeURIComponent(dummy.replaceAll(' ', '_'));
+            // todo still funky can result in false postives or no results when actually present at sources
+            getjsonf(vrl, function(data){
+                if (data) {
+                    switch (window.localStorage.getItem('menuitem')){
+                           case 'docu':
+                                wikifilter = 'docu';
+                                break;
+                           case 'film':
+                                wikifilter = 'film';
+                                break;
+                           case 'game':
+                                wikifilter = 'game';
+                                break;
+                           case 'music':
+                                wikifilter = 'band';
+                                //musician
+                                break;
+                    }
+                    Object.entries(data).forEach((entry) => {
+                        const [key, value] = entry;
+                        if (data[0][0] !== undefined){
+                           section = data[0].replaceAll(' ', '_');
                         }
-                     } else {
-                         if (data[1][0] !== undefined){
-                            section = data[1][0];
-                         }
-                         if (data[3][0] !== undefined){
-                            section = data[3][0].substr(data[3][0].lastIndexOf('/') + 1);
-                         }
-                     }
-                  });
-              }
-          });
-          url = 'https://corsproxy.io/?' +
-                'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' +
-                encodeURIComponent(section);
+                        if (data[3][1] !== undefined && data[3][key] !== undefined){
+                          if (data[3][1].indexOf(wikifilter) > 0) {
+                             section = data[3][1].substr(data[3][1].lastIndexOf('/') + 1);
+                          } else {
+                              if (data[3][key].indexOf(wikifilter) > 0) {
+                                 section = data[3][key].substr(data[3][key].lastIndexOf('/') + 1);
+                              } else {
+                                 section = data[1][0];
+                              }
+                          }
+                       } else {
+                           if (data[1][0] !== undefined){
+                              section = data[1][0];
+                           }
+                           if (data[3][0] !== undefined){
+                              section = data[3][0].substr(data[3][0].lastIndexOf('/') + 1);
+                           }
+                       }
+                    });
+                }
+            });
+            url = 'https://corsproxy.io/?' +
+                  'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' +
+                  encodeURIComponent(section);
+        } // end remote
 
-        }
         text += '              <div class="canvascenter click-zoom">';
         text += '                   <label>';
-        text += '                      <input type="checkbox"  id="zoomcanvas">';
+        text += '                      <input type="checkbox" id="zoomcanvas">';
         text += '                      <img src="" alt="" id="canvas">';
         text += '                   </label>';
         text += '              </div>';
@@ -334,21 +366,15 @@ function imageoverlay(section, overlay, locale) {
         getjsonf(url, function(data){
             if (data) {
                 textb += '         <div class="mySlides" id="paper">';
-                textb += '              <div class="centerpaper w3-animate-left ovpage">';
+                textb += '              <div class="centerpaper w3-animate-left ovpage" id="ovpage">';
                 textb += '                   <div id="bookpage">';
                 if (locale == 'remote'){
                     Object.entries(data.query.pages).forEach((entry) => {
                         const [key, value] = entry;
                         text += textb;
                         text += value.title + '<br><br>';
-                        orgtext += value.title;
                         if (value.extract === undefined) { value.extract = "no info"; }
-                        orgtext += '<br><br>' + value.extract;
-                        text += createparagraph(value.extract);
-                        text += '                   </div>';
-                        text += '              </div>';
-                        text += '        </div>';
-                        cnt += 1;
+                        orgtext += wordcount(value.extract)  + '<br><br><p style="text-align:right">' + (currentPage + 1) + ' / ' + totalPages + '</p>';
                     });
                 };
                 if (locale == 'local'){
@@ -357,16 +383,14 @@ function imageoverlay(section, overlay, locale) {
                         if (value.private === false && value.name == section || section == 'all') {
                             text += textb;
                             text += value.name + '<br><br>';
-                            orgtext += value.name;
-                            text += createparagraph(value.extract);
-                            orgtext += '<br><br>' + value.extract;
-                            text += '                   </div>';
-                            text += '              </div>';
-                            text += '        </div>';
-                            cnt += 1;
+                            orgtext += wordcount(value.extract)  + '<br><br><p style="text-align:right">' + (currentPage + 1) + ' / ' + totalPages + '</p>';
                         };
                     });
                 };
+                text += '                   </div>';
+                text += '              </div>';
+                text += '        </div>';
+                //cnt += 1;
             };
         }); // getjson
     }; // paper
@@ -389,8 +413,8 @@ function imageoverlay(section, overlay, locale) {
 
       Object.entries(imageurl).forEach((entry) => {
           const [key, value] = entry;
-          //window.alert(`${key}${value.name}`);
-          if (value.private === false && (value.name == section || section == 'all' && cnt == 0) || (section.indexOf(".json") > 0 && cnt == 0) ) {
+          // crucial condition can really screw up flow
+          if (value.private === false && ((value.name == section || section == 'all') || section.indexOf(".json") > 0) && cnt == 0 ) {
               text += '              <div class="canvascenter click-zoom">';
               text += '                   <label>';
               text += '                      <input type="checkbox"  id="zoomcanvas">';
@@ -404,28 +428,26 @@ function imageoverlay(section, overlay, locale) {
     }; // image
     cnt = 0;
 
-
     text += '  <!-- image navigation left and right -->';
     text += '  <div class="w3-text-white w3-display-middle" style="width:90%;">';
-    text += '       <div class="w3-left w3-hover-text-khaki"  onclick="navimage.direction(\'ArrowLeft\')">&#10094;</div>';
-    text += '       <div class="w3-right w3-hover-text-khaki" onclick="navimage.direction(\'ArrowRight\')">&#10095;</div>';
+    text += '       <div class="w3-left w3-hover-text-khaki"  onclick="navimage.direction(\'ArrowLeft\')"  id = "prev">&#10094;</div>';
+    text += '       <div class="w3-right w3-hover-text-khaki" onclick="navimage.direction(\'ArrowRight\')" id = "next">&#10095;</div>';
     text += '  </div>';
 
-    text += '  <div class="carousel">';
+    text += '  <div class="carousel" id="carousel">';
     text += '     <div class="carousel--wrap">';
-    // todo figure out missing thumbnail this.$items[0] is undefined
     if (window.localStorage.getItem('menuitem') != 'paper'){
         Object.entries(imageurl).forEach((entry) => {
             const [key, value] = entry;
             if (value.private === false && (value.name == section || section == 'all') || section.indexOf(".json") > 0) {
-              text += '          <div class="carousel--item">';
+              text += '          <div class="carousel--item" id="caritem">';
               text += '               <figure><img src="' + value.href + '" alt="' + value.description + '" id="' + cnt + '"/></figure>';
               text += '          </div>';
               cnt += 1;
             };
         });
     }
-    // get media
+    // get media external
     url = 'https://corsproxy.io/?' + 'https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages|pageterms&piprop=thumbnail&pithumbsize=600&pilicense=any&titles=' +
           encodeURIComponent(dummy);
     // default no image
@@ -437,7 +459,7 @@ function imageoverlay(section, overlay, locale) {
     cnt = 0;
     getjsonf(url, function(data){
         if (data) {
-           if (data.query === undefined) {
+           if (data.query == null) {
               // nop
            } else {
               Object.entries(data.query.pages).forEach((entry) => {
@@ -449,11 +471,10 @@ function imageoverlay(section, overlay, locale) {
             }
         }
         if (image != "") {
-            text += '          <div class="carousel--item">';
+            text += '          <div class="carousel--item" id="caritem">';
             text += '               <figure><img src="' + image + '" alt="' + section + '" id="' + cnt + '"/></figure>';
             text += '          </div>';
             cnt += 1;
-
         }
     }); // get json
 
@@ -463,16 +484,20 @@ function imageoverlay(section, overlay, locale) {
     text += '     </div>';
     text += '</div>';
     document.getElementById("imageoverlay").innerHTML = text;
-
     // force focus on first image when loading page
+    document.getElementById('myModal').focus();
     // clean up
     text = "";
-    // reset toggle image and paper todo fix paper canvas issue
+    // reset toggle image and paper important affects zoom
     if (overlay === 'paper'){
-       document.getElementById("paper").style.display = 'block';
-       document.getElementById("paper").style.visibilty = 'visible';
-       document.getElementById("canvas").style.display = "none";
-       document.getElementById("canvas").style.visibilty = "hidden";
+       document.getElementById("paper").style.display     = 'block';
+       document.getElementById("paper").style.visibility  = 'visible';
+       document.getElementById("canvas").style.display    = "none";
+       document.getElementById("canvas").style.visibility = "hidden";
+       renderpage();
+    }  else {
+       document.getElementById("canvas").style.display    = "block";
+       document.getElementById("canvas").style.visibility = "visible";
     }
 
     // image carousel logic
@@ -482,19 +507,19 @@ function imageoverlay(section, overlay, locale) {
 
     class dragscroll {
       constructor(obj) {
-        this.$el = document.querySelector(obj.el);
-        this.$wrap = this.$el.querySelector(obj.wrap);
+        this.$el    = modal.querySelector(obj.el);
+        this.$wrap  = this.$el.querySelector(obj.wrap);
         this.$items = this.$el.querySelectorAll(obj.item);
-        this.$bar = this.$el.querySelector(obj.bar);
+        this.$bar   = this.$el.querySelector(obj.bar);
         this.init();
       }
 
       init() {
-        this.progress = 0;
-        this.speed = 0;
-        this.oldX = 0;
-        this.x = 0;
-        this.playrate = 0;
+        this.progress  = 0;
+        this.speed     = 0;
+        this.oldX      = 0;
+        this.x         = 0;
+        this.playrate  = 0;
         this.currentid = 0;
         //
         this.bindings();
@@ -511,6 +536,7 @@ function imageoverlay(section, overlay, locale) {
         'handleWheel',
         'handlekey',
         'handleclick',
+        'thumbactive',
         'move',
         'raf',
         'handleTouchStart',
@@ -539,16 +565,16 @@ function imageoverlay(section, overlay, locale) {
             normalized = -(rawAmmount % 3 ? rawAmmount * 10 : rawAmmount / 3);
         }
         if (normalized == 1 ){
-            if (Number(this.currentid) < this.$items.length - 1) {
-               this.currentid = Number(this.currentid) + 1;
+            if (this.currentid < this.$items.length - 1) {
+               this.currentid = this.currentid + 1;
             } else {
                this.currentid = this.$items.length - 1;
             }
             dummy = 100;
         }
         if (normalized == -1 ){
-            if (Number(this.currentid) > 0) {
-               this.currentid = Number(this.currentid) - 1;
+            if (this.currentid > 0) {
+               this.currentid = this.currentid - 1;
             } else {
                this.currentid = 0;
             }
@@ -557,99 +583,54 @@ function imageoverlay(section, overlay, locale) {
         document.getElementById('canvas').setAttribute('src', this.$items[this.currentid].querySelector('img').src);
         document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
         this.progress += dummy;
+        this.thumbactive(this.currentid);
         this.move();
       }
 
       handleclick(e) {
-        if (e.target.src == undefined) {
-            // todo refine to broad responds to all links onpage console.log(e.target.src);
-            document.getElementById("paper").style.display = "block";
-            document.getElementById("paper").style.visibilty = "visible";
-            document.getElementById("canvas").style.display = "none";
-            document.getElementById("canvas").style.visibilty = "hidden";
-          // nop
+        // check if e.target has an HTMLImageElement
+        if (e.target instanceof HTMLImageElement) {
+            this.thumbactive(e.target.id);
         } else {
-          if (e.target.id == 'zoomcanvas' || e.target.id == 'canvas') {
-              if (document.getElementById("zoomcanvas").checked) {
-                document.getElementById("zoomcanvas").checked = false;
-                document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
-              } else {
-                document.getElementById("zoomcanvas").checked = true;
-                document.getElementById('canvas').style.transform = 'translate(0, 0) scale(2)';
-              }
-          } else {
-              if (overlay == 'paper'){
-                  if (document.getElementById("paper").style.display == 'block'){
-                     document.getElementById("paper").style.display = "none";
-                     document.getElementById("paper").style.visibilty = "hidden";
-                     document.getElementById("canvas").style.display = "block";
-                     document.getElementById("canvas").style.visibilty = "visible";
-                  } else {
-                     document.getElementById("paper").style.display = "block";
-                     document.getElementById("paper").style.visibilty = "visible";
-                     document.getElementById("canvas").style.display = "none";
-                     document.getElementById("canvas").style.visibilty = "hidden";
-                 }
-              }
-              document.getElementById('canvas').setAttribute('src', e.target.src);
-              document.getElementById("title").innerHTML = e.target.alt.split('_').join(' ');
-              document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
-              this.currentid = e.target.id;
-          }
+            //console.log('e.target is not an image element, it is:', e.target.tagName);
+            return;
         }
+        if (overlay === 'paper'){
+            if (document.getElementById("paper").style.display == 'block'){
+               document.getElementById("paper").style.display     = "none";
+               document.getElementById("paper").style.visibility  = "hidden";
+               document.getElementById("canvas").style.display    = "block";
+               document.getElementById("canvas").style.visibility = "visible";
+            } else {
+               document.getElementById("paper").style.display     = "block";
+               document.getElementById("paper").style.visibility  = "visible";
+               document.getElementById("canvas").style.display    = "none";
+               document.getElementById("canvas").style.visibility = "hidden";
+           }
+        }
+        document.getElementById('canvas').setAttribute('src', e.target.src);
+        document.getElementById("title").innerHTML = e.target.alt.split('_').join(' ');
+        document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
+        this.currentid = e.target.id;
+        this.events();
       }
 
+      // arrows beside image
       handletest(e) {
-        if (e == 'ArrowRight') {
-           if (Number(this.currentid) < this.$items.length - 1) {
-             this.currentid = Number(this.currentid) + 1;
-           } else {
-             this.currentid = this.$items.length - 1;
+          if (e == 'ArrowRight') {
+             this.navright();
            }
-           document.getElementById('canvas').setAttribute('src', this.$items[Number(this.currentid)].querySelector('img').src);
-           document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
-           document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
-           this.progress += this.$el.clientWidth * 0.05;
-           this.move();
-        }
-        if (e == 'ArrowLeft') {
-           if (Number(this.currentid) > 0) {
-             this.currentid = Number(this.currentid) - 1;
-           } else {
-             this.currentid = 0;
-           }
-           document.getElementById('canvas').setAttribute('src', this.$items[this.currentid].querySelector('img').src);
-           document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
-           document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
-           this.progress -= this.$el.clientWidth * 0.05;
-           this.move();
-        }
+          if (e == 'ArrowLeft') {
+             this.navleft();
+          }
       }
 
       handlekey(e) {
         if (e.key == 'ArrowRight') {
-           if (Number(this.currentid) < this.$items.length) {
-             this.currentid = Number(this.currentid) + 1;
-           } else {
-             this.currentid = this.$items.length - 1;
-           }
-           document.getElementById('canvas').setAttribute('src', this.$items[Number(this.currentid)].querySelector('img').src);
-           document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
-           document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
-           this.progress += this.$el.clientWidth * 0.05;
-           this.move();
-        }
+           this.navright();
+       }
         if (e.key == 'ArrowLeft') {
-           if (Number(this.currentid) > 0) {
-             this.currentid = Number(this.currentid) - 1;
-           } else {
-             this.currentid = 0;
-           }
-           document.getElementById('canvas').setAttribute('src', this.$items[this.currentid].querySelector('img').src);
-           document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
-           document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
-           this.progress -= this.$el.clientWidth * 0.05;
-           this.move();
+           this.navleft();
         }
         if(e.key == "ArrowUp") {
             if (document.getElementById("zoomcanvas").checked) {
@@ -669,6 +650,52 @@ function imageoverlay(section, overlay, locale) {
         }
       }
 
+      navright() {
+        if (document.getElementById("canvas").style.visibility != "visible") {
+            // page text
+            //document.getElementById('next').onclick = function() {
+              if (currentPage < totalPages - 1) {
+                currentPage++;
+                renderpage();
+              }
+            //};
+        }
+        if (Number(this.currentid) < Number(this.$items.length) - 1) {
+          this.currentid = Number(this.currentid) + 1;
+        } else {
+          this.currentid = Number(this.$items.length) - 1;
+        }
+        this.progress += this.$el.clientWidth * 0.05;
+        this.navchange();
+      }
+
+      navleft() {
+        if (document.getElementById("canvas").style.visibility != "visible") {
+            // page text
+            //document.getElementById('prev').onclick = function() {
+              if (currentPage > 0) {
+                currentPage--;
+                renderpage();
+              }
+            //};
+        }
+        if (Number(this.currentid) > 0) {
+          this.currentid = Number(this.currentid) - 1;
+        } else {
+          this.currentid = 0;
+        }
+        this.progress -= this.$el.clientWidth * 0.05;
+        this.navchange();
+      }
+
+      navchange() {
+        document.getElementById('canvas').setAttribute('src', this.$items[this.currentid].querySelector('img').src);
+        document.getElementById("title").innerHTML = this.$items[this.currentid].querySelector('img').alt;
+        document.getElementById('canvas').style.transform = 'translate(0, 0) scale(1)';
+        this.thumbactive(this.currentid);
+        this.move();
+      }
+
       handleTouchStart(e) {
         e.preventDefault();
         this.dragging = true;
@@ -678,22 +705,24 @@ function imageoverlay(section, overlay, locale) {
 
       handleTouchMove(e) {
         // zoom main image and move if needed
-        const image = document.querySelector('img');
+        const image = document.querySelector('#canvas');
         const rect = image.getBoundingClientRect();
-        if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        // multiplier shrinks active zone where magnification starts
+        if (e.clientX >= rect.left * 1.25 && e.clientX <= rect.right * 0.95 && e.clientY >= rect.top * 1.25 && e.clientY <= rect.bottom * 0.95) {
             const imageCenterX = rect.left + rect.width / 2;
             const imageCenterY = rect.top + rect.height / 2;
             const deltaX = e.clientX - imageCenterX;
             const deltaY = e.clientY - imageCenterY;
-            const moveX = -deltaX * 0.1; // Adjust the multiplier for sensitivity
-            const moveY = -deltaY * 0.1; // Adjust the multiplier for sensitivity
+            const moveX = -deltaX * 0.1;   // adjust the multiplier for sensitivity
+            const moveY = -deltaY * 0.333; // ditto
             const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            const scaleFactor = 2 + Math.min(distance / 10, 0.125); // Scale up to 1.5x at a distance of 200px
-            //const scaleFactor = 2 + Math.min(distance / 200, 0.5); // Scale up to 1.5x at a distance of 200px
+            const scaleFactor = 2 + Math.min(distance / 10, 0.125); // scale up to 1.5x at a distance of 200px
             image.style.transform = `translate(${moveX}px, ${moveY}px) scale(${scaleFactor})`;
+            document.getElementById("carousel").style.bottom = '-10vh';
         } else {
             image.style.transform = 'translate(0, 0)';
             image.style.transform = 'translate(0, 0) scale(1)';
+            document.getElementById("carousel").style.bottom = '10vh';
         }
         // move thumbnails
         if (!this.dragging) return false;
@@ -707,33 +736,52 @@ function imageoverlay(section, overlay, locale) {
         this.dragging = false;
         this.$el.classList.remove('dragging');
       }
-    
+
       move() {
         this.progress = clamp(this.progress, 0, this.maxScroll);
       }
 
+      thumbactive(e) {
+          // highlight active thumb
+          for (let i = 0; i < this.$items.length; i += 1) {
+              if (i == e){
+                 this.$items[e].querySelector('img').style.borderBottom = '5px solid #ff9800';
+              } else {
+                  this.$items[i].querySelector('img').style.borderBottom = '';
+              }
+          }
+      }
+
       events() {
-        window.addEventListener('resize',  this.calculate);
-        window.addEventListener('wheel',   this.handleWheel);
-        window.addEventListener('keydown', this.handlekey);
-        window.addEventListener('click',   this.handleclick);
-        if (overlay !== 'paper'){ // bypass to keep text selectable
-            window.addEventListener('mousedown',         this.handleTouchStart);
-            window.addEventListener('mousemove',         this.handleTouchMove);
-            window.addEventListener('mouseup',           this.handleTouchEnd);
-            window.addEventListener('mouseleave',        this.handleTouchEnd);
+        var modal = document.getElementById("myModal");
+        modal.addEventListener('resize',  this.calculate);
+        modal.addEventListener('wheel',   this.handleWheel);
+        modal.addEventListener('keydown', this.handlekey);
+        modal.addEventListener('click',   this.handleclick, {capture: true});
+        // bypass to keep text selectable
+        if (document.getElementById("canvas").style.visibility == 'visible') {
+            modal.addEventListener('mousedown',         this.handleTouchStart);
+            modal.addEventListener('mousemove',         this.handleTouchMove);
+            modal.addEventListener('mouseup',           this.handleTouchEnd);
+            modal.addEventListener('mouseleave',        this.handleTouchEnd);
+        } else {
+            modal.removeEventListener('mousedown',  this.handleTouchStart);
+            modal.removeEventListener('mousemove',  this.handleTouchMove);
+            modal.removeEventListener('mouseup',    this.handleTouchEnd);
+            modal.removeEventListener('mouseleave', this.handleTouchEnd);
         }
       }
 
       removeevents() {
-        window.removeEventListener('resize',     this.calculate);
-        window.removeEventListener('wheel',      this.handleWheel);
-        window.removeEventListener('keydown',    this.handlekey);
-        window.removeEventListener('click',      this.handleclick);
-        window.removeEventListener('mousedown',  this.handleTouchStart);
-        window.removeEventListener('mousemove',  this.handleTouchMove);
-        window.removeEventListener('mouseup',    this.handleTouchEnd);
-        window.removeEventListener('mouseleave',    this.handleTouchEnd);
+        var modal = document.getElementById("myModal");
+        modal.removeEventListener('resize',     this.calculate);
+        modal.removeEventListener('wheel',      this.handleWheel);
+        modal.removeEventListener('keydown',    this.handlekey);
+        modal.removeEventListener('click',      this.handleclick, {capture: true});
+        modal.removeEventListener('mousedown',  this.handleTouchStart);
+        modal.removeEventListener('mousemove',  this.handleTouchMove);
+        modal.removeEventListener('mouseup',    this.handleTouchEnd);
+        modal.removeEventListener('mouseleave', this.handleTouchEnd);
       }
 
       raf() {
@@ -752,7 +800,7 @@ function imageoverlay(section, overlay, locale) {
           i.style.transform = `scale(${1 - Math.abs(this.speed) * 0.002})`;
           i.querySelector('img').style.transform = `scaleX(${1 + Math.abs(this.speed) * 0.004})`;
         });
-      }} // end class
+    }} // end class
 
     // Instances
     const scroll = new dragscroll({
@@ -766,7 +814,7 @@ function imageoverlay(section, overlay, locale) {
       requestAnimationFrame(raf);
       scroll.raf();
     };
-    
+
     raf();
     // call a class instance via a function
     navimage = new function(section) {

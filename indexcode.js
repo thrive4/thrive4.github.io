@@ -64,17 +64,20 @@ function switchlistview(listtype, pagetype, extatype = "") {
         // use k to reorder json file then save on os
         //download('hello.json', JSON.stringify(k, null, 2));
 
-// todo needs better handling when using audioplayer
-//console.table(data.map(item => item.file));
-// create a temporary data structure without the 'file' column
-// syntax file, album, ...rest  add columns if needed
-if (pagetype === 'musiclist'){
-    const tempdata = data.map(item => {
-        const { file, ...rest } = item;
-        return rest;
-    });
-    keys = Object.keys(tempdata[0]);
-}
+        window.localStorage.setItem('nritems', data.length)
+        // todo needs better handling when using audioplayer
+        //console.table(data.map(item => item.file));
+        // create a temporary data structure without the 'file' column
+        // syntax file, album, ...rest  add columns if needed
+        // filters out unwanted column for displaying but still usable
+        if (pagetype === 'musiclist'){
+            const tempdata = data.map(item => {
+                const { file,length, ...rest } = item;
+                return rest;
+            });
+            keys = Object.keys(tempdata[0]);
+        }
+
         switch (listtype){
           case 'data':
             text += "<table class='sortable' id='datatable'>";
@@ -258,7 +261,7 @@ if (pagetype === 'musiclist'){
                       if (value.current != undefined){
                           if (value.current.indexOf("windows") > 0) {
                             text += '<br><br><br><br><svg class="' + svgclass + ' svgbottom" viewBox="-0.5 0 257 257">' +
-                                             windowslogo() +
+                                             svgwindowslogo() +
                                     '</svg>';
                           }
                       }
@@ -286,7 +289,6 @@ if (pagetype === 'musiclist'){
         }
 
     });
-    //console.log(text);
     // clean up
     text = "";
 }

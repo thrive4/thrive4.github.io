@@ -21,10 +21,6 @@
     <div class="dropdown-content"><p>menu</p></div>
     <a class="nav-item" style="cursor:pointer" href="index.html">THRIVE4</a>
   </div>
-
-  <label for="menu-toggle" class="nav-toggle">&equiv;</label>
-  <input type="checkbox" id="menu-toggle" class="is-hidden"/>
-
   <div class="nav-right">
     <a class="nav-item" href="" onclick="switchtheme();">
       <svg class="svglight" viewBox="-5 -5 34 34">
@@ -110,17 +106,13 @@
 <!-- optional audio player -->
 <footer class="footer">
       <div class="container-audio">
-          <audio id="audio" title="" controls>
+          <audio id="audio" crossOrigin="anonymous" title="" controls>
             Your browser dose not Support the audio Tag
           </audio>
       </div>
 </footer>
-
 <!-- overlay for image navigation -->
-<div id="myModal" class="modal">
+<div id="myModal" class="modal" tabindex="-1">
      <div id="imageoverlay"></div>
      <span class="close">&times;</span>
 </div>
-<script type="text/javascript" src="lib.js"></script>
-<script type="text/javascript" src="imageviewer.js"></script>
-<script type="text/javascript" src="indexcode.js"></script>

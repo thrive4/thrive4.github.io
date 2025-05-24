@@ -30,10 +30,6 @@
     </a>
     <a class="nav-item" style="cursor:pointer" href="index.html">THRIVE4</a>
   </div>
-
-  <label for="menu-toggle" class="nav-toggle">&equiv;</label>
-  <input type="checkbox" id="menu-toggle" class="is-hidden"/>
-
   <div class="nav-right">
     <a class="nav-item" href="" onclick="switchtheme();">
       <svg class="svglight" viewBox="-5 -5 34 34">
@@ -74,16 +70,46 @@ favorites music
 favorites games
 favorites documentaries
 gallery (for slideshow various sources)
+playlist with audioplayer
 list of url's to various resources
 
 <b>release notes site:</b>
 
+update 2.1 24/05/2025
+- added to audioplayer 
+  drc (audio gain)
+  coverart extraction
+  mp3 tag extraction
+  additional playlists
+- added additional gallery art from the belle epoque
+- filter out pre calculated song length in playlist
+  still used to get total duration playlist if available
+- some cosmetic and ergonomic tweaks to
+  slide player and image viewer
+- implemented paging in text view image viewer
+- fixed a number of bugs in image viewer
+- total data tally items
+  1594 music
+  950  film
+  726  game
+  1793 docu
+  210  resources
+
 update 2.0 10/04/2025
 - less padding td elements data display
 - added audioplayer list play
+   navigation player
+   next     arrow right
+   previous arrow left
+   toggle   pause / play p
+   volume   up +
+   volume   down -
+   seek     plus .
+   seek     min ,
+  note: name in playlist.json and href of playlist need to match
 - added config option primaraly to toggle list play
   shuffle / linear
-- rewrite of css deprecated seperate font.css
+- rewrite of css deprecated separate font.css
 - rewrite parts of .js libs deprecated libtheme.js
 - fixed a number of small bugs
 
@@ -104,10 +130,10 @@ update 1.8 09/02/2025
 update v1.7 09/09/2024
 - refactored most of the logic for displaying
   list, tile and data display plus more flexible
-  intergration of json
+  integration of json
 - .js code base decreased with ~ 30%
 - added atlas.json used to determine which
-  fields are, and in which order, displayed
+  fields are, and in which order, displayed 
 - added documentary information
 - filter out year when querying wikipedia
 
@@ -125,7 +151,7 @@ update v1.5 14/05/2024
 - re-write of imageviewer.js more scalable
 - compacted code per list type
 - merged paper.css into main.css
-- further intregration wikipedia and musicbrainz
+- further integration wikipedia and musicbrainz
   sections papers, film, game and music
 - added spinner aka loading... to slide show
 - misc bug fixes
@@ -143,8 +169,8 @@ update v1.3 12/03/2024
 - trimmed json datamodel most sections except code
 - unified sidenav code to lib.js
 - style tweaks
-- refactored most of the json handleing trimmed the fat
-- rewrite ken burns slide handeling plus added use of subsection
+- refactored most of the json handling trimmed the fat
+- rewrite ken burns slide handling plus added use of subsection
 - added sections resources, film and game
 - integrated wikipedia and musicbrainz rest api data in section music
 - removed github api calls in code section causes 403's to easy
@@ -161,7 +187,7 @@ update v1.2 18/12/2023
 
 update v1.1 04/11/2023
 - style tweaks
-- many code tweaks to json handeling
+- many code tweaks to json handling
 
  public release 1.0 26/09/2023
 - most pages are now data driven aka
