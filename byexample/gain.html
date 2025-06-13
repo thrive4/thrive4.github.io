@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MP3 Player with Auto Gain Control</title>
+  <style>
+    body { font-family: sans-serif; margin: 2em; background: #f9f9f9; }
+    #controls { margin: 1em 0; }
+    #waveform { border: 1px solid #ccc; background: #fff; display: block; margin-bottom: 1em; }
+    #gainIndicator { margin-left: 1em; font-weight: bold; }
+    #rmsValue { margin-left: 1em; }
+    button { margin-right: 0.5em; }
+    table {  padding: 12px; }
+  </style>
+</head>
+<body>
+  <h2>MP3 Player with Toggleable Auto Gain</h2>
+  <input type="file" id="fileInput" accept="audio/mp3">
+  <br><br>
+  <audio id="audio" controls style="width: 100%;"></audio>
+  <br>
+  <canvas id="waveform" width="600" height="120"></canvas>
+  <div id="controls">
+    <button id="playBtn" disabled>Play</button>
+    <button id="pauseBtn" disabled>Pause</button>
+    <label>
+      Volume:
+      <input type="range" id="volumeSlider" min="0" max="2" step="0.01" value="1" style="vertical-align:middle;">
+    </label>
+    <button id="gainDown">-</button>
+    <button id="gainUp">+</button>
+    <span>Gain: <span id="gainIndicator">0</span></span>
+    <span id="rmsValue">RMS: 0.000</span>
+    <button id="autoGainToggle">Enable Auto Gain</button>
+  </div>
+
+  <table>
+    <tr>
+        <td><img id="coverArt" alt="Cover Art" style="display:none; width:200px; height:auto;"></td>
+        <td><div id="tags"></div></td>
+    </tr>
+  </table>
+
+  <script>
+   // audio gain routines
+   // Get elements
+    const audioElement   = document.getElementById('audio');
+    const fileInput      = document.getElementById('fileInput');
+    const playBtn        = document.getElementById('playBtn');
+    const pauseBtn       = document.getElementById('pauseBtn');
+    const volumeSlider   = document.getElementById('volumeSlider');
+    const rmsValue       = document.getElementById('rmsValue');
+    const canvas         = document.getElementById('waveform');
+    const ctx            = canvas.getContext('2d');
+    const gainIndicator  = document.getElementById('gainIndicator');
+    const gainDown       = document.getElementById('gainDown');
+    const gainUp         = document.getElementById('gainUp');
+    const autoGainToggle = document.getElementById('autoGainToggle');
+
+    // Web Audio API setup
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const sourceNode   = audioContext.createMediaElementSource(audioElement);
+    const gainNode     = audioContext.createGain();
+    const analyserNode = audioContext.createAnalyser();
+    analyserNode.fftSize = 2048;
+
+    // Connect the nodes: source -> gain -> analyser -> destination
+    sourceNode.connect(gainNode);
+    gainNode.connect(analyserNode);
+    analyserNode.connect(audioContext.destination);
+
+    // Visualization setup
+    const bufferLength = analyserNode.frequencyBinCount;
+    const dataArray    = new Uint8Array(bufferLength);
+
+    // Gain indicator
+    function updateGainIndicator() {
+      const val = parseFloat(gainNode.gain.value);
+      const diff = val - 1;
+      if (Math.abs(diff) < 0.01) {
+        gainIndicator.textContent = '0';
+      } else if (diff > 0) {
+        gainIndicator.textContent = '+' + diff.toFixed(2);
+      } else {
+        gainIndicator.textContent = '–' + Math.abs(diff).toFixed(2);
+      }
+    }
+
+    // Draw waveform and RMS
+    function draw() {
+      requestAnimationFrame(draw);
+      analyserNode.getByteTimeDomainData(dataArray);
+
+      // Draw waveform
+      ctx.fillStyle   = '#fff';
+      ctx.lineWidth   = 2;
+      ctx.strokeStyle = '#0074D9';
+      ctx.beginPath();
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      let sliceWidth = canvas.width / bufferLength;
+      let x = 0;
+      for (let i = 0; i < bufferLength; i++) {
+        let v = dataArray[i] / 128.0;
+        let y = (v * canvas.height) / 2;
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+        x += sliceWidth;
+      }
+      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.stroke();
+
+      // Calculate RMS amplitude
+      let sumSquares = 0;
+      for (let i = 0; i < bufferLength; i++) {
+        let normalized = (dataArray[i] - 128) / 128;
+        sumSquares += normalized * normalized;
+      }
+      const rms = Math.sqrt(sumSquares / bufferLength);
+      rmsValue.textContent = 'RMS: ' + rms.toFixed(3);
+
+      // Update gain indicator live
+      updateGainIndicator();
+    }
+    draw();
+
+    // File input
+    fileInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        audioElement.src  = url;
+        playBtn.disabled  = false;
+        pauseBtn.disabled = false;
+      }
+    });
+
+    // Play/pause
+    playBtn.addEventListener('click', async function() {
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
+      }
+      audioElement.play();
+    });
+    pauseBtn.addEventListener('click', function() {
+      audioElement.pause();
+    });
+
+    // Manual gain control
+    volumeSlider.addEventListener('input', function() {
+      gainNode.gain.value = this.value;
+      updateGainIndicator();
+    });
+    gainUp.addEventListener('click', function() {
+      let v = parseFloat(gainNode.gain.value);
+      v = Math.min(2, v + 0.05);
+      gainNode.gain.value = v;
+      volumeSlider.value  = v;
+      updateGainIndicator();
+    });
+    gainDown.addEventListener('click', function() {
+      let v = parseFloat(gainNode.gain.value);
+      v = Math.max(0, v - 0.05);
+      gainNode.gain.value = v;
+      volumeSlider.value  = v;
+      updateGainIndicator();
+    });
+
+    // Auto gain control
+    let autoGainEnabled = false;
+    autoGainToggle.addEventListener('click', function() {
+      autoGainEnabled = !autoGainEnabled;
+      autoGainToggle.textContent = autoGainEnabled ? 'Disable Auto Gain' : 'Enable Auto Gain';
+      if (!autoGainEnabled) {
+        // Optionally reset gain to unity when disabling
+         gainNode.gain.value = 1;
+         volumeSlider.value  = 1;
+        // updateGainIndicator();
+      }
+    });
+
+    const targetRMS       = 0.1; // Target loudness (tweak as needed)
+    const gainAdjustSpeed = 0.01; // How quickly gain adjusts
+
+    function autoGainControl() {
+      if (autoGainEnabled) {
+        let sumSquares = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          let normalized = (dataArray[i] - 128) / 128;
+          sumSquares += normalized * normalized;
+        }
+        const rms = Math.sqrt(sumSquares / bufferLength);
+
+        if (rms < targetRMS * 0.98) {
+          gainNode.gain.value = Math.min(gainNode.gain.value + gainAdjustSpeed, 2);
+        } else if (rms > targetRMS * 1.02) {
+          gainNode.gain.value = Math.max(gainNode.gain.value - gainAdjustSpeed, 0);
+        }
+        volumeSlider.value = gainNode.gain.value;
+        updateGainIndicator();
+      }
+      requestAnimationFrame(autoGainControl);
+    }
+    autoGainControl();
+
+    // Set initial gain
+    gainNode.gain.value = volumeSlider.value;
+    updateGainIndicator();
+  </script>
+
+  <script>
+  // get mp3 tags
+var request = new XMLHttpRequest();
+request.open('GET', 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Chopin_Waltz_Op._70_no._2_in_F_minor_Olga_Gurevich.mp3', true);
+request.responseType = 'blob';
+request.onload = function() {
+    var reader = new FileReader();
+    reader.readAsArrayBuffer(request.response);
+    reader.onload =  function(e){
+        console.log('DataURL:', e.target.result);
+        const arrayBuffer = e.target.result;
+
+        const tags = {
+          title:  getMp3Tag('TITLE', arrayBuffer),
+          album:  getMp3Tag('ALBUM', arrayBuffer),
+          artist: getMp3Tag('ARTIST', arrayBuffer),
+          track:  getMp3Tag('TRACK', arrayBuffer),
+          genre:  getMp3Tag('GENRE', arrayBuffer),
+          year:   getMp3Tag('YEAR', arrayBuffer)
+        };
+
+        tagsDiv.innerHTML = `
+          <table>
+            <tr><td><strong>Title </strong></td><td>${tags.title}</td></tr>
+            <tr><td><strong>Album </strong></td><td>${tags.album}</td></tr>
+            <tr><td><strong>Artist</strong></td><td>${tags.artist}</td></tr>
+            <tr><td><strong>Track </strong></td><td>${tags.track}</td></tr>
+            <tr><td><strong>Genre </strong></td><td>${tags.genre}</td></tr>
+            <tr><td><strong>Year  </strong></td><td>${tags.year}</td></tr>
+          </table>
+        `;
+    };
+};
+request.send();
+
+  // get mp3 tags
+    const tagsDiv = document.getElementById('tags');
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.addEventListener('load', (e) => {
+        const arrayBuffer = e.target.result;
+
+        const tags = {
+          title:  getMp3Tag('TITLE', arrayBuffer),
+          album:  getMp3Tag('ALBUM', arrayBuffer),
+          artist: getMp3Tag('ARTIST', arrayBuffer),
+          track:  getMp3Tag('TRACK', arrayBuffer),
+          genre:  getMp3Tag('GENRE', arrayBuffer),
+          year:   getMp3Tag('YEAR', arrayBuffer)
+        };
+
+        tagsDiv.innerHTML = `
+          <table>
+            <tr><td><strong>Title </strong></td><td>${tags.title}</td></tr>
+            <tr><td><strong>Album </strong></td><td>${tags.album}</td></tr>
+            <tr><td><strong>Artist</strong></td><td>${tags.artist}</td></tr>
+            <tr><td><strong>Track </strong></td><td>${tags.track}</td></tr>
+            <tr><td><strong>Genre </strong></td><td>${tags.genre}</td></tr>
+            <tr><td><strong>Year  </strong></td><td>${tags.year}</td></tr>
+          </table>
+        `;
+      });
+
+      reader.readAsArrayBuffer(file);
+    });
+
+    function getMp3Tag(searchTag, arrayBuffer) {
+      const tagMap = {
+        "TITLE": "TIT2",
+        "ARTIST": "TPE1",
+        "ALBUM": "TALB",
+        "TRACK": "TRCK",
+        "YEAR": "TYER",
+        "GENRE": "TCON"
+      };
+
+      const dataView = new DataView(arrayBuffer);
+      
+      // Check for "ID3" at the start of the file
+      if (dataView.getUint8(0) === 0x49 && dataView.getUint8(1) === 0x44 && dataView.getUint8(2) === 0x33) {
+        console.log("ID3 tag found at the start of the file.");
+    
+        const tagLength = ((dataView.getUint8(6) & 0x7F) << 21) |
+                          ((dataView.getUint8(7) & 0x7F) << 14) |
+                          ((dataView.getUint8(8) & 0x7F) << 7) |
+                          (dataView.getUint8(9) & 0x7F);
+
+        let offset = 10; // Start after the ID3 header
+    
+        while (offset < 10 + tagLength) {
+          const frameId = String.fromCharCode(
+            dataView.getUint8(offset), 
+            dataView.getUint8(offset + 1), 
+            dataView.getUint8(offset + 2), 
+            dataView.getUint8(offset + 3)
+          );
+
+          if (frameId === tagMap[searchTag]) {
+            const frameSize = dataView.getUint32(offset + 4, false);
+            const frameData = new Uint8Array(arrayBuffer, offset + 10, frameSize);
+            return decodeFrameData(frameData); // Pass only frameData
+          }
+    
+          // Move to the next frame
+          const frameSize = dataView.getUint32(offset + 4, false) + 10; // 10 bytes for the frame header
+          offset += frameSize;
+        }
+      }
+    
+      return "----"; // Return "----" if no tag data found
+    }
+    
+    function decodeFrameData(frameData) {
+      // Check if the frame is a genre index
+      if (frameData[0] === 0x00 && frameData[1] === 0x00) {
+        // If the first two bytes are null, it indicates a genre index
+        const genreIndex = frameData[2]; // The genre index is the third byte
+        return genreIndex; // Return the genre index directly
+      }
+    
+      // Determine the encoding
+      const encoding = frameData[0];
+      let decodedString = '';
+    
+      if (encoding === 0x00) {
+        // ISO-8859-1 (Latin-1)
+        decodedString = String.fromCharCode.apply(null, frameData.subarray(1));
+      } else if (encoding === 0x01) {
+        // UTF-16LE
+        for (let i = 1; i < frameData.length; i += 2) {
+          const charCode = frameData[i] + (frameData[i + 1] << 8);
+          if (charCode === 0) break; // Null terminator
+          decodedString += String.fromCharCode(charCode);
+        }
+      } else if (encoding === 0x02) {
+        // UTF-16BE
+        for (let i = 1; i < frameData.length; i += 2) {
+          const charCode = (frameData[i] << 8) + frameData[i + 1];
+          if (charCode === 0) break; // Null terminator
+          decodedString += String.fromCharCode(charCode);
+        }
+      } else {
+        // UTF-8
+        decodedString = new TextDecoder('utf-8').decode(frameData.subarray(1));
+      }
+    
+      return decodedString.trim(); // Return the decoded string, trimmed of whitespace
+    }
+  </script>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const arrayBuffer = e.target.result;
+                    const dataView = new DataView(arrayBuffer);
+                    const id3Header = readID3Header(dataView);
+                    if (id3Header) {
+                        const coverArt = extractCoverArt(dataView, id3Header);
+                        if (coverArt) {
+                            const img = document.getElementById('coverArt');
+                            img.src = coverArt.url;
+                            img.style.display = 'block';
+                            // Optional: Download link
+                            //const link = document.createElement('a');
+                            //link.href = coverArt.url;
+                            //link.download = "cover_art" + coverArt.ext;
+                            //document.body.appendChild(link);
+                            //link.click();
+                            //document.body.removeChild(link);
+                            // Don't revokeObjectURL immediately, or download may fail
+                            //setTimeout(() => URL.revokeObjectURL(coverArt.url), 1000);
+                        } else {
+                            alert("No cover art found.");
+                        }
+                    } else {
+                        alert("No ID3 header found.");
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+        // Parse synchsafe integer (for ID3 tag size)
+        function readSynchsafeInt(dataView, offset) {
+            return (
+                (dataView.getUint8(offset) << 21) |
+                (dataView.getUint8(offset + 1) << 14) |
+                (dataView.getUint8(offset + 2) << 7) |
+                (dataView.getUint8(offset + 3))
+            );
+        }
+
+        function readID3Header(dataView) {
+            if (
+                dataView.getUint8(0) === 0x49 && // 'I'
+                dataView.getUint8(1) === 0x44 && // 'D'
+                dataView.getUint8(2) === 0x33    // '3'
+            ) {
+                const version = dataView.getUint8(3);
+                const flags = dataView.getUint8(5);
+                const size = readSynchsafeInt(dataView, 6);
+                return { version, flags, size };
+            }
+            return null;
+        }
+
+        function extractCoverArt(dataView, id3Header) {
+            let offset = 10; // After ID3 header
+            const end = offset + id3Header.size;
+            while (offset + 10 < end) {
+                // Read frame header
+                const frameId = String.fromCharCode(
+                    dataView.getUint8(offset),
+                    dataView.getUint8(offset + 1),
+                    dataView.getUint8(offset + 2),
+                    dataView.getUint8(offset + 3)
+                );
+                let frameSize;
+                if (id3Header.version === 4) {
+                    // ID3v2.4 uses synchsafe ints for frame size
+                    frameSize = readSynchsafeInt(dataView, offset + 4);
+                } else {
+                    // ID3v2.3 uses normal 32-bit int
+                    frameSize = dataView.getUint32(offset + 4);
+                }
+                // If frameId is empty, break
+                if (!frameId.trim()) break;
+                if (frameId === 'APIC') {
+                    // Parse APIC frame
+                    let ptr = offset + 10;
+                    const encoding = dataView.getUint8(ptr); ptr++;
+                    // Read MIME type (null-terminated string)
+                    let mime = '';
+                    while (dataView.getUint8(ptr) !== 0) {
+                        mime += String.fromCharCode(dataView.getUint8(ptr));
+                        ptr++;
+                    }
+                    ptr++; // Skip null
+                    if (!mime) mime = 'image/jpeg'; // fallback
+                    // Picture type (1 byte)
+                    const picType = dataView.getUint8(ptr); ptr++;
+                    // Description (null-terminated string, encoding-dependent)
+                    if (encoding === 0) { // ISO-8859-1
+                        while (dataView.getUint8(ptr) !== 0) ptr++;
+                        ptr++; // Skip null
+                    } else { // UTF-16
+                        while (!(dataView.getUint8(ptr) === 0 && dataView.getUint8(ptr+1) === 0)) ptr += 2;
+                        ptr += 2; // Skip null
+                    }
+                    // The rest is image data
+                    const imgDataStart = ptr;
+                    const imgDataEnd = offset + 10 + frameSize;
+                    const imgData = new Uint8Array(dataView.buffer, imgDataStart, imgDataEnd - imgDataStart);
+                    let ext = '.jpg';
+                    if (mime === 'image/png') ext = '.png';
+                    const blob = new Blob([imgData], { type: mime });
+                    const url = URL.createObjectURL(blob);
+                    return { url, ext };
+                }
+                offset += 10 + frameSize;
+            }
+            return null;
+        }
+    </script>
+</body>
+</html>
