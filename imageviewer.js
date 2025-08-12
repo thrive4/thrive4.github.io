@@ -588,7 +588,6 @@ function imageoverlay(section, overlay, locale) {
       }
 
       handleclick(e) {
-        // check if e.target has an HTMLImageElement
         if (e.target instanceof HTMLImageElement) {
             this.thumbactive(e.target.id);
         } else {
@@ -626,9 +625,10 @@ function imageoverlay(section, overlay, locale) {
       }
 
       handlekey(e) {
+        e.preventDefault();
         if (e.key == 'ArrowRight') {
            this.navright();
-       }
+        }
         if (e.key == 'ArrowLeft') {
            this.navleft();
         }
@@ -641,7 +641,7 @@ function imageoverlay(section, overlay, locale) {
               document.getElementById('canvas').style.transform = 'translate(0, 0) scale(2)';
             }
         }
-        if(e.key == "Escape") {
+        if(e.key == "Escape" || e.key == "Backspace") {
             if (modal.style == undefined) {
                modal.style = "";
             }

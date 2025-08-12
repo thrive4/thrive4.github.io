@@ -10,31 +10,33 @@
 <body>
 <div w3-include-html="body.html"></div>
 <div class="audiobg">
-  <table>
-    <tr>
-        <td style="padding: 0px;"><div class="spinner" id="spinner" style="display:none; width:40px; height:40px;"></div>
-            <img id="coverArt" alt="" style="display:none; width:200px;">
-            <div id="svg" style=width:10px;"></div>
-        </td>
-        <td style="padding: 0px;"><pre style="font-family: monospace;" id="tags"></pre>
-            <input type="file" id="fileInput" accept="audio/mp3" style="visibility:hidden;display:none">
-            <canvas id="waveform" width="1" height="1"></canvas>
-            <div id="controls" style="text-align: center;">
-              <button id="playBtn"  disabled style="visibility:hidden;display:none">Play</button>
-              <button id="pauseBtn" disabled style="visibility:hidden;display:none">Pause</button>
-              <label>
-                <input type="range" id="volumeSlider" min="0" max="2" step="0.01" value="1">
-              </label>
-              <button id="gainDown" style="visibility:hidden;display:none">-</button>
-              <button id="gainUp"   style="visibility:hidden;display:none">+</button>
-              <div id="playtype"style="font-family: monospace;">linear</div>
-              <span style="font-family: monospace;">drc: <span style="font-family: monospace;" id="gainIndicator">0</span></span>
-              <span style="font-family: monospace;" id="rmsValue">RMS: 0.000</span>
-              <button id="autoGainToggle" style="visibility:hidden;display:none">Enable Auto Gain</button>
-            </div>
-        </td>
-    </tr>
-  </table>
+    <div class="container">
+      <table>
+        <tr>
+            <td style="padding-left: 10px;"><div class="spinner" id="spinner" style="display:none; width:40px; height:40px;"></div>
+                <img id="coverArt" alt="" style="display:none; width:200px;">
+                <div id="svg" style=width:10px;"></div>
+            </td>
+            <td style="padding: 0px;"><pre style="font-family: monospace;" id="tags"></pre>
+                <input type="file" id="fileInput" accept="audio/mp3" style="visibility:hidden;display:none">
+                <canvas id="waveform" width="1" height="1"></canvas>
+                <div id="controls" style="text-align: center;">
+                  <button id="playBtn"  disabled style="visibility:hidden;display:none">Play</button>
+                  <button id="pauseBtn" disabled style="visibility:hidden;display:none">Pause</button>
+                  <label style="visibility:hidden;display:none">
+                    <input type="range" id="volumeSlider" min="0" max="2" step="0.01" value="1">
+                  </label>
+                  <button id="gainDown" style="visibility:hidden;display:none">-</button>
+                  <button id="gainUp"   style="visibility:hidden;display:none">+</button>
+                  <span id="playtype" style="font-family: monospace;">linear</span>
+                  <span style="font-family: monospace;">drc: <span style="font-family: monospace;" id="gainIndicator">0</span></span>
+                  <span style="font-family: monospace;" id="rmsValue">RMS: 0.000</span><br><br>
+                  <button id="autoGainToggle" style="visibility:hidden;display:none">Enable Auto Gain</button>
+                </div>
+            </td>
+        </tr>
+      </table>
+   </div>
 </div>
 
 <br><br><br>
@@ -101,7 +103,7 @@
     document.onkeydown = function (event) {
         var kbpressed = event.key;
         // tricky overrides browser shortcut keys
-        //event.preventDefault();
+        event.preventDefault();
         // todo harmonize with audio end
         if (currentIndex == trElements.length) {
            currentIndex = 0;
@@ -131,7 +133,7 @@
         }
 
         // audio pause / play
-        if(kbpressed == "p") {
+        if(kbpressed == "p" || kbpressed == " ") {
             if (audio.paused) {
                audio.play();
             } else {

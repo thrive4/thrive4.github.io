@@ -3,7 +3,6 @@
 .w3-content,.w3-auto{margin-left:auto;margin-right:auto}.w3-content{max-width:980px}.w3-auto{max-width:1140px}
 .w3-display-middle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size: 35px;}
 .w3-left{float:left; cursor: pointer;}.w3-right{float:right; cursor: pointer;}
-.w3-center{cursor: pointer;}
 .w3-text-khaki,.w3-hover-text-khaki:hover{color:#b4aa50}
 .w3-text-white,.w3-hover-text-white:hover{color:#fff}
 .w3-display-top{position:absolute;top:4%;left:50%;transform:translate(-50%,-50%);font-size: 15px;text-align: center}
@@ -12,10 +11,8 @@ a{color:inherit}
 :root,
 :root.light {
   --bg-color: #fff;
-  --cardcolor: #f1f1f1;
-  --cardcolorhover: #d1d1d1;
-  --listbgcolor: #f1f1f1;
-  --listhovercolor: #d1d1d1;
+  --tilebgcolor: #f1f1f1;
+  --tilehovercolor: #d1d1d1;
   --ovbgcolor: #fefefe;
   --ovfontcolor: black;
   --audiobgcolor: #202020;
@@ -33,10 +30,8 @@ a{color:inherit}
 
 :root.dark {
   --bg-color: #0e1a25;
-  --cardcolor: #152737;
-  --cardcolorhover: #2C4C72;
-  --listbgcolor: #152737;
-  --listhovercolor: #2C4C72;
+  --tilebgcolor: #152737;
+  --tilehovercolor: #2C4C72;
   --ovbgcolor: #444444;
   --ovfontcolor: white;
   --audiobgcolor: white;
@@ -180,7 +175,7 @@ body {
 #canvas {
   display:block;
   visibility: visible;
-  width: 100%;
+  width: 60vw; max-width: 500px; min-width: 250px;
 }
 .centerpaper {
   width: 900px;
@@ -231,7 +226,6 @@ table {
 /* only keep table column header on top when width is larger than */
 @media screen and (min-width: 1000px) {
   th {
-    /*cursor: pointer;*/
     /* sticky tip courtesy https://codepen.io/stephen-george-west/pen/rNpjXYL */
     position: sticky;
     top: -0.85em;
@@ -256,12 +250,25 @@ th, td {
   width:  5vw;
   height: 30%;
 }
-tbody tr:hover {
+tbody tr:hover, tr.trlight.selected {
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.6);
   background: #3D85C6;
-  /*cursor: pointer;*/
   transition: transform ease 700ms;
   transform: translate(0, -5px);
+}
+/* override for tile view */
+.tile-view-mode tbody tr:hover,
+.tile-view-mode tr.trlight.selected {
+  box-shadow: none;
+  background: inherit; /* or background: transparent; */
+  transform: none;
+  transition: none;
+  /* cursor: default; */ /* Uncomment if you want to reset cursor */
+}
+.keyboard-navigation tr:hover {
+  box-shadow: none;
+  background-color: transparent;
+  cursor: default;
 }
 .trlight {
   background-color: var(--trbgcolor);
@@ -283,121 +290,83 @@ input.tablesearchboxlight:focus {
   background-color:   var(--trsearchfocus);
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
 }
-.trdropbtn {
-  position: relative;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 32 32' fill='grey' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill:none;%7D%3C/style%3E%3C/defs%3E%3Ctitle/%3E%3Cg data-name='Layer 2' id='Layer_2'%3E%3Cpath d='M28,9H11a1,1,0,0,1,0-2H28a1,1,0,0,1,0,2Z'/%3E%3Cpath d='M7,9H4A1,1,0,0,1,4,7H7A1,1,0,0,1,7,9Z'/%3E%3Cpath d='M21,17H4a1,1,0,0,1,0-2H21a1,1,0,0,1,0,2Z'/%3E%3Cpath d='M11,25H4a1,1,0,0,1,0-2h7a1,1,0,0,1,0,2Z'/%3E%3Cpath d='M9,11a3,3,0,1,1,3-3A3,3,0,0,1,9,11ZM9,7a1,1,0,1,0,1,1A1,1,0,0,0,9,7Z'/%3E%3Cpath d='M23,19a3,3,0,1,1,3-3A3,3,0,0,1,23,19Zm0-4a1,1,0,1,0,1,1A1,1,0,0,0,23,15Z'/%3E%3Cpath d='M13,27a3,3,0,1,1,3-3A3,3,0,0,1,13,27Zm0-4a1,1,0,1,0,1,1A1,1,0,0,0,13,23Z'/%3E%3Cpath d='M28,17H25a1,1,0,0,1,0-2h3a1,1,0,0,1,0,2Z'/%3E%3Cpath d='M28,25H15a1,1,0,0,1,0-2H28a1,1,0,0,1,0,2Z'/%3E%3C/g%3E%3Cg id='frame'%3E%3Crect class='cls-1' height='32' width='32'/%3E%3C/g%3E%3C/svg%3E");
-  background-repeat: no-repeat;
+.trfilterselect {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 50px; /* Make room for custom arrow */
   font-size: 16px;
-  padding: 32px 32px 2px 2px;
+  padding: 10px 12px;
   border: 1px solid #ddd;
-  margin-bottom: 12px;
-  margin-left: -15px;
+  background: var(--trsearchbox);
+  color: #222;
   cursor: pointer;
-  z-index: -9999;
+  min-width: 220px;
+  margin-bottom: 12px;
 }
-.trdropdown {
-  position: relative;
-  display: inline-block;
-}
-.trdropdown:hover .trdropbtn {
-  background-color: maroon;
-  color: white;
-}
-.trdropdown-content {
-  display: none;
-  position: absolute;
-  left: -15px;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-.trdropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-.trdropdown-content a:hover {
-  background-color: #e1e1e1;
-}
-.trdropdown:hover .trdropdown-content {
-  display: block;
+.trfilterselect:focus {
+  background: var(--trsearchbox);
+  border-radius: 5px 5px 5px 5px;
 }
 /* end table related */
 
-/* style cards and list */
-/* create equal columns that float next to each other */
-.column {
-  float: left;
-  width: 33.33%;
-  padding: 0 8px;
-  height: 400px;
-}
-.columnlist {
-  float: left;
-  width: 100%;
-  padding: 0 8px;
-  height: 100%;
-}
-.cardlist {
+/* style tiles and list */
+.tile {
   border-radius: 4px;
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-  padding: 16px;
-  text-align: left;
-  background: var(--listbgcolor);
-  width: 100%;
-  height: 95%;
-  transition: transform ease 700ms;
-  overflow: hidden;
-}
-.cardlist:hover {
-  background: var(--listhovercolor);
-  border-bottom: 10px solid maroon;
-  width: 100%;
-  height: 95%;
-  position: relative;
-  transform: translate(0, -10px);
-}
-.card {
-  border-radius: 8px;
-  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-  padding: 16px;
+  padding: 10px;
   text-align: center;
-  background: var(--cardcolor);
-  width: 100%;
-  height: 95%;
-  transition: transform ease 700ms;
+  vertical-align: top;      /* align tiles at top of row */
+  background: var(--tilebgcolor);
+  width: 13.3em;
+  height: 25em;
+  transition: transform ease 900ms;
   overflow: hidden;
+  z-index: 0;
 }
-.card:hover {
-  background: var(--cardcolorhover);
-  border-bottom: 10px solid maroon;
-  width: 100%;
-  height: 95%;
+.tile:hover {
+  background: var(--tilehovercolor);
+  width: 13.3em;
+  height: 25em;
   position: relative;
   transform: translate(0, -10px);
 }
-.cardcontainer {
+.tile:hover::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 10px;
+  background: maroon;
+  border-radius: 0 0 5px 5px;
+  z-index: -1;
+}
+.tilecontainer {
+  padding: 0.5em;           /* keeps tiles from touching */
+  vertical-align: top;      /* align tiles at top of row */
+  cursor: pointer;
+}
+.pointer {
   cursor: pointer;
 }
 .link {
   z-index: 1;
 }
-/* Clear floats after the columns */
+/* clear floats after the columns */
 .row:after {
   content: "";
   display: table;
   clear: both;
 }
-/* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+/* responsive layout - makes the three columns stack on top of each other instead of next to each other */
 @media (max-width: 600px) {
   .column {
     width: 100%;
     margin-bottom: 20px;
   }
 }
-/* end style cards and list */
+/* end style tiles and list */
 
 /* begin icon bar */
 .svgbottom{
@@ -435,6 +404,11 @@ svg:hover {
 .nav-right:hover .dropdown-content {
   display: inline;
 }
+
+.icon-light { display: inline; }
+.icon-dark { display: none; }
+body.theme-dark .icon-light { display: none; }
+body.theme-dark .icon-dark { display: inline; }
 /* end icon bar */
 
 /* audioplayer */
@@ -460,14 +434,13 @@ audio {
 
 .audiobg {
   margin: auto;
-  width: 70%;
+  width: 100%;
   position: sticky;
   bottom: 60px;
   padding: 0px 0;
   background-color: var(--bg-color);
   opacity: 0.95;
 }
-
 /* end audioplayer */
 
 /* date and time display */
@@ -670,6 +643,10 @@ audio {
   left: 0px;
   font-size: 36px;
   text-align: right;
+}
+.sidenav .selected {
+  color: #f1f1f1;
+  background-color: #818181;
 }
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}

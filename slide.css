@@ -117,6 +117,7 @@ html,body{
 .fullscreen {
   position: absolute;
   width: 150%;
+  z-index: 1;
 }
 
 .fullscreen img {
@@ -170,4 +171,24 @@ html,body{
   -ms-transform: translate(-53%, 41.5%);
   z-index: 99;
   text-align: left;
+}
+
+#shadername {
+  position: absolute;
+  top: 45px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 38px;
+  font-weight: bold;
+  z-index:  1;
+}
+
+#shaderid {
+  position: absolute;
+  top: 45px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 18px;
+  font-weight: bold;
+  z-index:  1;
 }

@@ -32,17 +32,7 @@
   </div>
   <div class="nav-right">
     <a class="nav-item" href="" onclick="switchtheme();">
-      <svg class="svglight" viewBox="-5 -5 34 34">
-        <circle cx="12" cy="12" r="5"/>
-        <path d="M21,13H20a1,1,0,0,1,0-2h1a1,1,0,0,1,0,2Z
-        M4,13H3a1,1,0,0,1,0-2H4a1,1,0,0,1,0,2Z
-        M17.66,7.34A1,1,0,0,1,17,7.05a1,1,0,0,1,0-1.41l.71-.71a1,1,0,1,1,1.41,1.41l-.71.71A1,1,0,0,1,17.66,7.34Z
-        M5.64,19.36a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.41L5.64,17a1,1,0,0,1,1.41,1.41l-.71.71A1,1,0,0,1,5.64,19.36Z
-        M12,5a1,1,0,0,1-1-1V3a1,1,0,0,1,2,0V4A1,1,0,0,1,12,5Z
-        M12,22a1,1,0,0,1-1-1V20a1,1,0,0,1,2,0v1A1,1,0,0,1,12,22Z
-        M6.34,7.34a1,1,0,0,1-.7-.29l-.71-.71A1,1,0,0,1,6.34,4.93l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,6.34,7.34Z
-        M18.36,19.36a1,1,0,0,1-.7-.29L17,18.36A1,1,0,0,1,18.36,17l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,18.36,19.36Z"/>
-      </svg>
+        <div id="themeicon"></div>
     </a>
     <a class="nav-item" style="cursor:pointer" onclick="openNav('right')">
        <svg class="svglight" viewBox="-8 -11 52 52">
@@ -75,136 +65,8 @@ list of url's to various resources
 
 <b>release notes site:</b>
 
-update 2.1 24/05/2025
-- added to audioplayer 
-  drc (audio gain)
-  coverart extraction
-  mp3 tag extraction
-  additional playlists
-- added additional gallery art from the belle epoque
-- filter out pre calculated song length in playlist
-  still used to get total duration playlist if available
-- some cosmetic and ergonomic tweaks to
-  slide player and image viewer
-- implemented paging in text view image viewer
-- fixed a number of bugs in image viewer
-- total data tally items
-  1594 music
-  950  film
-  726  game
-  1793 docu
-  210  resources
+<div w3-include-html="thrive4github.nfo"></div>
 
-update 2.0 10/04/2025
-- less padding td elements data display
-- added audioplayer list play
-   navigation player
-   next     arrow right
-   previous arrow left
-   toggle   pause / play p
-   volume   up +
-   volume   down -
-   seek     plus .
-   seek     min ,
-  note: name in playlist.json and href of playlist need to match
-- added config option primaraly to toggle list play
-  shuffle / linear
-- rewrite of css deprecated separate font.css
-- rewrite parts of .js libs deprecated libtheme.js
-- fixed a number of small bugs
-
-update 1.9 10/03/2025
-- updated json files
-- tweaks to various .js files
-
-update 1.8 09/02/2025
-- fix encodeURIComponent part url caused issues
-  with titles having a '=' as suffix.
-- fixes to imageviewer.js added toggle text
-  from various sources
-- refactored zoom imageviewer added move
-- added a reference section to imageviewer
-  based mostly on historic sources
-- added theme field to music and missing release year
-
-update v1.7 09/09/2024
-- refactored most of the logic for displaying
-  list, tile and data display plus more flexible
-  integration of json
-- .js code base decreased with ~ 30%
-- added atlas.json used to determine which
-  fields are, and in which order, displayed 
-- added documentary information
-- filter out year when querying wikipedia
-
-update v1.6 01/07/2024
-- added to top button
-- added scaled image zoom in imageviewer (first draft)
-- restyled imageviewer, imagesize, text size etc.
-- fixed text not being selectable in modal mode, imageviewer, paper, etc.
-- slightly more accurate results from wikipedia for film, games and music
-- small bug fixes
-
-update v1.5 14/05/2024
-- included data / list indicator (first letter selected)
-- small tweak to sorting routine make more specific to click on th
-- re-write of imageviewer.js more scalable
-- compacted code per list type
-- merged paper.css into main.css
-- further integration wikipedia and musicbrainz
-  sections papers, film, game and music
-- added spinner aka loading... to slide show
-- misc bug fixes
-
-update v1.4 15/03/2024
-- removed nested json call for imageviewer json
-- reduced size html page size per section
-- todo follow up suggestions made by pagespeed and yellowlab
-
-update v1.3 12/03/2024
-- fixed all images showing in imageviewer.js when loading page first time
-- imageviewer can now be used per sub section site
-- added mousescroll navigation imageviewer
-- added zoomin zoomout imageviewer
-- trimmed json datamodel most sections except code
-- unified sidenav code to lib.js
-- style tweaks
-- refactored most of the json handling trimmed the fat
-- rewrite ken burns slide handling plus added use of subsection
-- added sections resources, film and game
-- integrated wikipedia and musicbrainz rest api data in section music
-- removed github api calls in code section causes 403's to easy
-- total data tally items, 1500 music, 1500 film, 1300 game
-- site size 8 sections 70% data, 30% page render code
-
-update v1.2 18/12/2023
-- added sticky table header for data tables
-  sticky tip courtesy https://codepen.io/stephen-george-west/pen/rNpjXYL
-- added side menu navigation
-- added search selection box automatically change to selected field
-- fixed issues with code.js
-- cleaned up divs and other small issues
-
-update v1.1 04/11/2023
-- style tweaks
-- many code tweaks to json handling
-
- public release 1.0 26/09/2023
-- most pages are now data driven aka
-  data is gathered via json text file
-- added filter table javascript
-  courtesy to: https://www.w3schools.com/howto/howto_js_filter_table.asp
-  partially implemented filter on specific field
-- added slide show with ken burns effect
-- replaced sort routine for tables javascript
-  significant improvements in speed and number
-  of rows that can be handled by browser
-  many thanks to tofsjonas
-  see: https://github.com/tofsjonas/sortable
-- modified main.css less cluterd html table and other style tweaks
-- robots.txt set to allow crawlers
-- todo still issues with imageviewer and slideshow
-  javascript not setting focus on elements etc.
 
 </code></pre>
 </div>
@@ -229,5 +91,35 @@ update v1.1 04/11/2023
      <span class="close">&times;</span>
 </div>
 <script type="text/javascript" src="lib.js"></script>
+<script>
+    // needs to be moved
+    // whole page needs to be harmonized with
+    // table generated versions
+    let themeicon = "";
+    console.log(window.localStorage.getItem('theme'));
+    switch (window.localStorage.getItem('theme')) {
+        case 'dark':
+              themeicon = `<svg class="svglight" viewBox="-5 -5 34 34">
+                <circle cx="12" cy="12" r="5"/>
+                <path d="M21,13H20a1,1,0,0,1,0-2h1a1,1,0,0,1,0,2Z
+                M4,13H3a1,1,0,0,1,0-2H4a1,1,0,0,1,0,2Z
+                M17.66,7.34A1,1,0,0,1,17,7.05a1,1,0,0,1,0-1.41l.71-.71a1,1,0,1,1,1.41,1.41l-.71.71A1,1,0,0,1,17.66,7.34Z
+                M5.64,19.36a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.41L5.64,17a1,1,0,0,1,1.41,1.41l-.71.71A1,1,0,0,1,5.64,19.36Z
+                M12,5a1,1,0,0,1-1-1V3a1,1,0,0,1,2,0V4A1,1,0,0,1,12,5Z
+                M12,22a1,1,0,0,1-1-1V20a1,1,0,0,1,2,0v1A1,1,0,0,1,12,22Z
+                M6.34,7.34a1,1,0,0,1-.7-.29l-.71-.71A1,1,0,0,1,6.34,4.93l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,6.34,7.34Z
+                M18.36,19.36a1,1,0,0,1-.7-.29L17,18.36A1,1,0,0,1,18.36,17l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,18.36,19.36Z"/>
+              </svg>`
+        break;
+        case null:
+        case 'light':
+              themeicon = `<svg class="svglight" viewBox="-5 -5 34 34">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3
+                7 7 0 0 0 21 12.79z"></path>
+              </svg>`
+        break;
+    }
+    document.getElementById("themeicon").innerHTML = themeicon;
+</script>
 </body>
 </html>

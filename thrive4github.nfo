@@ -1,5 +1,21 @@
+update 2.2 07/08/2025
+- re-write of table generation attempt
+  to harmonize three views data, list and tile
+  now all have search and filter functionalty
+- restyled search box to better suit the
+  harmonized table views
+- added basic keyboard navigation to data
+  and list view
+- added webgl shader functionalty curtisity
+  to xemantic see: https://xemantic.github.io
+- added data source shaders
+  33 shaders
+  courtesy to author(s) at shadertoy
+- small bug fixes and tweaks.
+- modified / simplified main.css where needed
+
 update 2.1 24/05/2025
-- added to audioplayer 
+- added to audioplayer
   drc (audio gain)
   coverart extraction
   mp3 tag extraction

@@ -1,5 +1,4 @@
 function switchtheme() {
-  console.log(window.localStorage.getItem('theme'));
    if (window.localStorage.getItem('theme') === null) {
       window.localStorage.setItem('theme', 'light');
    }
@@ -8,45 +7,32 @@ function switchtheme() {
    } else {
       window.localStorage.setItem('theme', 'light');
    }
-   //location.reload();
 }
 
 // needed to affect switch theme
 document.documentElement.className = window.localStorage.getItem('theme');
 
 // resize text paper view
-var onresize = function(e) {
-    windowwidth = window.outerWidth;
-    if (document.getElementById('myModal').style.display == 'block'){
-      currentPage  = 0;
-      totalPages   = 0;
-      start        = 0;
-      end          = 0
-      renderpage(orgtext);
+if (document.title !== 'slide show' && document.title !== 'webgl') {
+    var onresize = function(e) {
+        windowwidth = window.outerWidth;
+        if (document.getElementById('myModal').style.display == 'block'){
+          currentPage  = 0;
+          totalPages   = 0;
+          start        = 0;
+          end          = 0
+          renderpage(orgtext);
+        }
     }
+    window.addEventListener("resize", onresize);
+    console.log('wah');
 }
-window.addEventListener("resize", onresize);
 
 function passmusicalbum(a){
     window.localStorage.setItem('name', a);
 }
 function passrelaseyear(a){
     window.localStorage.setItem('year', a);
-}
-
-// Define the handleClick function
-function handleClick(name, releaseDate, year) {
-  document.getElementById('myModal').style.display = 'block';
-  passmusicalbum(name);
-  switch (window.localStorage.getItem('menuitem')){
-    case 'film':
-      passrelaseyear(releaseDate);
-      break;
-    case 'music':
-      passrelaseyear(year);
-      break;
-  }
-  imageoverlay(titlecase(name), 'paper', 'remote');
 }
 
 function includeHTML() {
@@ -82,7 +68,6 @@ function includeHTML() {
 includeHTML();
 
 function getjsonf(url, callback) {
-
   const controller = new AbortController();
   const signal = controller.signal;
   // abort the fetch request workaround
@@ -124,9 +109,8 @@ if (data2)
 
 // parse json image url
 function showcamera(imageurl, check, svgclass){
-    let camera         = false;
-    let text = "";
-    // parse json image url
+    let camera = false;
+    let text   = "";
     Object.entries(imageurl).forEach((entry) => {
         if (camera === true) {
            return;
@@ -136,9 +120,10 @@ function showcamera(imageurl, check, svgclass){
            camera = true;
         };
     });
+
     if (camera === true) {
-       text += '<a class="cardcontainer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + check + '\', \'image\',\'remote\')">' +
-               '<svg class="' + svgclass + '" viewBox="-20 -22 44 44">' +
+       text += '<a class="pointer" onclick="document.getElementById(\'myModal\').style.display=\'block\'; imageoverlay(\'' + check + '\', \'image\',\'remote\')">' +
+               '<svg class="' + svgclass + '" pointer viewBox="-20 -12 44 44">' +
                      svgcamera() +
                '</svg></a>';
                camera = false;
@@ -197,6 +182,7 @@ span.onclick = function() {
     eventhandle.remove();
 }
 
+// sidebar navigation
 // todo needs more flexible intergration with openNav
 function indexsidenav(navdir = "") {
     let text   = "";
@@ -207,8 +193,8 @@ function indexsidenav(navdir = "") {
        source = 'json/config.json';
     }
     if (document.title != 'playlist' && navdir === 'right') {
-        document.getElementById("sidenavcontent").innerHTML = '<div class="cardlist">| no options | items ' +
-        window.localStorage.getItem('nritems') + ' </div>';
+        document.getElementById("sidenavcontent").innerHTML = '<div class=""><pre style="font-family: monospace;"> | no options | items ' +
+        window.localStorage.getItem('nritems') + ' </pre></div>';
         return;
     }
 
@@ -234,15 +220,187 @@ function indexsidenav(navdir = "") {
            + '<br>   seek     min ,'
            + '<br><br>   | playing'
            + dummy2 + currentIndex + ' / ' + trElements.length;
-           text += '<div class="cardlist"><pre style="font-family: monospace;">' + dummy + '</pre></div>'
+           text += '<div class=""><pre style="font-family: monospace;">' + dummy + '</pre></div>'
         }
         document.getElementById("sidenavcontent").innerHTML = text;
     });
     // clean up
     text = "";
 }
+// Define the handleClick function
+function handleClick(name, releaseDate, year) {
+  document.getElementById('myModal').style.display = 'block';
+  passmusicalbum(name);
+  switch (window.localStorage.getItem('menuitem')){
+    case 'film':
+      passrelaseyear(releaseDate);
+      break;
+    case 'music':
+      passrelaseyear(year);
+      break;
+  }
+  imageoverlay(titlecase(name), 'paper', 'remote');
+}
 
-// sidebar navigation
+let selectedIndex = -1;
+let sidenavactive = false;
+
+function keynavcontent(event) {
+    let activenav;
+    let items = [];
+    let urls  = [];
+
+    if (document.getElementById("myModal").style.display != "block"){
+        if (sidenavactive) {
+            activenav = document.getElementById("sidenavcontent");
+            items = activenav.getElementsByTagName("a");
+        } else {
+            if (localStorage.getItem("listtype") != "tile") {
+                activenav = document.querySelector("tbody");
+                // fallback complete set
+                items = activenav.getElementsByTagName("tr");
+                // filterd on search
+                items = Array.from(activenav.getElementsByTagName("tr")).filter(
+                    (row) => row.style.display !== "none"
+                );
+                urls = items.map(row => {
+                    const rowUrls = row.querySelectorAll("a");
+                    return rowUrls.length > 0 ? rowUrls[0].href : null;
+                });
+            } else {
+                return;
+            }
+        }
+    
+        // height item
+        const itemHeight = items[0].offsetHeight;
+        // height viewport
+        const viewportHeight = window.innerHeight;
+        // number of items in viewport
+        const itemsPerPage = Math.floor(viewportHeight / itemHeight);
+    
+        switch (event.key) {
+            case "ArrowUp":
+                event.preventDefault();
+                selectedIndex = (selectedIndex > 0) ? selectedIndex - 1 : items.length - 1;
+                items[selectedIndex].scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'smooth'
+                });
+                break;
+            case "ArrowDown":
+                event.preventDefault();
+                selectedIndex = (selectedIndex < items.length - 1) ? selectedIndex + 1 : 0;
+                items[selectedIndex].scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'smooth'
+                });
+                break;
+            case "Home":
+                event.preventDefault();
+                selectedIndex = 0;
+                window.scrollTo(0, 0);
+                break;
+            case "End":
+                event.preventDefault();
+                selectedIndex = items.length - 1;
+                window.scrollTo(0, document.body.scrollHeight);
+                break;
+            case "PageUp":
+                event.preventDefault();
+                selectedIndex = Math.max(0, selectedIndex - itemsPerPage);
+                items[selectedIndex].scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'smooth'
+                });
+                break;
+            case "PageDown":
+                event.preventDefault();
+                selectedIndex = Math.min(items.length - 1, selectedIndex + itemsPerPage);
+                items[selectedIndex].scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'smooth'
+                });
+                break;
+            case "Enter":
+                event.preventDefault();
+                if (selectedIndex >= 0 && selectedIndex < items.length) {
+                    if (sidenavactive) {
+                         window.location.href = items[selectedIndex].href;
+                        sidenavactive = false;
+                    } else {
+                        const rowUrls = items[selectedIndex].querySelectorAll("a");
+                        let link = rowUrls[0]; // first link
+                        // if first link is a modal, use second link if available
+                        if (link.getAttribute('onclick')?.includes("myModal")) {
+                            link = rowUrls.length > 1 ? rowUrls[1] : link;
+                        }
+                        if (link) {
+                            if (link.target === "_blank") {
+                                window.open(link.href);
+                            } else if (link.href) {
+                                window.location.href = link.href;
+                            } else {
+                                handleClick(link.textContent, 'undefined', 'undefined');
+                            }
+                        }
+                    }
+                }
+                break;
+           case "Tab":
+                event.preventDefault();
+                sidenavactive = !sidenavactive;
+                selectedIndex = -1;
+                updateSelectedItem(items);
+                openNav('left');
+                break;
+            case "Escape":
+                event.preventDefault();
+                document.getElementById("mySidenav").style.width = "0px";
+                break;
+            default:
+                const inputElem = document.getElementById("srinput");
+                if (document.activeElement === inputElem) {
+                    searchandfilter();
+                    selectedIndex = -1;
+                }
+                break;
+            }
+        // used for tag
+        if (sidenavactive === false) {
+            if (selectedIndex > -1 ) {
+              gettrletter(items[selectedIndex]);
+              trletteron()
+            }
+        }
+        updateSelectedItem(items);
+    
+    } // filter on modal display
+}
+
+function updateSelectedItem(items) {
+    for (let i = 0; i < items.length; i++) {
+        items[i].classList.remove("selected");
+    }
+    if (selectedIndex >= 0 && selectedIndex < items.length) {
+        items[selectedIndex].classList.add("selected");
+    }
+}
+
+if (localStorage.getItem("listtype") !== 'tile' && document.title !== 'slide show' && document.title !== 'webgl') {
+    // todo needs better place
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'PageUp' || event.key === 'PageDown') {
+        document.querySelector('tbody').classList.add('keyboard-navigation');
+      }
+    });
+
+    document.addEventListener('mousemove', () => {
+        document.querySelector('tbody').classList.remove('keyboard-navigation');
+    });
+    document.addEventListener("keydown", keynavcontent);
+}
+
 function openNav(navdir) {
     // technique change css element on the fly
     const nav = document.querySelector('.sidenav');
@@ -258,18 +416,18 @@ function openNav(navdir) {
         navth('open');
     } else {
         document.getElementById("mySidenav").style.width = "0px";
+        navth('close');
     }
     indexsidenav(navdir);
 }
 
 function closeNav() {
-  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("mySidenav").style.width = "0px";
   navth('close');
 }
 
 // work around hide headers
 function navth(state) {
-
   const thelm = document.getElementsByTagName("th");
   for (let i = 1; i < thelm.length; i++) {
       if (state === 'close') {
@@ -278,7 +436,6 @@ function navth(state) {
          thelm[i].style.zIndex = "0";
       }
   }
-
 }
 
 // play audio source
@@ -300,7 +457,6 @@ function toggledrc(state) {
       // Optionally reset gain to unity when disabling
        gainNode.gain.value = 1;
        volumeSlider.value  = 1;
-      // updateGainIndicator();
     }
     closeNav();
 }
@@ -362,7 +518,6 @@ function audioplay(music, element) {
       const signal = controller.signal;
       const timeoutId = setTimeout(() => {
           controller.abort();
-          //console.log('wah');
           spinner.style.display = 'none';
       }, 10000);
 
@@ -374,7 +529,6 @@ function audioplay(music, element) {
           let chunks            = [];
           // hack some browsers can report 0 for content length
           if (contentLength < 1) { contentLength = 100000;}
-          //console.log(contentLength);
           function read() {
             return reader.read().then(({ done, value }) => {
               if (done) {
@@ -400,7 +554,7 @@ function audioplay(music, element) {
       request.open('GET', audio.src, true);
   
       request.onerror = function() {
-          console.log('Request error');
+          //console.log('Request error');
           spinner.style.display = 'none';
       };
   
@@ -560,15 +714,12 @@ function createparagraph(text) {
 function gettrletter(x) {
    const tdsort = window.localStorage.getItem('tdsortelement');
    let dummy = document.getElementById("datatable").rows[x.rowIndex].cells[tdsort].innerHTML;
-   // reduce to anchor text filter out ahref
-   dummy = dummy.slice(dummy.indexOf(">") + 1, dummy.lastIndexOf("<"));
+   // reduce to anchor text filter out ahref to a temporary element and extract the link text
+   const tempdiv = document.createElement('div');
+   tempdiv.innerHTML = dummy;
+   dummy = tempdiv.querySelector('a') ? tempdiv.querySelector('a').textContent : '';
+   //dummy = dummy.slice(dummy.indexOf(">") + 1, dummy.lastIndexOf("<"));
    document.getElementById("trletterplace").innerHTML = dummy.charAt(0).toUpperCase();
-}
-
-function getdivletter(x) {
-   let dummy = document.getElementsByClassName('cardlist')[x].innerHTML.toUpperCase();
-   dummy = document.getElementsByClassName('cardlist')[x].innerHTML.charAt(dummy.indexOf("<B>") + 3).toUpperCase();
-   document.getElementById("trletterplace").innerHTML = dummy;
 }
 
 function trletteron() {
@@ -605,7 +756,6 @@ function topFunction() {
  * This is free and unencumbered software released into the public domain.
  * more info see https://github.com/tofsjonas/sortable/blob/main/sortable.js
 */
-
 document.addEventListener('click', function (e) {
   var down_class  = ' dir-d '
   var up_class    = ' dir-u '
@@ -658,8 +808,6 @@ document.addEventListener('click', function (e) {
         rows.sort(function (a, b) {
           var x = getValue((reverse ? a : b).cells[column_index])
           var y = getValue((reverse ? b : a).cells[column_index])
-          // var y = (reverse ? b : a).cells[column_index].innerText
-          // var x = (reverse ? a : b).cells[column_index].innerText
           return isNaN(x - y) ? x.localeCompare(y) : x - y
         })
         // Make a clone without content
@@ -685,8 +833,6 @@ function searchandfilter() {
   filter = input.value.toUpperCase();
   table  = document.getElementById("datatable");
   tr     = table.getElementsByTagName("tr");
-
-  // Loop through all table rows, and hide those who don't match the search query
   for (i = 0; i < tr.length; i++) {
     td = tr[i].getElementsByTagName("td")[window.localStorage.getItem('tdelement')];
     // todo allow for grouping by column
@@ -699,6 +845,36 @@ function searchandfilter() {
         tr[i].style.display = "none";
       }
     }
+  }
+  selectedIndex = -1;
+}
+
+// toggle fullscreen slide shows
+var elem = document.documentElement;
+function togglefullscreen() {
+  var isFullScreen = document.fullScreen ||
+      document.mozFullScreen ||
+      document.webkitIsFullScreen || (document.msFullscreenElement != null);
+  if (isFullScreen) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {/* Safari */
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen)     {/* IE11 */
+        document.msExitFullscreen();
+      } else if (document.mozCancelFullScreen)  {/* IE11 */
+        document.mozCancelFullScreen();
+      }
+  } else {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {/* Safari */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen)     {/* IE11 */
+        elem.msRequestFullscreen();
+      } else if (elem.mozRequestFullScreen)    {/* seamonkey */
+        elem.mozRequestFullScreen();
+      }
   }
 }
 
