@@ -4,7 +4,7 @@
     "private": false,
     "description": "Various mods made for an number of windows games hosted at nexus mods",
     "href":  "<a href='https://www.nexusmods.com/users/4664747?tab=user+files&BH=0' target='_blank' onclick=closeNav();>",
-    "updated": "2023-07-18T09:23:01Z",
+    "updated": "2025-07-18T09:23:01Z",
     "topics": [
       "mods",
       "game",
@@ -42,7 +42,7 @@
     "private": false,
     "description": "music wip",
     "href":  "<a href='music.html' onclick=closeNav();>",
-    "updated": "2023-07-18T09:23:01Z",
+    "updated": "2025-08-09T09:23:01Z",
     "topics": [
       "fruityloops",
       "various music styles",
@@ -55,7 +55,7 @@
     "private": false,
     "description": "links and other data sources",
     "href":  "<a href='resource.html' onclick=closeNav();>",
-    "updated": "2023-07-18T09:23:01Z",
+    "updated": "2025-08-09T09:23:01Z",
     "topics": [
       "fruityloops",
       "various music styles",
@@ -107,7 +107,7 @@
     "private": false,
     "description": "<img id='myImg' src='https://unsplash.it/300?random' alt='random image'>",
     "href":  "<a href='gallery.html' onclick=closeNav();>",
-    "updated": "2023-07-18T09:23:01Z",
+    "updated": "2024-07-18T09:23:01Z",
     "topics": [
       "image viewer",
       "examples",
@@ -129,11 +129,24 @@
     ]
   },
   {
+    "name": "webgl",
+    "private": false,
+    "description": "play webgl shadertoy files",
+    "href":  "<a href='webgl.html' target='_blank' onclick=closeNav();>",
+    "updated": "2025-08-09T09:23:01Z",
+    "topics": [
+      "shader viewer",
+      "webgl",
+      "shadertoy",
+      "opengl"
+    ]
+  },
+  {
     "name": "about",
     "private": false,
     "description": "info on site",
     "href":  "<a href='about.html' onclick=closeNav();>",
-    "updated": "2025-02-07T09:23:01Z",
+    "updated": "2025-08-09T09:23:01Z",
     "topics": [
       "details",
       "examples",

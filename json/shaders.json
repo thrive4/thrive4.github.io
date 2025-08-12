@@ -1,0 +1,233 @@
+[
+  {
+    "private": false,
+    "name": "a flow of 33",
+    "href": "../shaders/aflowof33.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/td3Sz8"
+  },
+  {
+    "private": false,
+    "name": "clock",
+    "href": "../shaders/clock.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "by Nikos Papadopoulos, 4rknova / 2014"
+  },
+  {
+    "private": false,
+    "name": "clock 2",
+    "href": "../shaders/clock2.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "closeup waterdots",
+    "href": "../shaders/closeupwaterdots.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/wlS3zh"
+  },
+  {
+    "private": false,
+    "name": "creation",
+    "href": "../shaders/creation.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "Danilo Guanabara"
+  },
+  {
+    "private": false,
+    "name": "cube lattice",
+    "href": "../shaders/cubelattice.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "cubic of spheric dots",
+    "href": "../shaders/cubicofsphericdots.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/4ccyWM"
+  },
+  {
+    "private": false,
+    "name": "dynamic cubemap resu",
+    "href": "../shaders/dynamiccubemapresu.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/lf3yzs"
+  },
+  {
+    "private": false,
+    "name": "fire",
+    "href": "../shaders/fire.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/4ttGWM"
+  },
+  {
+    "private": false,
+    "name": "floating bubbles",
+    "href": "../shaders/floatingbubbles.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "inigo quilez - iq/2013"
+  },
+  {
+    "private": false,
+    "name": "glowing waves",
+    "href": "../shaders/glowingwaves.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/3s3GDn"
+  },
+  {
+    "private": false,
+    "name": "glow shader test 2",
+    "href": "../shaders/glowshadertest2.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/4dSfDK"
+  },
+  {
+    "private": false,
+    "name": "halftoning sphere",
+    "href": "../shaders/halftoningsphere.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "hex tile",
+    "href": "../shaders/hextile.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/dtSXWV"
+  },
+  {
+    "private": false,
+    "name": "hyperboloid",
+    "href": "../shaders/hyperboloid.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "led rgb",
+    "href": "../shaders/ledrgb.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/cs3yWN"
+  },
+  {
+    "private": false,
+    "name": "normalized sinc wave",
+    "href": "../shaders/normalizedsincwave.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "octagrams",
+    "href": "../shaders/octagrams.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "os boot flares",
+    "href": "../shaders/osbootflares.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/MtjGDh"
+  },
+  {
+    "private": false,
+    "name": "quasi crystal",
+    "href": "../shaders/quasicrystal.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "FabriceNeyret2"
+  },
+  {
+    "private": false,
+    "name": "rules of engagement",
+    "href": "../shaders/rulesofengagement.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "singularity",
+    "href": "../shaders/singularity.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "@XorDev"
+  },
+  {
+    "private": false,
+    "name": "squres background",
+    "href": "../shaders/squresbackground.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/ls3XDX"
+  },
+  {
+    "private": false,
+    "name": "sunshine day 01",
+    "href": "../shaders/sunshineday01.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "thats amoire",
+    "href": "../shaders/thatsamoire.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/WsjGDc"
+  },
+  {
+    "private": true,
+    "name": "the core",
+    "href": "../shaders/thecore.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "@kishimisu (2023)"
+  },
+  {
+    "private": false,
+    "name": "the eye",
+    "href": "../shaders/theeye.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/llVczd"
+  },
+  {
+    "private": false,
+    "name": "triangles slide simplified",
+    "href": "../shaders/triangles_slide_simplified.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/NsXSDB"
+  },
+  {
+    "private": false,
+    "name": "tripy patterns",
+    "href": "../shaders/tripypatterns.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "twinkling tunnel",
+    "href": "../shaders/twinklingtunnel.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/WfcGWj"
+  },
+  {
+    "private": true,
+    "name": "very simple squares",
+    "href": "../shaders/verysimplesquares.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "waves of information",
+    "href": "../shaders/wavesofinformation.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/Wd3Bz8"
+  },
+  {
+    "private": false,
+    "name": "worley noise waters",
+    "href": "../shaders/worleynoisewaters.gls",
+    "updated": "2023-07-18T09:23:01Z",
+    "extract": "unknown"
+  }
+]
