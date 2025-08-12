@@ -1,0 +1,65 @@
+// https://www.shadertoy.com/view/NsXSDB
+// simplifying+AA  2254 chars "triangles_slide" by skaplun. https://shadertoy.com/view/NdXSRX
+
+
+#define distLine( a, b )   length( a - (b)* clamp(dot(a, b)/dot(b, b), 0., 1.) )
+
+#define hsv(c)           ( (c).z * ( 1. + (c).y* ( .6 * cos( 6.3*(c).x  + vec3(0,23,21)  ) -.4 ) ) )
+
+#define rot(v)           ( v.xy + vec2(v.y,-v.x) ) /2. 
+
+#define hash(p)          ( -1. + 2.*fract(sin( (p) * mat3(127.1,311.7, 74.7, 269.5,183.3,246.1, 113.5,271.9,124.6))*43758.5453123) )
+
+#define grad(x,y,z)        dot( hash( i + vec3(x,y,z) ), f - vec3(x,y,z) )
+
+float noise( vec3 p )
+{
+    vec3 i = floor( p ),
+         f = fract( p ),
+	     u = f*f*(3.-2.*f);
+
+    return mix( mix( mix( grad(0,0,0), grad(1,0,0), u.x),
+                     mix( grad(0,1,0), grad(1,1,0), u.x), u.y),
+                mix( mix( grad(0,0,1), grad(1,0,1), u.x),
+                     mix( grad(0,1,1), grad(1,1,1), u.x), u.y), u.z );
+}
+
+float smin( float a, float b, float k ){
+    float h = clamp( .5+.5*(b-a)/k, 0., 1. );
+    return mix( b- k*h, a, h );
+}
+
+vec3 triangle(vec2 p) // based on Shane's 'Triangle Grid Contouring'
+{
+    vec2 op = p,
+         s = floor( p + (p.x + p.y)*.36602540378 );
+    p -= s - (s.x + s.y) *.211324865;
+  
+    vec2 p1 = ( p.x < p.y ? vec2(0,1) : vec2(1,0) ) - .2113248654, 
+         p2 = vec2(.577350269);
+    float tri = smin(smin( distLine(p     , p1    ), 
+                           distLine(p - p1, p2-p1 ), .15), 
+                           distLine(p - p2,   -p2 ), .15);
+    return vec3( op - p + ( p1 + p2 ) /3., tri );
+}
+
+
+vec4 pattern(vec2 p, float speed, float colorShift, float val, float density)
+{
+    vec3 tri = triangle(p);
+    vec2 suv = rot(tri) * .5 + vec2(iTime * speed, 0);
+    float n = noise( vec3(   suv       / vec2(5, 1) , iTime * .5) ),
+         n2 = noise( vec3(rot(triangle(p/2.) ) * .1 , iTime + colorShift) );
+
+    return  smoothstep(0.0, 0.02, tri.z) * step(.25 + density, n)
+          * vec4( hsv(vec3(n2, .5 + n * .25, val)), 1 );
+}
+
+void mainImage( out vec4 O, vec2 u )
+{
+    vec2 R = iResolution.xy,
+         U = (2. * u - R ) /R.y;
+    
+    O =       pattern(U * 4.,  4.,  0.  , 1., -.05);
+    O = mix(  pattern(U * 7., 12., 97.13, .25, .15), O, O.a);
+}

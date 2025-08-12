@@ -1,0 +1,41 @@
+// https://www.shadertoy.com/view/Wd3Bz8
+// For smooth waves set #define STEP .025
+#define STEP .2
+#define XLIM 1.
+#define YLIM 1.
+#define LIGHTSPEED 1.
+
+float circ(vec2 p) {
+    const float r = .1;
+    return length(p)-r;
+}
+
+float oracle(vec2 p, float t) {
+    float dist = circ(p+vec2(sin(t),0.));
+    return smoothstep(0.1, 0., dist);
+}
+
+float electricfield(vec2 p, float t) {
+    float acc = 0.;
+    int count = 0;
+    for(float y = -YLIM; y <= YLIM; y+=STEP) {
+        for(float x = -XLIM; x <= XLIM; x+=STEP) {
+            vec2 q = vec2(x, y);
+            float d = length(p - q);
+            float delay = d/LIGHTSPEED;
+            acc += oracle(q, t-delay);
+            count++;
+        }
+    }
+    return acc*10./float(count);
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    vec2 uv = (2.*fragCoord-iResolution.xy)/iResolution.y;
+    float foreground = oracle(uv, iTime);
+    float background = electricfield(uv, iTime);
+
+    vec3 col = vec3(foreground + background);
+    fragColor = vec4(col,1.0);
+}

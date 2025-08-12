@@ -1,0 +1,52 @@
+float myLength(vec2 uv, vec2 fragCoord) {
+//return length(mod(4. * (1.-uv) * uv,0.4));
+float x = cos(iResolution.x * abs(uv.x) + 0.2 * iTime);
+float y = sin(abs(uv.y) + x - 0.5 * iTime);
+float b = 0.5 * (1. + cos(0.3 * iTime));
+float b2 = 0.5 * (1. + cos(0.15 * iTime));
+return mod(x + y, (1.-b) * x * y + b * 0.4 * length(uv)) * ( b2 + (1.-b2)* 0.5 * (0.2 + sin(2. * uv.x * uv.y + iTime)));
+//return mod(x * y, abs(x * x - y * y) + 10.);// * length(uv);
+}
+
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    float t = iTime;
+   
+    // Normalized pixel coordinates (from 0 to 1)
+    vec2 uv = 6. * (fragCoord - 0.5 * iResolution.xy) /iResolution.y;
+    float theta = atan(uv.y, uv.x);
+    float k = 0.5 * (1. + cos(0.25 * t));
+    float s = 0.5 * (1. + cos(t));
+    //s = 1. - 4. * s * (1.-s);
+    s = (1.-k) * s + k * (1.-s);
+
+    float d = myLength(uv, fragCoord);
+    float p = 0.2;//0.5 * 3.14159;
+    float a = 0.2;
+    
+    float r = 0.4 + 0.1 * (s * cos(3. * theta + t) + (1.-s) * sin(7. * theta + t));    
+    float r2 =  0.43 + 0.1 * (s * cos(3. * theta + t + p) + (1.-s) * sin(7. * theta + t + p));
+    t -= a;
+    float g = 0.4 + 0.1 * (s * cos(3. * theta + t) + (1.-s) * sin(7. * theta + t));    
+    float g2 =  0.43 + 0.1 * (s * cos(3. * theta + t + p) + (1.-s) * sin(7. * theta + t + p));
+    t += 2. * a;
+    float b = 0.4 + 0.1 * (s * cos(3. * theta + t) + (1.-s) * sin(7. * theta + t));    
+    float b2 =  0.43 + 0.1 * (s * cos(3. * theta + t + p) + (1.-s) * sin(7. * theta + t + p));
+    
+    
+    
+    r = 1.- smoothstep(d, r2, r);
+    g = 1.- smoothstep(d, g2, g);
+    b = 1.- smoothstep(d, b2, b);
+    r = 16. * r * r * (1.-r) * (1.-r);
+    g = 16. * g * g * (1.-g) * (1.-g);
+    b = 16. * b * b * (1.-b) * (1.-b);
+    
+    float c1 = 0.5 * (1. + cos(t));
+    float c2 = 0.5 * (1. + cos(t + 3.14159 / 3.));
+    float c3 = 0.5 * (1. + cos(t - 3.14159 / 3.));
+    
+
+    fragColor = vec4(g + c1 * r,r + c2 * b,b + c3 * g,1.);
+}

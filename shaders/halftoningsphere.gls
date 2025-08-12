@@ -1,0 +1,18 @@
+#define time iTime
+
+void mainImage(out vec4 O,  vec2 U) {
+    vec2 R = iResolution.xy,
+         p = (U+U - R) / R.y,
+         m = iMouse.xy / R,
+         a = 3.14 * vec2(0.05 * iTime, 0.05 * iTime),
+         c = cos(a), s = sin(a);
+    vec3 n = mat3( c.y,          0,      -s.y,
+		           s.y * s.x,  c.x, c.y * s.x,
+		           s.y * c.x, -s.x, c.y * c.x
+	            )
+             * vec3( p, sqrt(1.-dot(p,p)) );
+    O -= O;
+    O += n==n ?  s = 9.55 * vec2(acos(n.z), atan(n.y, n.x)), // 9.55 = 30/3.14
+                 ceil(s.x) * 0.5 - 22.0 * length(fract(s) - 0.5)
+               : 1. ;   
+}

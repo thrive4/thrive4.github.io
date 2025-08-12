@@ -1,0 +1,77 @@
+// courtesy https://www.shadertoy.com/view/lf3yzs
+// note tweaked line 75 use itime instead of mouse
+#define foopresicion fprecision
+
+float fprecision(float x, float samples)
+{
+    return floor(x * samples + 0.5) / samples;
+}
+
+vec3 fprecision(vec3 v, float samples)
+{
+    return vec3(
+        fprecision(v.x, samples),
+        fprecision(v.y, samples),
+        fprecision(v.z, samples)
+    );
+}
+
+float fprecision2(float x, float samples)
+{
+    return floor(x * samples + 0.5) / samples;
+}
+
+
+vec3 fprecision2(vec3 v, float samples)
+{
+    return vec3(
+        fprecision2(v.x, samples),
+        fprecision2(v.y, samples),
+        fprecision2(v.z, samples)
+    );
+}
+
+vec3 nochange(vec3 v, float n)
+{
+    return v;
+}
+
+vec2 Rotate2D(in vec2 uv, in float angle) 
+{ 
+    float sin = sin(angle);
+    float cos = cos(angle);
+    
+    return uv * mat2(
+        +cos, +sin,
+        -sin, +cos
+    );
+}
+
+#define PI 3.1415926535897932384626433832795
+#define PI_DIV_2 (PI * 0.5)
+
+vec3 GetDir(in vec2 uv, in vec2 mouse)
+{
+    vec3 rd = vec3(uv, 1.);
+    
+    rd.yz = Rotate2D(rd.yz, PI_DIV_2 * mouse.y);
+    rd.xz = Rotate2D(rd.xz, PI * mouse.x);
+    
+    return normalize(rd);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    // Normalized pixel coordinates (from 0 to 1)
+    vec2 uv = fragCoord/iResolution.xy;
+
+    vec2 uvClip = (fragCoord.xy - iResolution.xy * .5) / iResolution.y;
+    vec2 mouse = (iMouse.xy / iResolution.xy) * 2.0 - 1.0; // <-1.0,1.0>
+
+    vec3 rd = GetDir(uvClip, vec2(iTime * 0.1, iTime * 0.2));
+
+    float cubemapRes = abs(cos(iTime / 8.0)) * 16.0;
+
+    vec3 dir = normalize(foopresicion(rd, cubemapRes));
+    fragColor = vec4(dir, 0);
+}

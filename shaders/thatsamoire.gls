@@ -1,0 +1,36 @@
+// courtesy https://www.shadertoy.com/view/WsjGDc
+
+vec3 cgrid(vec2 dc)
+{
+ 	vec2 sc = vec2(cos(dc.x * 50.0),sin(dc.y * 50.0));
+    //float r = sin(sc.x * sc.y + dc.x * dc.y); 
+    float r = sin(sc.x * sc.y); 
+    float a = cos(iTime * 0.5) - 0.5;
+    return vec3(r,r+a,r*a);   
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    // Normalized pixel coordinates (from 0 to 1)
+    vec2 uv = fragCoord/iResolution.xy;
+    float aspect = iResolution.x/iResolution.y;
+    vec2 pos = vec2(uv-vec2(0.5));
+    
+    pos.x *= aspect;
+    float t = iTime * 0.33;
+    float s = sin(length(pos));
+    mat2 m = mat2(cos(t),-sin(t),sin(t),cos(t));
+    mat2 sm = mat2(0.99,0.0,0.0,0.99);
+
+    vec3 col = cgrid(pos);
+
+    pos = pos * m;
+    pos = pos * sm;
+    
+    vec3 col2 = cgrid(pos);
+    
+    col = mix(col, col2,0.5);
+
+    // Output to screen
+    fragColor = vec4(col,1.0);
+}

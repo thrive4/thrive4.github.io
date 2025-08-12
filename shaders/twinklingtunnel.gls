@@ -1,0 +1,51 @@
+// courtesy https://www.shadertoy.com/view/WfcGWj
+// CC0: Trailing the Twinkling Tunnelwisp
+//  A bit of Saturday coding (also Norway’s Constitution Day).
+//  Some artifacts remain, but it’s good enough for my standards.
+
+//  Music by Pestis created for Cassini's Cosmic Conclusion
+//   https://demozoo.org/productions/367582/
+
+// For those that like it as a twigl: https://twigl.app?ol=true&ss=-OQdLCgeO21o1boSdWJO
+
+// Distance field for gyroid, adapted from Paul Karlik's "Gyroid Travel" in KodeLife
+//  Tweaked slightly for this effect
+// Gyroid distance field
+float g(vec4 p, float s) {
+    return abs(dot(sin(p *= s), cos(p.zxwy)) - 1.) / s;
+}
+
+// WebGL 1.0-compatible tanh for vec4
+vec4 tanh_approx(vec4 x) {
+    return (exp(2.0 * x) - 1.0) / (exp(2.0 * x) + 1.0);
+}
+
+void mainImage(out vec4 O, vec2 C) {
+    float d, z = 0., s;
+    vec4 o = vec4(0), q, p;
+    vec4 U = vec4(2, 1, 0, 3);
+    for (int i = 0; i < 79; ++i) {
+        float fi = float(i);
+
+        vec2 r = iResolution.xy;
+        q = vec4(normalize(vec3((C + C - r) / r.y, 2.0)) * z, 0.2);
+        q.z += iTime / 30.0;
+        s = q.y + 0.1;
+        q.y = abs(s);
+        p = q;
+        p.y -= 0.11;
+        p.xy *= mat2(cos(11.0 * U.zywz - 2.0 * p.z));
+        p.y -= 0.2;
+
+        d = abs(g(p, 8.0) - g(p, 24.0)) / 4.0;
+        p = 1.0 + cos(0.7 * U + 5.0 * q.z);
+
+        o += (s > 0.0 ? 1.0 : 0.1) * p.w * p / max(s > 0.0 ? d : d * d * d, 0.0005);
+
+        z += d + 0.0005;
+    }
+
+    o += (1.4 + sin(iTime) * sin(1.7 * iTime) * sin(2.3 * iTime)) * 1000.0 * U / length(q.xy);
+
+    O = tanh_approx(o / 100000.0);
+}

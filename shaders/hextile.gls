@@ -1,0 +1,24 @@
+// courtesy https://www.shadertoy.com/view/dtSXWV
+void mainImage(out vec4 C, in vec2 U)
+{
+    float osc = abs(sin(iTime * 0.05)); // oscillation
+    vec2 R = iResolution.xy,
+         v = (U+U-R)/R.y,                 // coords
+         //u = v*10./(1.-iMouse.y/R.y),   // coords with zoom & scale
+         u = v * mix(1.0, 10.0 / (1.0 - osc), step(1.0, 10.0 / (1.0 - osc))), // mimic mouse
+         o = vec2(.5, .866),              // hex offset
+         a = mod(u,   o+o) - o,           // grid 1
+         b = mod(u-o, o+o) - o,           // grid 2
+         h = dot(a,a) < dot(b,b) ? a : b, // combine grids for hex tile
+         k = abs(h);
+
+    float p = length(u-h) * 4.0 * iTime / 60., // color & shadow pattern
+          n = 6.2832; // pi2
+
+    vec3 c = (1.-max(k.x, dot(k, o))*2.) // hex tile
+           * (sin(p*n)/2.+1.) // brightness pattern
+           * (cos(radians(vec3(-95, -135, 170)) + p*n)*.5+.5) // color
+           * (2.-length(v)); // darken screen edges
+
+    C = vec4(c, 1);
+}
