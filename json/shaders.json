@@ -8,6 +8,13 @@
   },
   {
     "private": false,
+    "name": "2d clouds",
+    "href": "../shaders/2dclouds.gls",
+    "updated": "2025-09-14T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/4tdSWr"
+  },
+  {
+    "private": false,
     "name": "clock",
     "href": "../shaders/clock.gls",
     "updated": "2023-07-18T09:23:01Z",
@@ -71,6 +78,13 @@
   },
   {
     "private": false,
+    "name": "gilmore leaves",
+    "href": "../shaders/gilmoreleaves.gls",
+    "updated": "2025-09-14T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/MsdSWl"
+  },
+  {
+    "private": false,
     "name": "glowing waves",
     "href": "../shaders/glowingwaves.gls",
     "updated": "2023-07-18T09:23:01Z",
@@ -113,6 +127,20 @@
   },
   {
     "private": false,
+    "name": "magic loader",
+    "href": "../shaders/magicloader.gls",
+    "updated": "2025-09-14T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/fsGGWG"
+  },
+  {
+    "private": false,
+    "name": "neutron bg",
+    "href": "../shaders/neutronbg.gls",
+    "updated": "2025-09-14T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/fd3SDS"
+  },
+  {
+    "private": false,
     "name": "normalized sinc wave",
     "href": "../shaders/normalizedsincwave.gls",
     "updated": "2023-07-18T09:23:01Z",
@@ -148,6 +176,13 @@
   },
   {
     "private": false,
+    "name": "scatter form 1b",
+    "href": "../shaders/scatterform1b.gls",
+    "updated": "2025-09-14T09:23:01Z",
+    "extract": "Hepp Maccoy 2019"
+  },
+  {
+    "private": false,
     "name": "singularity",
     "href": "../shaders/singularity.gls",
     "updated": "2023-07-18T09:23:01Z",
@@ -166,6 +201,13 @@
     "href": "../shaders/sunshineday01.gls",
     "updated": "2023-07-18T09:23:01Z",
     "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "sunset expanded",
+    "href": "../shaders/sunsetexpanded.gls",
+    "updated": "2025-09-14T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/Wf3SWn"
   },
   {
     "private": false,
@@ -201,6 +243,13 @@
     "href": "../shaders/tripypatterns.gls",
     "updated": "2023-07-18T09:23:01Z",
     "extract": "unknown"
+  },
+  {
+    "private": false,
+    "name": "truchet tentacles",
+    "href": "../shaders/truchettentacles.gls",
+    "updated": "2025-09-14T09:23:01Z",
+    "extract": "https://www.shadertoy.com/view/ldfGWn"
   },
   {
     "private": false,

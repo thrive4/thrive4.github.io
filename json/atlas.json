@@ -136,7 +136,7 @@
     "displayfields": [
       "name",
       "genres",
-      "release_date"
+      "year"
     ]
   },
   {

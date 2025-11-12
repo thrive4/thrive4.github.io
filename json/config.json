@@ -5,6 +5,7 @@
     "description": "audio shuffle play",
     "href":  "<a href='#' onclick=toggleplaytype('shuffle');>",
     "updated": "2023-07-18T09:23:01Z",
+    "section": "playlist",
     "topics": [
       "mods",
       "game",
@@ -18,6 +19,7 @@
     "description": "audio linear play",
     "href":  "<a href='#' onclick=toggleplaytype('linear');>",
     "updated": "2025-02-07T09:23:01Z",
+    "section": "playlist",
     "topics": [
       "freebasic",
       "apps",
@@ -26,11 +28,12 @@
     ]
   },
   {
-    "name": "toggle drc",
+    "name": "toggledrc",
     "private": false,
     "description": "auto gain",
     "href":  "<a href='#' onclick=toggledrc('on');>",
     "updated": "2025-02-07T09:23:01Z",
+    "section": "playlist",
     "topics": [
       "drc"
     ]
@@ -41,6 +44,59 @@
     "description": "documentaries",
     "href":  "<a href='docu.html' onclick=closeNav();>",
     "updated": "2023-07-18T09:23:01Z",
+    "section": "general",
+    "topics": [
+      "information",
+      "report",
+      "global"
+    ]
+  },
+  {
+    "name": "chart",
+    "private": false,
+    "description": "documentaries",
+    "href":  "<a href='chart.html' target='_blank' onclick=closeNav();>",
+    "updated": "2023-07-18T09:23:01Z",
+    "section": "general",
+    "topics": [
+      "information",
+      "report",
+      "global"
+    ]
+  },
+  {
+    "name": "texttopdformd",
+    "private": false,
+    "description": "documentaries",
+    "href":  "<a href='text2md.html' target='_blank' onclick=closeNav();>",
+    "updated": "2023-07-18T09:23:01Z",
+    "section": "general",
+    "topics": [
+      "information",
+      "report",
+      "global"
+    ]
+  },
+  {
+    "name": "markdownviewer",
+    "private": false,
+    "description": "documentaries",
+    "href":  "<a href='mdview.html' target='_blank' onclick=closeNav();>",
+    "updated": "2023-07-18T09:23:01Z",
+    "section": "general",
+    "topics": [
+      "information",
+      "report",
+      "global"
+    ]
+  },
+  {
+    "name": "globe",
+    "private": false,
+    "description": "documentaries",
+    "href":  "<a href='globe.html' target='_blank' onclick=closeNav();>",
+    "updated": "2023-07-18T09:23:01Z",
+    "section": "general",
     "topics": [
       "information",
       "report",

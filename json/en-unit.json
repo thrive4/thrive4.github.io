@@ -1,0 +1,179 @@
+{
+  "age": {
+      "possibleunits": [
+          "day",
+          "month",
+          "week",
+          "year",
+          "decade",
+          "century",
+          "millennium",
+          "aeon",
+          "unspecified"
+      ]
+  },
+  "area": {
+    "possibleunits": [
+      "acre",
+      "squarecentimeter",
+      "squaredecameter",
+      "squaredecimeter",
+      "squarefoot",
+      "squarehectometer",
+      "squareinch",
+      "squarekilometer",
+      "squaremeter",
+      "squaremile",
+      "squaremillimeter",
+      "squareyard",
+      "unspecified"
+    ]
+  },
+  "currency": {
+    "possibleunits": ["egyptian pound", "unspecified"],
+    "iso4217": ["egp"]
+  },
+  "date": {
+    "possibleunits": []
+  },
+  "datetime": {
+    "possibleunits": []
+  },
+  "information": {
+    "possibleunits": [
+      "bit",
+      "byte",
+      "gigabit",
+      "gigabyte",
+      "kilobit",
+      "kilobyte",
+      "megabit",
+      "megabyte",
+      "petabit",
+      "petabyte",
+      "terabit",
+      "terabyte",
+      "unspecified"
+    ]
+  },
+  "length": {
+    "possibleunits": [
+      "centimeter",
+      "decameter",
+      "decimeter",
+      "foot",
+      "hectometer",
+      "inch",
+      "kilometer",
+      "lightyear",
+      "meter",
+      "micrometer",
+      "mile",
+      "millimeter",
+      "nanometer",
+      "picometer",
+      "point",
+      "yard",
+      "unspecified"
+    ]
+  },
+  "number": {
+    "possibleunits": [],
+    "numberkind": ["decimal", "fraction", "integer", "percent", "power", "unspecified"]
+  },
+  "numericrange": {
+    "possibleunits": [],
+    "rangekind": [
+      "age",
+      "area",
+      "currency",
+      "information",
+      "length",
+      "number",
+      "speed",
+      "temperature",
+      "volume",
+      "weight"
+    ]
+  },
+  "ordinal": {
+    "possibleunits": [],
+    "relativeto": ["current", "end", "start"]
+  },
+  "speed": {
+    "possibleunits": [
+      "centimeterspermillisecond",
+      "feetperminute",
+      "feetpersecond",
+      "kilometersperhour",
+      "kilometerspermillisecond",
+      "kilometersperminute",
+      "kilometerspersecond",
+      "knots",
+      "meterspermillisecond",
+      "meterspersecond",
+      "milesperhour",
+      "yardsperminute",
+      "yardspersecond",
+      "unspecified"
+    ]
+  },
+  "temperature": {
+    "possibleunits": ["celsius", "fahrenheit", "kelvin", "rankine", "unspecified"]
+  },
+  "time": {
+    "possibleunits": []
+  },
+  "volume": {
+    "possibleunits": [
+      "barrel",
+      "bushel",
+      "centiliter",
+      "cord",
+      "cubiccentimeter",
+      "cubicfoot",
+      "cubicinch",
+      "cubicmeter",
+      "cubicmile",
+      "cubicmillimeter",
+      "cubicyard",
+      "cup",
+      "decaliter",
+      "fluiddram",
+      "fluidounce",
+      "gill",
+      "hectoliter",
+      "hogshead",
+      "liter",
+      "milliliter",
+      "minim",
+      "peck",
+      "pinch",
+      "pint",
+      "quart",
+      "tablespoon",
+      "teaspoon",
+      "unspecified"
+    ]
+  },
+  "weight": {
+    "possibleunits": [
+      "dram",
+      "gallon",
+      "grain",
+      "gram",
+      "kilogram",
+      "longtonbritish",
+      "metricton",
+      "milligram",
+      "ounce",
+      "pennyweight",
+      "pound",
+      "shorthundredweightus",
+      "shorttonus",
+      "stone",
+      "ton",
+      "unspecified"
+    ]
+  }
+}

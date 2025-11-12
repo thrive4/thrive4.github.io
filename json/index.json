@@ -105,7 +105,7 @@
   {
     "name": "gallery",
     "private": false,
-    "description": "<img id='myImg' src='https://unsplash.it/300?random' alt='random image'>",
+    "description": "<img loading='lazy' id='myImg' src='https://unsplash.it/300?random' alt='random image' width='200vw'>",
     "href":  "<a href='gallery.html' onclick=closeNav();>",
     "updated": "2024-07-18T09:23:01Z",
     "topics": [
