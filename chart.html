@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chart</title>
+<script src="js/d3.v6.min.js"></script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+  }
+  #chart {
+    width: 100vw;
+    height: 90vh;
+  }
+  .bar {
+    fill: steelblue;
+    cursor: pointer;
+    transition: fill 0.3s ease;
+  }
+  .bar:hover {
+    fill: orange;
+  }
+  .axis text {
+    font-size: 12px;
+    user-select: none;
+  }
+  #backButton {
+    margin: 10px;
+    padding: 5px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+  }
+  #keyDropdown {
+    margin: 10px;
+    padding: 5px 15px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .tooltip {
+    position: absolute;
+    padding: 6px 12px;
+    background: #333;
+    color: #fff;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+</style>
+</head>
+<body>
+<button id="backButton">Back to Decades</button>
+<select id="keyDropdown"></select>
+<svg id="chart"></svg>
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+  const svg = d3.select("#chart");
+  const tooltip = d3.select("#tooltip");
+
+  const margin = { top: 40, right: 40, bottom: 120, left: 60 };
+  let width, height;
+
+  const g = svg.append("g");
+
+  const x = d3.scaleBand().padding(0.1);
+  const y = d3.scaleLinear();
+
+  const xAxisGroup = g.append("g").attr("class", "x axis");
+  const yAxisGroup = g.append("g").attr("class", "y axis");
+
+  let currentLevel = "decades";
+  let data, decadeData, yearData;
+
+  const backButton = d3.select("#backButton");
+  backButton.on("click", () => {
+    if (currentLevel === "years") {
+      currentLevel = "decades";
+      backButton.style("display", "none");
+      updateChart(decadeData);
+      tooltip.style("opacity", 0);
+    }
+  });
+
+  // grouping routines
+  const getDecade = (year) => Math.floor(+year / 10) * 10 + "s";
+  function groupByDecade(data) {
+    const grouped = d3.rollup(
+      data,
+      v => v.length,
+      d => getDecade(d.year)
+    );
+    return Array.from(grouped, ([key, value]) => ({ key, value })).sort((a,b) => a.key.localeCompare(b.key));
+  }
+  function groupByYear(data) {
+    const grouped = d3.rollup(
+      data,
+      v => v.length,
+      d => d.year
+    );
+    return Array.from(grouped, ([key, value]) => ({ key, value })).sort((a,b) => a.key.localeCompare(b.key));
+  }
+  function groupByKey(data, key) {
+    const grouped = d3.rollup(
+      data,
+      v => v.length,
+      d => d[key]
+    );
+    return Array.from(grouped, ([key, value]) => ({ key, value })).sort((a,b) => String(a.key).localeCompare(String(b.key)));
+  }
+  // end grouping routines
+
+  function formatTickLabels(d) {
+    if(currentLevel === 'decades') {
+      return d;
+    } else {
+      if (yearData.length < 40) return d;
+      else {
+        const index = yearData.findIndex(e => e.key === d);
+        return index % 2 === 0 ? d : "";
+      }
+    }
+  }
+
+  function updateChart(dataToUse) {
+    x.domain(dataToUse.map(d => d.key));
+    y.domain([0, d3.max(dataToUse, d => d.value)]).nice();
+
+    // Update axis group position
+    xAxisGroup.attr("transform", `translate(0,${height})`);
+
+    // Draw axes with transitions
+    xAxisGroup.transition().duration(750)
+      .call(d3.axisBottom(x).tickFormat(formatTickLabels))
+      .selectAll("text")
+      .attr("transform", "rotate(-65)")
+      .style("text-anchor", "end")
+      .attr("dx", "-0.8em")
+      .attr("dy", "0.15em");
+      
+    yAxisGroup.transition().duration(750).call(d3.axisLeft(y));
+
+    const bars = g.selectAll(".bar").data(dataToUse, d => d.key);
+
+    bars.exit()
+      .transition().duration(750)
+      .attr("y", y(0))
+      .attr("height", 0)
+      .remove();
+
+    bars.transition().duration(750)
+      .attr("x", d => x(d.key))
+      .attr("width", x.bandwidth())
+      .attr("y", d => y(d.value))
+      .attr("height", d => height - y(d.value));
+
+    bars.enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", d => x(d.key))
+      .attr("width", x.bandwidth())
+      .attr("y", y(0))
+      .attr("height", 0)
+      .on("click", (event, d) => {
+        if (currentLevel === "decades") {
+          currentLevel = "years";
+          backButton.style("display", "inline-block");
+          const filtered = data.filter(song => getDecade(song.year) === d.key);
+          yearData = groupByYear(filtered);
+          updateChart(yearData);
+          tooltip.style("opacity", 0);
+        }
+      })
+      .on("mouseover", (event, d) => {
+        tooltip.style("opacity", 1)
+               .html(`<strong>${d.key}</strong><br>Total: ${d.value}`)
+               .style("left", (event.pageX + 10) + "px")
+               .style("top", (event.pageY - 28) + "px");
+      })
+      .on("mousemove", event => {
+        tooltip.style("left", (event.pageX + 10) + "px")
+               .style("top", (event.pageY - 28) + "px");
+      })
+      .on("mouseout", () => {
+        tooltip.style("opacity", 0);
+      })
+      .transition().duration(750)
+      .attr("y", d => y(d.value))
+      .attr("height", d => height - y(d.value));
+  }
+
+  function resize() {
+    width = Math.round(window.innerWidth - margin.left - margin.right);
+    height = Math.round(window.innerHeight * 0.9 - margin.top - margin.bottom);
+
+    svg.attr("width", width + margin.left + margin.right)
+       .attr("height", height + margin.top + margin.bottom);
+
+    g.attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Use rangeRound for crisp edges and alignment
+    x.rangeRound([0, width]);
+    y.rangeRound([height, 0]);
+
+    if(currentLevel === "decades") updateChart(decadeData);
+    else updateChart(yearData);
+  }
+
+  d3.json("json/" + localStorage.getItem('menuitem') + ".json").then(musicData => {
+    data = musicData;
+    const allKeys      = Object.keys(data[0]);
+    const keyDropdown  = d3.select('#keyDropdown');
+    const blacklist    = ["extract", "id", "genres", "href", "private", "name", "title", "topics"];
+    const filteredKeys = allKeys.filter(key => !blacklist.includes(key));
+
+    // clear and populate dropdown
+    keyDropdown.selectAll('option').remove();
+    // Append default option (not bound to data)
+    keyDropdown.append('option')
+      .attr('value', '')
+      .attr('disabled', true)
+      .attr('selected', true)
+      .text('Select a key');
+    keyDropdown.selectAll('option.data-driven')
+      .data(filteredKeys)
+      .enter()
+      .append('option')
+      .attr('class', 'data-driven')
+      .attr('value', d => d)
+      .text(d => d);
+
+    // if data items do not have 'year' but have 'updated'
+    data.forEach(d => {
+      if (!d.year && d.updated) {
+        d.year = d.updated.substring(0, 4);
+      }
+    });
+
+    // filter out groups with value <= 2
+    keyDropdown.on('change', function() {
+      const selectedKey = d3.select(this).property('value');
+      if (selectedKey === 'year' || selectedKey === 'updated') {
+        const decadeData = groupByDecade(data);
+        updateChart(decadeData);
+        return;
+      }
+      let groupedData   = groupByKey(data, selectedKey);
+      groupedData       = groupedData.filter(d => d.value > 2);
+      if (groupedData.length === 0) {
+        alert("No categories with more than 2 occurrences to display.");
+        // Optionally clear chart or handle empty case
+        return;
+      }
+      updateChart(groupedData);
+    });
+
+    decadeData = groupByDecade(data);
+    resize();
+    updateChart(decadeData);
+  });
+
+  window.addEventListener("resize", resize);
+
+</script>
+</body>
+</html>

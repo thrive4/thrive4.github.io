@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Plain Text to Markdown and PDF Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 1rem 0 0.5rem;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      font-family: monospace;
+      font-size: 14px;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #333;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+      margin-right: 1rem;
+    }
+    button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Plain Text to Markdown and PDF Generator</h1>
+
+  <label for="input-text">Plain Text Input:</label>
+  <textarea id="input-text" placeholder="Paste your plain text here...">
+  </textarea>
+  <script>
+      if (window.localStorage.getItem('pagedata') !== null) {
+         document.getElementById('input-text').innerHTML = window.localStorage.getItem('pagedata');
+      }
+  </script>
+
+  <button id="convert-btn">Convert to Markdown</button>
+
+  <label for="markdown-output">Converted Markdown Output:</label>
+  <textarea id="markdown-output" readonly placeholder="Converted Markdown will appear here..."></textarea>
+  <div id="output">Loading stopwords...</div>
+  <br>
+  <button id="download-pdf-btn">Download as PDF</button>
+  <button id="download-md-btn">Download as MD</button>
+
+  <script src="js/jspdfv251.js"></script>
+  <script>
+    let stopwords = new Set();
+    async function loadStopwords() {
+      try {
+        const response = await fetch('json/en-stop.json');
+        if (!response.ok) throw new Error('Failed to load stopwords');
+        const words = await response.json();
+        stopwords = new Set(words);
+        document.getElementById('output').textContent = 'Stopwords loaded. Ready.';
+      } catch {
+        stopwords = new Set([
+          "the", "and", "a", "of", "to", "in", "he", "she", "for",
+          "was", "with", "as", "by", "on", "at", "an", "it", "is",
+          "his", "her", "or", "from", "that", "their", "they", "this", "who"
+        ]);
+        document.getElementById('output').textContent = 'Fallback stopwords loaded.';
+      }
+    }
+    loadStopwords();
+
+    // ner: find capitalized multi-word entities & dates/years
+    function getner(text) {
+      const entities = new Set();
+      const capitalizedPattern = /\b([A-Z][a-z]*(?:\s+[A-Z][a-z]*)*)\b/g;
+      let match;
+      while ((match = capitalizedPattern.exec(text)) !== null) entities.add(match[1]);
+      const yearPattern = /\b(19|20)\d{2}\b/g;
+      while ((match = yearPattern.exec(text)) !== null) entities.add(match[0]);
+      const datePattern = /\b\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4}\b/g;
+      while ((match = datePattern.exec(text)) !== null) entities.add(match[0]);
+      return Array.from(entities);
+    }
+
+    function cleanupascii(text) {
+      // ascii art
+      text = text.replace(/@{2,}/g, match => ''.repeat(match.length));
+      text = text.replace(/^[\s\/\\|_\-\.]{6,}$/gm, '');
+      // markdown specific
+      text = text.replace(/={3,}/g, match => '-'.repeat(match.length));
+      text = text.replace(/_{3,}/g, match => '-'.repeat(match.length));
+      text = text.replace(/\*{2,}/g, match => ''.repeat(match.length));
+      text = text.replace(/-+\s*([a-zA-Z0-9.\s]+?)\s*-+/g, (match, group) => group);
+      // todo evaluate
+      text = text.replace(/\. - {1,}/g, match => '.'.repeat(match.length));
+      return text;
+    }
+
+    function cleanMarkdownLinks(text) {
+      text = text.replace(/!\[.*?\]\(.*?\)/g, '').trim();
+      let prev;
+      do {
+        prev = text;
+        text = text.replace(/\[([^\[\]]*?)\]\([^\)]*?\)/g, '$1').trim();
+      } while (text !== prev);
+      return text.replace(/[\[\]\(\)]/g, '').trim();
+    }
+
+    function createparagraph(text, maxlength = 600) {
+      const roughParagraphs = text.split(/\n\s*\n+/).filter(p => p.trim());
+      const paragraphs      = [];
+      roughParagraphs.forEach(paragraph => {
+        const sentences      = paragraph.match(/[^.!?]+[.!?]?\s*/g) || [];
+        let currentParagraph = '', currentLength = 0;
+
+        sentences.forEach(sentence => {
+          const s = sentence.trim();
+          if (!s) return;
+
+          if (currentLength + s.length > maxlength) {
+            paragraphs.push(currentParagraph.trim());
+            currentParagraph = s + ' ';
+            currentLength = s.length + 1;
+          } else {
+            currentParagraph += s + ' ';
+            currentLength += s.length + 1;
+          }
+        });
+        if (currentParagraph.trim()) paragraphs.push(currentParagraph.trim());
+      });
+    
+      return paragraphs;
+    }
+
+    function text2md(text) {
+        const lines = text.split('\n');
+        const allEntities = getner(text);
+        let filteredEntities = allEntities.filter(e => !stopwords.has(e.toLowerCase()));
+        filteredEntities.sort((a, b) => b.length - a.length);
+
+        function isAlreadyBold(token) {
+          return token.startsWith('**') && token.endsWith('**');
+        }
+
+        const convertedLines = lines.map(line => {
+          //if (/^\s*\(?\s*[-\u2013\u2014]?\s*Chapter\b.*\)?$/i.test(line.trim())) {
+          // pattern > sting contains chapter at beginning of line case insensitive
+          if (/^Chapter\b/i.test(line.trim())) {
+            return '## ' + line.trim();
+          }
+          // pattern > 13. LOURVE REVISITED
+          if (/^(\d+)\.\s*([A-Z][\w\s]+)$/i.test(line.trim())) {
+            return '## ' + line.trim();
+          }
+          // pattern > XIII. LOURVE REVISITED
+          if (/^([IVXLCDM]+|\d+)\.\s*([A-Z][\w\s]+)$/i.test(line.trim())) {
+            return '## ' + line.trim();
+          }
+          if (/^part\b/i.test(line.trim())) {
+            return '## ' + line.trim();
+          }
+          let tokens = line.split(' ');
+          tokens = tokens.map(token => {
+            let rawToken = token.replace(/[\W_]+$/, ''); // Remove punctuation from end
+            // Remove bold markers for checking
+            let checkToken = rawToken.replace(/^\*\*|\*\*$/g, '');
+            if (
+              filteredEntities.includes(checkToken) &&
+              !isAlreadyBold(token)
+            ) {
+              // Preserve any attached punctuation
+              let punctuation = token.slice(rawToken.length);
+              return `**${checkToken}**${punctuation}`;
+            }
+            return token;
+          });
+          return tokens.join(' ');
+        });
+
+        return convertedLines.join('\n');
+    }
+
+    function getmdstyle(line) {
+      line = line.trim();
+      if (/^\s?-{3,}\s?$/.test(line)) return [{ text: null, style: "hr" }];
+      const regex = /(\*\*\*([\s\S]+?)\*\*\*|___([\s\S]+?)___|\*\*([\s\S]+?)\*\*|__([\s\S]+?)__|\*([\s\S]+?)\*|_([\s\S]+?)_)/g;
+      let segments = [], lastIndex = 0, match;
+      while ((match = regex.exec(line)) !== null) {
+        if (match.index > lastIndex) segments.push({ text: line.slice(lastIndex, match.index), style: "normal" });
+        if (match[2] || match[3]) segments.push({ text: match[2] ?? match[3], style: "bolditalic" });
+        else if (match[4] || match[5]) segments.push({ text: match[4] ?? match[5], style: "bold" });
+        else if (match[6] || match[7]) segments.push({ text: match[6] ?? match[7], style: "italic" });
+        lastIndex = regex.lastIndex;
+      }
+      if (lastIndex < line.length) segments.push({ text: line.slice(lastIndex), style: "normal" });
+      return segments;
+    }
+
+    // pdf render from markdown
+    function md2pdf(pdfdata) {
+        const { pdf, text, width, height, l_margin, r_margin, t_margin, b_margin, line_height, base_font, base_font_style, base_font_size } = pdfdata;
+        pdf.setFont(base_font, base_font_style);
+        pdf.setFontSize(base_font_size);
+
+        // Split on double newlines to separate paragraphs correctly
+        let y = pdfdata.top, page = pdfdata.page - 1, paragraphs = text.split('\n\n');
+
+        for (let para of paragraphs) {
+          let trimmed = para.trim();
+          if (!trimmed) continue;
+          // filter out too many hashes
+          if ((trimmed.trim().match(/#/g) || []).length > 4) continue;
+          if (trimmed.indexOf("##") > -1) {
+              let heading = trimmed.slice(trimmed.indexOf("##") + 3);
+              // if needed clean up extra whitespace
+              heading = heading.replace(/\s+/g, " ").trim();
+              if (y + line_height > height - b_margin) {
+                  pdfdata.add_page();
+                  y = t_margin;
+                  page = pdfdata.page;
+              }
+              pdf.setFont(base_font, "bold");
+              let headingFontSize = base_font_size + 2 * 1.5;
+              pdf.setFontSize(headingFontSize);
+              linkPositions.push({
+                  text: heading,
+                  level: 2,
+                  page,
+                  x: l_margin * 7,
+                  y: (pdf.internal.pageSize.height - y) + 4// convert top-down to bottom-up
+              });
+              y += headingFontSize;
+              pdf.text(heading, l_margin, y);
+              y += headingFontSize * 1.2;
+              pdf.setFont(base_font, base_font_style);
+              pdf.setFontSize(base_font_size);
+              continue;
+          }
+
+          // wrap paragraph into lines fitting width
+          let wrapped_lines = pdf.splitTextToSize(para, width - l_margin - r_margin);
+          for (let line of wrapped_lines) {
+              if (!line.trim()) continue;
+              if (y + line_height > height - b_margin) {
+                  pdfdata.add_page();
+                  y = t_margin;
+                  page = pdfdata.page;
+              }
+              let xCursor = l_margin;
+              const segments = getmdstyle(line.trim());
+              segments.forEach(seg => {
+                  if (seg.style === "hr") {
+                      const lineY = y - line_height / 3;
+                      pdf.setDrawColor(0, 0, 0);
+                      pdf.setLineWidth(0.2);
+                      pdf.line(l_margin + 100, lineY, width - r_margin - 100, lineY);
+                      y += line_height * 0.5;
+                  } else {
+                      pdf.setFont(base_font, seg.style === "normal" ? base_font_style : seg.style);
+                      const textWidth = pdf.getTextWidth(seg.text);
+                      if (seg.style === "bold") {
+                          level = 2;
+                          indexpdf.push({
+                              text: seg.text,
+                              level,
+                              page,
+                              x: l_margin + (level - 2) * 7, 
+                              y: (pdf.internal.pageSize.height - y) + base_font_size + 4// Convert top-down to bottom-up
+                          });
+                      }
+                      pdf.text(seg.text, xCursor, y);
+                      xCursor += textWidth;
+                  }
+              });
+              y += line_height;
+          }
+          // extra space after paragraph
+          y += line_height * 0.5;
+          // add page number
+          pdfdata.add_footer();
+        }
+        return y;
+    }
+
+    function genbookmarks(pdf, linkPositions, type = 'toc') {
+        if (!linkPositions || linkPositions.length === 0) return null;
+        let title = "";
+        switch (type){
+          case 'toc':
+               title = "Table of Contents";
+               const seentoc = new Set();
+               const temppostoc = linkPositions
+                  .slice() // Make a shallow copy if you don't want to mutate original
+                  .reverse()
+                  .filter(item => {
+                    const key = item.text.toLowerCase();
+                    if (seentoc.has(key)) return false;
+                    seentoc.add(key);
+                    return true;
+               });
+               // natural sort
+               temppostoc.sort((a, b) =>
+                  a.text.localeCompare(b.text, undefined, { numeric: true, sensitivity: "base" })
+               );
+               linkPositions = temppostoc;
+               tempostoc = [];
+               break;
+          case 'idx':
+               title = "Index";
+               const seen = new Set();
+               const alphanumRegex = /^[a-z0-9]+$/i; // only alphanumeric strings case-insensitive
+               const temppos = linkPositions.filter(item => {
+                   const key = item.text.toLowerCase();
+                   if (seen.has(key) || !alphanumRegex.test(key)) return false;
+                   seen.add(key);
+                   return true;
+               });
+               temppos.sort((a, b) => a.text.toLowerCase().localeCompare(b.text.toLowerCase()));
+               linkPositions = temppos;
+               tempos = [];
+               break;
+          default:
+               title = "Table of Contents";
+               break;
+        }
+       const rootNode = pdf.outline.add(null, title, null);
+
+        linkPositions.forEach(pos => {
+            const pageNumber = pos.page;
+            const yPdf = pdf.internal.pageSize.height - pos.y;
+            pdf.outline.add(rootNode, pos.text, { dest: { pageNumber, x: pos.x || 0, y: yPdf } });
+        });
+        tempos        = [];
+        return rootNode;
+    }
+
+    document.getElementById('convert-btn').addEventListener('click', () => {
+      let text = document.getElementById('input-text').value;
+      text = cleanupascii(text);
+      text = createparagraph(text).join('\n\n');
+      text = text2md(text);
+      document.getElementById('markdown-output').value = text;
+    });
+
+    document.getElementById('download-md-btn').addEventListener('click', () => {
+      const markdownContent = document.getElementById('markdown-output').value;
+      const blob = new Blob([markdownContent], { type: 'text/markdown' });
+      const link = document.createElement('a');
+      const filename = (window.localStorage.getItem('name')?.replace(/[^a-zA-Z0-9]/g, '') + '.md' || 'document.md');
+      //const filename = window.localStorage.getItem('name') > 0 ?? 'document.md';
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      // required for older versions of firefox and seamonkey
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    });
+
+    /* jspdf fonts
+      case "sans-serif":
+      case "verdana":
+      case "arial":
+      case "helvetica":
+      case "fixed":
+      case "monospace":
+      case "terminal":
+      case "courier":
+      default:
+      "times";
+    */
+
+    let linkPositions = [];
+    let indexpdf      = [];
+    document.getElementById('download-pdf-btn').addEventListener('click', () => {
+      const pdf               = new jsPDF('p', 'pt', 'a4');
+      const { width, height } = pdf.internal.pageSize;
+      const base_font         = 'helvetica';
+      const base_font_style   = 'normal';
+      const base_font_size    = 10;
+      const line_height       = base_font_size * 1.5;
+      const margins           = { l_margin: 40, r_margin: 40, t_margin: 40, b_margin: 40 };
+
+      pdf.setFont(base_font, base_font_style);
+      pdf.setFontSize(base_font_size);
+      // needed to correct paragraph creation in md
+      let mdtext = document.getElementById('markdown-output').value;
+      mdtext = mdtext.replace(/^(#{1,6} .+)\n(?!\n)/gm, '$1\n\n');
+      const pdfdata = {
+        pdf: pdf,
+        text: mdtext, 
+        title: (window.localStorage.getItem('name')?.replace(/[^a-zA-Z0-9]/g, '') || 'document'),
+        width: width,
+        height: height,
+        l_margin: margins.l_margin,
+        r_margin: margins.r_margin,
+        t_margin: margins.t_margin,
+        b_margin: margins.b_margin,
+        line_height: line_height,
+        base_font: base_font,
+        base_font_style: base_font_style,
+        base_font_size: base_font_size,
+        page: 1,
+        top: margins.t_margin,
+        add_footer: function () {
+          pdf.setFont(pdfdata.base_font, pdfdata.base_font_style);
+          pdf.setFontSize(pdfdata.base_font_size);
+          let page_text = '' + pdfdata.page;
+          let text_width = pdf.getTextDimensions(page_text).w;
+          pdf.text(page_text, pdfdata.width - pdfdata.r_margin - text_width / 2, pdfdata.height - 16);
+        },
+        add_page: function() {
+          pdf.addPage();
+          this.page++;
+          this.top = this.t_margin;
+        }
+      };
+
+      md2pdf(pdfdata);
+      genbookmarks(pdf, linkPositions, 'toc');
+      genbookmarks(pdf, indexpdf, 'idx');
+      linkPositions = [];
+      indexpdf      = [];
+
+      const nerpool = getner(pdfdata.text) || [];
+      let nerfilter = nerpool.filter(e => !stopwords.has(e.toLowerCase()));
+      // remove duplicates keying on lowercase
+      nerfilter = [...new Map(nerfilter.map(e => [e.toLowerCase(), e])).values()];
+      // sort and keep top 10
+      const nerkeyword = nerfilter
+        .sort((a, b) => b.length - a.length)
+        .slice(0, 10);
+
+      pdf.setProperties({
+        title: pdfdata.title || "jspdf generated pdf",
+        subject: nerkeyword.length > 0 ? "no chapters" : "Content Headings",
+        author: window.location.hostname || "jspdf lib",
+        keywords: nerkeyword.map(e => e.toLowerCase()).join(", "),
+        creator: "jspdf lib"
+      });
+
+      pdf.save(pdfdata.title + '.pdf');
+    });
+  </script>
+
+</body>
+</html>

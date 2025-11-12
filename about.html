@@ -7,46 +7,12 @@
     <link rel="stylesheet" href="main.css" />
 </head>
 <body>
-<p id="listtype"></p>
-<p id="tdelement"></p>
-<button onclick="topFunction()" id="backtotop" title="Go to top">
-<svg fill="#ffffff" height="16px" width="16px" viewBox="0 0 512 512"><g><g>
-     <path d="M505.752,358.248L271.085,123.582c-8.331-8.331-21.839-8.331-30.17,0L6.248,358.248c-8.331,8.331-8.331,21.839,
-     0,30.17 s21.839,8.331,30.17,0L256,168.837l219.582,219.582c8.331,8.331,21.839,8.331,30.17,0S514.083,366.58,505.752,358.248z"/>
-     </g></g>
-</svg>
-</button>
-<div class="nav">
-  <div id="mySidenav" class="sidenav left">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <p id="sidenavcontent"></p>
-  </div>
-
-  <div class="nav-left">
-    <a class="nav-item" style="cursor:pointer" onclick="openNav('left')">
-      <svg class="svglight" viewBox="-5 -5 34 34">
-           <path d="M4 6H20M4 12H20M4 18H20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </a>
-    <a class="nav-item" style="cursor:pointer" href="index.html">THRIVE4</a>
-  </div>
-  <div class="nav-right">
-    <a class="nav-item" href="" onclick="switchtheme();">
-        <div id="themeicon"></div>
-    </a>
-    <a class="nav-item" style="cursor:pointer" onclick="openNav('right')">
-       <svg class="svglight" viewBox="-8 -11 52 52">
-            <path d="M23.265,24.381l.9-.894c4.164.136,4.228-.01,4.411-.438l1.144-2.785L29.805,20l-.093-.231c-.049-.122-.2-.486-2.8-2.965V15.5c3-2.89,
-            2.936-3.038,2.765-3.461L28.538,9.225c-.171-.422-.236-.587-4.37-.474l-.9-.93a20.166,20.166,0,0,0-.141-4.106l-.116-.263-2.974-1.3c-.438-.2-.592-.272-3.4,
-            2.786l-1.262-.019c-2.891-3.086-3.028-3.03-3.461-2.855L9.149,3.182c-.433.175-.586.237-.418,4.437l-.893.89c-4.162-.136-4.226.012-4.407.438L2.285,
-            11.733,2.195,12l.094.232c.049.12.194.48,2.8,2.962l0,1.3c-3,2.89-2.935,3.038-2.763,3.462l1.138,2.817c.174.431.236.584,4.369.476l.9.935a20.243,20.243,0,
-            0,0,.137,4.1l.116.265,2.993,1.308c.435.182.586.247,3.386-2.8l1.262.016c2.895,3.09,3.043,3.03,3.466,2.859l2.759-1.115C23.288,28.644,23.44,
-            28.583,23.265,24.381ZM11.407,17.857a4.957,4.957,0,1,1,6.488,2.824A5.014,5.014,0,0,1,11.407,17.857Z"/>
-       </svg>
-    </a>
-  </div>
-</div>
-<br><br><br><br>
+<p id="wah"></p>
+<script type="text/javascript" src="js/body.js" defer></script>
+<script type="text/javascript" src="js/d3.v6.min.js" defer></script>
+<script type="text/javascript" src="js/lib.js" defer></script>
+<script type="text/javascript" src="js/imageviewer.js" defer></script>
+<script type="text/javascript" src="js/indexcode.js" defer></script>
 <div class="container">
     <p><strong>ABOUT</strong></p>
     <pre><code>
@@ -65,61 +31,15 @@ list of url's to various resources
 
 <b>release notes site:</b>
 
-<div w3-include-html="thrive4github.nfo"></div>
-
-
+<div id="content"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        getjsonf('thrive4github.nfo', function(data) {
+            document.getElementById('content').innerHTML = data;
+        });
+    });
+</script>
 </code></pre>
 </div>
-<!--tag indicator -->
-<p id="tdelement"></p>
-<div id="trletter">
-     <p id="trletterplace" class="trlettertext"></p>
-</div>
-
-<!-- optional audio player -->
-<footer class="footer">
-      <div class="container-audio">
-          <audio id="audio" title="" controls>
-            Your browser dose not Support the audio Tag
-          </audio>
-      </div>
-</footer>
-
-<!-- overlay for image navigation -->
-<div id="myModal" class="modal">
-     <div id="imageoverlay"></div>
-     <span class="close">&times;</span>
-</div>
-<script type="text/javascript" src="lib.js"></script>
-<script>
-    // needs to be moved
-    // whole page needs to be harmonized with
-    // table generated versions
-    let themeicon = "";
-    console.log(window.localStorage.getItem('theme'));
-    switch (window.localStorage.getItem('theme')) {
-        case 'dark':
-              themeicon = `<svg class="svglight" viewBox="-5 -5 34 34">
-                <circle cx="12" cy="12" r="5"/>
-                <path d="M21,13H20a1,1,0,0,1,0-2h1a1,1,0,0,1,0,2Z
-                M4,13H3a1,1,0,0,1,0-2H4a1,1,0,0,1,0,2Z
-                M17.66,7.34A1,1,0,0,1,17,7.05a1,1,0,0,1,0-1.41l.71-.71a1,1,0,1,1,1.41,1.41l-.71.71A1,1,0,0,1,17.66,7.34Z
-                M5.64,19.36a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.41L5.64,17a1,1,0,0,1,1.41,1.41l-.71.71A1,1,0,0,1,5.64,19.36Z
-                M12,5a1,1,0,0,1-1-1V3a1,1,0,0,1,2,0V4A1,1,0,0,1,12,5Z
-                M12,22a1,1,0,0,1-1-1V20a1,1,0,0,1,2,0v1A1,1,0,0,1,12,22Z
-                M6.34,7.34a1,1,0,0,1-.7-.29l-.71-.71A1,1,0,0,1,6.34,4.93l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,6.34,7.34Z
-                M18.36,19.36a1,1,0,0,1-.7-.29L17,18.36A1,1,0,0,1,18.36,17l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,18.36,19.36Z"/>
-              </svg>`
-        break;
-        case null:
-        case 'light':
-              themeicon = `<svg class="svglight" viewBox="-5 -5 34 34">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3
-                7 7 0 0 0 21 12.79z"></path>
-              </svg>`
-        break;
-    }
-    document.getElementById("themeicon").innerHTML = themeicon;
-</script>
 </body>
 </html>

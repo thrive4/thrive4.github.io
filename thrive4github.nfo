@@ -1,3 +1,23 @@
+update 2.3 12/11/2025
+- moved javascript to seperate folder js
+- added pdf and chart functionalty via
+  jspdf and d3, many thanks to the devs of these libs
+- added first draft markdown viewer
+- fixed a number of issues stemming
+  from harmonized search and filter functionalty
+- suggestions catchpoint
+  added defer to javascript load:
+  added width and lazy loading to picsum images
+- suggestions yellowlab
+  fixed duplicate tdelement id
+  removed tricky type coercion
+   == to ===
+   != to !==
+  with exception of checking for both
+  null and undefined simultaneously
+  where != and == is better ...
+- added 7 new webgl shaders
+
 update 2.2 07/08/2025
 - re-write of table generation attempt
   to harmonize three views data, list and tile
@@ -6,7 +26,7 @@ update 2.2 07/08/2025
   harmonized table views
 - added basic keyboard navigation to data
   and list view
-- added webgl shader functionalty curtisity
+- added webgl shader functionalty courtesy
   to xemantic see: https://xemantic.github.io
 - added data source shaders
   33 shaders

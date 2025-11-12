@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>markdown viewer with toc and index</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  #mdinput { width: 100%; height: 100px; margin-bottom: 10px; }
+  button { padding: 0.5em 1em; font-size: 1em; }
+  #viewmodal, #tocmodal {
+    position: fixed;
+    background: white; box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    max-height: 90vh; overflow-y: auto;
+  }
+  #viewmodal {
+    border-radius: 15px;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 794px; /* approx A4 width */
+    height: 1123px; /* approx A4 height */
+    padding: 1em;
+    scroll-behavior: smooth;
+  }
+  #tocmodal {
+    position: fixed;
+    top: 5%;
+    right: 0;
+    width: 250px;
+    height: 85vh;
+    background: white;
+    border-top-left-radius:    20px;
+    border-bottom-left-radius: 20px;
+    padding: 0.5em;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 1000;
+  }
+  #tocmodal.open {
+    transform: translateX(0);
+  }
+  #tocmodal ul { padding-left: 1em; }
+  #tocmodal a { text-decoration: none; color: #007BFF; cursor: pointer; }
+  #tocmodal a:hover { text-decoration: underline; }
+  #tocmodal-toggle {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    width: 40px;
+    height: 80px;
+    background: #007BFF;
+    border-top-left-radius: 40px;
+    border-bottom-left-radius: 40px;
+    cursor: pointer;
+    transform: translateY(-50%);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #tocmodal-toggle span {
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    user-select: none;
+    margin: auto;
+  }
+  h3 { margin-top: 1em; }
+  blockquote {
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: "\201C""\201D""\2018""\2019";
+  }
+  blockquote::before {
+    content: open-quote;
+    font-size: 3em;
+    line-height: 0.1em;
+    margin-right: 10px;
+    vertical-align: -0.4em;
+    color: #ccc;
+  }
+    blockquote p {
+    display: inline;
+  }
+  code {
+    background: #f4f4f4;
+    color: #c7254e;
+    padding: 2px 4px;
+    font-size: 0.95em;
+    border-radius: 3px;
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  }
+  hr {
+    border: none;
+    border-top: 2px solid #ccc;
+    margin: 2em auto;
+    width: 70%;
+  }
+  pre code {
+    background: #2d2d2d;
+    color: #fff;
+    padding: 1em;
+    border-radius: 6px;
+    display: block;
+    font-size: 1em;
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+    overflow-x: auto;
+  }
+  pre {
+    margin: 1.5em 0;
+  }
+  #fence {
+    background: #f9f9f9;
+    padding: 1em;
+    display: block;
+    font-size: 1em;
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+    overflow-x: auto;
+  }
+  mark {
+    background-color: #fffa87;
+    color: #222;
+    padding: 0.2em 0.3em;
+    border-radius: 0.2em;
+  }
+  ul {list-style-type: square;}
+</style>
+</head>
+<body>
+<textarea id="mdinput" placeholder="Paste your Markdown content here..."></textarea><br/>
+<button   id="loadbtn">load markdown</button>
+<div id="viewmodal" style="display:none;"></div>
+<div id="tocmodal"  style="display:none;"></div>
+<div id="tocmodal-toggle"><span id="toggle-symbol">+</span></div>
+<script>
+  const toggleButton = document.getElementById('tocmodal-toggle');
+  const toggleSymbol = document.getElementById('toggle-symbol');
+  const modal = document.getElementById('tocmodal');
+  
+  toggleButton.onclick = () => {
+    modal.classList.toggle('open');
+    // Change symbol based on modal state
+    toggleSymbol.textContent = modal.classList.contains('open') ? "-" : "+";
+  };
+
+  function mdtohtmlfencedcode(md) {
+    return md.replace(/```(\w+)?([\s\S]*?)```/g, (match, lang, code) => {
+      // Escape HTML entities for safety
+      const escapedCode = code
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      return `<div id="fence">${escapedCode.trim()}</div>`;
+    });
+  }
+
+  function mdtohtmltable(md) {
+      return md.replace(
+        /((?:^\|.*\|\s*(?:\r?\n|$)){2,})/gm,
+        function (match) {
+          const lines = match.trim().split(/\r?\n/).filter(l => l.trim() !== '');
+          if (lines.length < 2) return match;
+    
+          const headerLine    = lines[0];
+          const separatorLine = lines[1];
+          const bodyLines     = lines.slice(2);
+
+          if (!/^\|?[\s:\-\|]+\|?$/.test(separatorLine.trim())) return match;
+
+          // column alignments
+          const aligns = separatorLine
+            .split('|')
+            .filter(Boolean)
+            .map(s => {
+              s = s.trim();
+              if (/^:\-+:$/.test(s)) return 'center';
+              if (/^:-+$/.test(s)) return 'left';
+              if (/^-+:$/.test(s)) return 'right';
+              return null;
+            });
+
+          const headers = headerLine
+            .split('|')
+            .filter(Boolean)
+            .map((c, i) => {
+              const align = aligns[i] ? ` style="text-align:${aligns[i]}"` : '';
+              return `<th${align}>${c.trim()}</th>`;
+            })
+            .join('');
+
+          const bodyRows = bodyLines
+            .map(row => {
+              const cols = row
+                .split('|')
+                .filter(Boolean)
+                .map((c, i) => {
+                  const align = aligns[i] ? ` style="text-align:${aligns[i]}"` : '';
+                  return `<td${align}>${c.trim()}</td>`;
+                })
+                .join('');
+              return `<tr>${cols}</tr>`;
+            })
+            .join('');
+    
+          return `<table><thead><tr>${headers}</tr></thead><tbody>${bodyRows}</tbody></table>\n\n`;
+        }
+      );
+  }
+
+  function mdtohtml(content) {
+      // Regular Expressions
+      const h1 = /^#{1}[^#].*$/gm;
+      const h2 = /^#{2}[^#].*$/gm;
+      const h3 = /^#{3}[^#].*$/gm;
+      const bold = /\*\*[^\*\n]+\*\*/gm;
+      const italics = /\*([^\*\n]+)\*/gm;
+      const link = /\[[\w|\(|\)|\s|\*|\?|\-|\.|\,]*(\]\(){1}[^\)]*\)/gm;
+      const lists = /^((\s*((\*|\-)|\d(\.|\))) [^\n]+))+$/gm;
+      const unorderedList = /^[\*|\+|\-]\s.*$/;
+      const unorderedSubList = /^\s\s\s*[\*|\+|\-]\s.*$/;
+      const orderedList = /^\d\.\s.*$/;
+      const orderedSubList = /^\s\s+\d\.\s.*$/;
+      const blockquote = /^>\s?.+$/gm;
+      const inlinecode = /`([^`]+)`/gm;
+      const hr = /^(\*\s*\*\s*\*|-{3,}|_{3,})$/gm; // horizontal line
+      const image = /!\[([^\]]*)\]\(([^)]+)\)/gm;
+      const strikethrough = /~~([^~]+)~~/gm;
+      const highlight = /==([^=]+)==/gm;
+
+      if (h1.test(content)) {
+        const matches = content.match(h1);
+        matches.forEach(element => {
+          const extractedText = element.slice(1);
+          content = content.replace(element, '<h1>' + extractedText + '</h1>');
+        });
+      }
+
+      if (h2.test(content)) {
+        const matches = content.match(h2);
+        matches.forEach(element => {
+          const extractedText = element.slice(2);
+          content = content.replace(element, '<h2>' + extractedText + '</h2>');
+        });
+      }
+
+      if (h3.test(content)) {
+        const matches = content.match(h3);
+        matches.forEach(element => {
+          const extractedText = element.slice(3);
+          content = content.replace(element, '<h3>' + extractedText + '</h3>');
+        });
+      }
+
+      if (bold.test(content)) {
+        const matches = content.match(bold);
+        matches.forEach(element => {
+          const extractedText = element.slice(2, -2);
+          // add id attribute on bold **text** for index linking
+          const id = slugify(extractedText);
+          content = content.replace(element, `<b id="${id}">${extractedText}</b>`);
+        });
+      }
+
+      if (italics.test(content)) {
+        const matches = content.match(italics);
+        matches.forEach(element => {
+          const extractedText = element.slice(1, -1);
+          content = content.replace(element, ' <em>' + extractedText + '</em>');
+        });
+      }
+
+      // needs to be before inline link parsing
+      if (image.test(content)) {
+        const matches = content.match(image);
+        matches.forEach(element => {
+          const alt = element.match(/!\[([^\]]*)\]/)[1];
+          const url = element.match(/\(([^)]+)\)/)[1];
+          content = content.replace(element, `<img src="${url}" alt="${alt}">`);
+        });
+      }
+
+      // [an inline-style link](https://www.google.com)
+      if (link.test(content)) {
+        const links = content.match(link);
+        links.forEach(element => {
+          const text = element.match(/^\[.*\]/)[0].slice(1, -1);
+          const url = element.match(/\]\(.*\)/)[0].slice(2, -1);
+          content = content.replace(element, '<a href=&quot;' + url + '&quot;>' + text + '</a>');
+        });
+      }
+
+      if (blockquote.test(content)) {
+        const matches = content.match(blockquote);
+        if (matches) {
+          let combined = matches.map(line => line.replace(/^>\s?/, '')).join(' ');
+          const fullBlock = matches.join('\n');
+          content = content.replace(fullBlock, '<blockquote>' + combined + '</blockquote>');
+        }
+      }
+
+      if (inlinecode.test(content)) {
+        const matches = content.match(inlinecode);
+        matches.forEach(element => {
+          const extractedText = element.slice(1, -1);
+          const escaped = extractedText
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;'); // prevent HTML injection
+          content = content.replace(element, '<code>' + escaped + '</code>');
+        });
+      }
+
+      if (hr.test(content)) {
+        const matches = content.match(hr);
+        matches.forEach(element => {
+          content = content.replace(element, '<hr>');
+        });
+      }
+
+      if (strikethrough.test(content)) {
+        const matches = content.match(strikethrough);
+        matches.forEach(element => {
+          const extractedText = element.slice(2, -2);
+          content = content.replace(element, '<del>' + extractedText + '</del>');
+        });
+      }
+
+      if (highlight.test(content)) {
+        const matches = content.match(highlight);
+        matches.forEach(element => {
+          const extracted = element.slice(2, -2);
+          content = content.replace(element, '<mark>' + extracted + '</mark>');
+        });
+      }
+
+      if (lists.test(content)) {
+        const matches = content.match(lists);
+        matches.forEach(list => {
+          const listArray = list.split('\n');
+          const formattedList = listArray.map((currentValue, index, array) => {
+            if (unorderedList.test(currentValue)) {
+              currentValue = '<li>' + currentValue.slice(2) + '</li>';
+              if (!unorderedList.test(array[index - 1]) && !unorderedSubList.test(array[index - 1])) {
+                currentValue = '<ul>' + currentValue;
+              }
+              if (!unorderedList.test(array[index + 1]) && !unorderedSubList.test(array[index + 1])) {
+                currentValue = currentValue + '</ul>';
+              }
+              if (unorderedSubList.test(array[index + 1]) || orderedSubList.test(array[index + 1])) {
+                currentValue = currentValue.replace('</li>', '');
+              }
+            }
+
+            if (unorderedSubList.test(currentValue)) {
+              currentValue = currentValue.trim();
+              currentValue = '<li>' + currentValue.slice(2) + '</li>';
+              if (!unorderedSubList.test(array[index - 1])) {
+                currentValue = '<ul>' + currentValue;
+              }
+              if (!unorderedSubList.test(array[index + 1]) && unorderedList.test(array[index + 1])) {
+                currentValue = currentValue + '</ul></li>';
+              }
+              if (!unorderedSubList.test(array[index + 1]) && !unorderedList.test(array[index + 1])) {
+                currentValue = currentValue + '</ul></li></ul>';
+              }
+            }
+
+            if (orderedList.test(currentValue)) {
+              currentValue = '<li>' + currentValue.slice(2) + '</li>';
+              if (!orderedList.test(array[index - 1]) && !orderedSubList.test(array[index - 1])) {
+                currentValue = '<ol>' + currentValue;
+              }
+              if (!orderedList.test(array[index + 1]) && !orderedSubList.test(array[index + 1]) && !orderedList.test(array[index + 1])) {
+                currentValue = currentValue + '</ol>';
+              }
+              if (unorderedSubList.test(array[index + 1]) || orderedSubList.test(array[index + 1])) {
+                currentValue = currentValue.replace('</li>', '');
+              }
+            }
+
+            if (orderedSubList.test(currentValue)) {
+              currentValue = currentValue.trim();
+              currentValue = '<li>' + currentValue.slice(2) + '</li>';
+              if (!orderedSubList.test(array[index - 1])) {
+                currentValue = '<ol>' + currentValue;
+              }
+              if (orderedList.test(array[index + 1]) && !orderedSubList.test(array[index + 1])) {
+                currentValue = currentValue + '</ol>';
+              }
+              if (!orderedList.test(array[index + 1]) && !orderedSubList.test(array[index + 1])) {
+                currentValue = currentValue + '</ol></li></ol>';
+              }
+            }
+
+            return currentValue;
+          }).join('');
+          content = content.replace(list, formattedList);
+        });
+      }
+
+      return content.split('\n').map(line => {
+        if (!h1.test(line) && !h2.test(line) && !h3.test(line) && !unorderedList.test(line) &&
+            !unorderedSubList.test(line) && !orderedList.test(line) && !orderedSubList.test(line)) {
+               return line;
+        }
+      }).join('');
+  }
+
+  // slugify heading or text to create id
+  function slugify(str) {
+    return str.trim()
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-');
+  }
+
+  // build a list of index items from bold **text** elements with IDs in html dom
+  function extract_index_items(container) {
+    // select all bold elements with id attribute
+    const bolds = container.querySelectorAll('b[id]');
+    const seen = new Set();
+    let items = [];
+    bolds.forEach(b => {
+      const text = b.textContent.trim();
+      const id = b.id;
+      if(!seen.has(id)) {
+        seen.add(id);
+        items.push({text, id});
+      }
+    });
+    // Sort items alphabetically by text, case-insensitive
+    items.sort((a, b) => a.text.localeCompare(b.text, undefined, {sensitivity: 'base'}));
+    return items;
+  }
+
+  // generate html toc and index content based on headings + index items
+  function generate_toc(container) {
+    const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    const indexitems = extract_index_items(container);
+    if(headings.length === 0 && indexitems.length === 0) return '<p>no headings or index items found.</p>';
+
+    let toc = '<br><b>chapters</b><ul>';
+    headings.forEach(h => {
+      toc += `<li><a href="#${h.id}">${h.textContent}</a></li>`;
+    });
+    toc += '</ul>';
+
+    if(indexitems.length > 0) {
+      toc += '<b>index</b><ul>';
+      indexitems.forEach(item => {
+        toc += `<li><a href="#${item.id}">${item.text}</a></li>`;
+      });
+      toc += '</ul>';
+    }
+    
+    return toc;
+  }
+
+  // convert markdown lines to html string with headings assigned ids
+  function convert_markdown(lines) {
+    return lines.map(line => {
+      if(/^\s*#+\s/.test(line)) {
+        const level = line.match(/^#+/)[0].length;
+        const content = line.replace(/^#+\s*/, '');
+        const id = slugify(content);
+        return `<h${level} id="${id}">${mdtohtml(content)}</h${level}>`;
+      }
+      return `<p>${mdtohtml(line)}</p>`;
+    }).join('\n');
+  }
+
+  // scroll inside viewmodal to target element smoothly
+  function scroll_to_id(id) {
+    const container = document.getElementById('viewmodal');
+    const target = container.querySelector('#' + CSS.escape(id));
+    if(target) {
+      container.scrollTo({top: target.offsetTop, behavior: 'smooth'});
+    }
+  }
+
+  // load markdown and display html + toc/index modal content
+  document.getElementById('loadbtn').addEventListener('click', () => {
+    let md          = document.getElementById('mdinput').value;
+    md              = mdtohtmlfencedcode(md);
+    md              = mdtohtmltable(md);
+    const lines     = md.split(/\r?\n/);
+    const html      = convert_markdown(lines);
+    const viewmodal = document.getElementById('viewmodal');
+    viewmodal.innerHTML     = html;
+    console.log(html);
+    viewmodal.style.display = 'block';
+    const tocmodal          = document.getElementById('tocmodal');
+    tocmodal.innerHTML      = generate_toc(viewmodal);
+    tocmodal.style.display  = 'block';
+  });
+
+  // single click listener for both headings and index links in tocmodal
+  document.getElementById('tocmodal').addEventListener('click', e => {
+    if(e.target.tagName.toLowerCase() === 'a') {
+      e.preventDefault();
+      const id = e.target.getAttribute('href').substring(1);
+      scroll_to_id(id);
+    }
+  });
+</script>
+</body>
+</html>
