@@ -91,6 +91,32 @@
     ]
   },
   {
+    "name": "mhtviewer",
+    "private": false,
+    "description": "documentaries",
+    "href":  "<a href='mhtview.html' target='_blank' onclick=closeNav();>",
+    "updated": "2023-07-18T09:23:01Z",
+    "section": "general",
+    "topics": [
+      "information",
+      "report",
+      "global"
+    ]
+  },
+  {
+    "name": "genplaylist",
+    "private": false,
+    "description": "documentaries",
+    "href":  "<a href='genplaylist.html' target='_blank' onclick=closeNav();>",
+    "updated": "2023-07-18T09:23:01Z",
+    "section": "general",
+    "topics": [
+      "information",
+      "report",
+      "global"
+    ]
+  },
+  {
     "name": "globe",
     "private": false,
     "description": "documentaries",

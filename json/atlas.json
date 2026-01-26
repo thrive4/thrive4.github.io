@@ -207,5 +207,23 @@
       "screenshots",
       "info"
     ]
+  },
+  {
+    "name": "documentconverter",
+    "private": false,
+    "sourcename": [
+      "",
+      ""
+    ],
+    "sourcehref": [
+      "",
+      ""
+    ],
+    "displayfields": [
+      "details",
+      "examples",
+      "screenshots",
+      "info"
+    ]
   }
 ]
