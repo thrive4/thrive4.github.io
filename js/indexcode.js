@@ -69,6 +69,7 @@ function switchlistview(listtype, pagetype = document.title, extatype = "") {
     }
     if (listtype == null) {
        listtype = 'tile';
+       window.localStorage.setItem('listtype', 'tile');
     }
 
     // setup fields displayed and used from index.json file
@@ -331,17 +332,18 @@ function switchlistview(listtype, pagetype = document.title, extatype = "") {
         if (typeof trElements !== 'undefined') {
             trElements = document.querySelectorAll('tr.trlight');
             trElements.forEach(trElement => {
-                const onclickAttribute = trElement.getAttribute('onclick');
-                const urlMatch = onclickAttribute.match(/audioplay\('([^']+)'/);
-                if (urlMatch && urlMatch[1]) {
-                    urls.push(urlMatch[1]);
-                    const titleElement = trElement.querySelector('td:nth-child(3)');
-                    titles.push(titleElement ? titleElement.textContent : 'Unknown Title');
+                if (trElement.getAttribute('onclick') !== null) {
+                  const onclickAttribute = trElement.getAttribute('onclick');
+                  const urlMatch = onclickAttribute.match(/audioplay\('([^']+)'/);
+                    if (urlMatch && urlMatch[1]) {
+                        urls.push(urlMatch[1]);
+                        const titleElement = trElement.querySelector('td:nth-child(3)');
+                        titles.push(titleElement ? titleElement.textContent : 'Unknown Title');
+                    }
                 }
             });
         }
-
-    });
+    }); // end data
     // clean up
     text = "";
 }

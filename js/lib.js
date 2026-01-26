@@ -16,7 +16,7 @@ document.documentElement.className = window.localStorage.getItem('theme');
 if (document.title !== 'slide show' && document.title !== 'webgl') {
     var onresize = function(e) {
         windowwidth = window.outerWidth;
-        if (document.getElementById('myModal').style.display === 'block'){
+        if (document.getElementById('myModal').style.display === 'block' && document.getElementById('myModal') !== null){
           currentPage  = 0;
           totalPages   = 0;
           start        = 0;
@@ -62,7 +62,7 @@ function getjsonf(url, callback) {
             request.open('GET', url, false);
         }
         request.onload = function() {
-            if (request.status === 200 || (isLocal && request.status === 0)) {
+            if (request.status === 200 || (islocal && request.status === 0)) {
                 callback(JSON.parse(request.responseText));
             }
         };
@@ -188,9 +188,6 @@ function indexsidenav(navdir = "") {
             };
 
         });
-        if (navdir === 'right') {
-            text += '<div class="w3-right"><b>items ' + window.localStorage.getItem('nritems') + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></div><br>';
-        }
         if (document.title === 'playlist') {
           if (shuffle) { dummy2 = ' shuffle  '; } else { dummy2 = ' linear  '; }
            dummy = '   | navigation player'
@@ -356,7 +353,7 @@ function keynavcontent(event) {
         }
 
         updateSelectedItem(items);
-    
+
     } // filter on modal display
 }
 
@@ -379,13 +376,15 @@ function searchandfilter() {
 
     // empty srinput
     if (filter === "" || filter.length < 2) {
-        for (i = 0; i < tr.length; i++) {
+        for (i = 1; i < tr.length; i++) {
             tr[i].style.display = "";
         }
+        window.localStorage.setItem('nritems', tr.length - 1);
+        selectedIndex = -1;
         return;
     }
 
-    for (i = 0; i < tr.length; i++) {
+    for (i = 1; i < tr.length; i++) {
         td = tr[i].getElementsByTagName("td")[window.localStorage.getItem('tdelement')];
         if (td) {
             txtValue = td.textContent || td.innerText;
@@ -400,17 +399,26 @@ function searchandfilter() {
 
     // no matches reset tr elements to visible
     if (!checkmatch) {
-        for (i = 0; i < tr.length; i++) {
+        for (i = 1; i < tr.length; i++) {
             tr[i].style.display = "";
         }
     }
 
+    // visible rows
+    let visibleCount = 0;
+    for (i = 1; i < tr.length; i++) {
+        if (tr[i].style.display !== "none") {
+            visibleCount++;
+        }
+    }
+    window.localStorage.setItem('nritems', visibleCount);
     selectedIndex = -1;
 }
 
 
 if (localStorage.getItem("listtype") !== 'tile' &&
-    document.title !== 'slide show' && document.title !== 'webgl' && document.title !== 'about') {
+    document.title !== 'slide show' && document.title !== 'webgl' &&
+    document.title !== 'about' && document.title !== 'documentconverter') {
     // todo needs better place
     document.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'PageUp' || event.key === 'PageDown') {
@@ -698,41 +706,6 @@ function wordcount(text) {
 
 }
 
-function createparagraph(text) {
-  const paragraphs = [];
-  let currentParagraph = '';
-  let paragraphLength = 0;
-  let insideSentence = false;
-
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    if (char === ' ') {
-      if (insideSentence) {
-        currentParagraph += char;
-        paragraphLength++;
-      }
-    } else {
-      currentParagraph += char;
-      paragraphLength++;
-      if (char === '.' || char === '!' || char === '?') {
-        insideSentence = false;
-      } else {
-        insideSentence = true;
-      }
-      if (paragraphLength > 100 + text[i]) {
-        paragraphs.push(currentParagraph.trim() + '<br><br>');
-        currentParagraph = '';
-        paragraphLength = 0;
-      }
-    }
-  }
-
-  paragraphs.push(currentParagraph.trim() + '<br><br>');
-
-  // join paragraphs
-  return paragraphs.join('');
-}
-
 // tag indicator list first letter selected search td or div element
 function gettrletter(x) {
    const tdsort = window.localStorage.getItem('tdsortelement');
@@ -742,7 +715,8 @@ function gettrletter(x) {
    tempdiv.innerHTML = dummy;
    dummy = tempdiv.querySelector('a') ? tempdiv.querySelector('a').textContent : '';
    //dummy = dummy.slice(dummy.indexOf(">") + 1, dummy.lastIndexOf("<"));
-   document.getElementById("trletterplace").innerHTML = dummy.charAt(0).toUpperCase();
+   document.getElementById("trletterplace").innerHTML =  dummy.charAt(0).toUpperCase() + 
+   '<div style="font-size: 15px;">items<br>' + window.localStorage.getItem('nritems') + '</div>';
 }
 
 function trletteron() {
@@ -876,77 +850,3 @@ function togglefullscreen() {
   }
 }
 
-// svg icons
-function svgcamera() {
-    return '<path d="M21,4c-1.402,0-2.867,0-2.867,0L17.2,2c-0.215-0.498-1.075-1-1.826-1H8.759' +
-    'C8.008,1,7.148,1.502,6.933,2L6,4c0,0-1.517,0-3,0C0.611,4,0,6,0,6v14c0,0,1.5,2,3,2s16.406,0,18,0s3-2,3-2V6C24,6,23.496,4,21,4z' +
-    'M12,19.001c-3.313,0-6-2.687-6-6.001c0-3.313,2.687-6,6-6c3.314,0,6,2.687,6,6C18,16.314,15.314,19.001,12,19.001z M12,9' +
-    'c-2.209,0-4,1.791-4,4s1.791,4,4,4s4-1.791,4-4S14.209,9,12,9z"/>';
-}
-
-function svgwindowslogo() {
-    return '<path d="M0 36.357L104.62 22.11l.045 100.914-104.57.595L0 36.358zm104.57 98.293l.08 101.002L.081 221.275l-.006-87.302' +
-    '104.494.677zm12.682-114.405L255.968 0v121.74l-138.716 1.1V20.246zM256 135.6l-.033 121.191-138.716-19.578-.194-101.84L256 135.6z"/>';
-}
-
-function svginfobox() {
-    return '<path d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 ' +
-           '2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22Z"></path>' +
-           '<path d="M12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75Z" fill="#1C274C">' +
-           '</path> <path d="M12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z" fill="#1C274C"></path>';
-}
-
-function svgnoinfo() {
-    return `<path d="M30,3.4141,28.5859,2,2,28.5859,3.4141,30l2-2H26a2.0027,2.0027,0,0,0,2-2V5.4141ZM26,26H7.4141l7.7929-7.793,2.3788,2.3787a2,2,0,0,0,
-           2.8284,0L22,19l4,3.9973Zm0-5.8318-2.5858-2.5859a2,2,0,0,0-2.8284,0L19,19.1682l-2.377-2.3771L26,7.4141Z"/></path>
-           <path d="M6,22V19l5-4.9966,1.3733,1.3733,1.4159-1.416-1.375-1.375a2,2,0,0,0-2.8284,0L6,16.1716V6H22V4H6A2.002,2.002,0,0,0,4,6V22Z"/>`;
-}
-
-function svgplay() {
-    return `<path d="M1,14c0,0.547,0.461,1,1,1c0.336,0,0.672-0.227,1-0.375L14.258,9C14.531,8.867,15,8.594,15,8s-0.469-0.867-0.742-1L3,
-            1.375  C2.672,1.227,2.336,1,2,1C1.461,1,1,1.453,1,2V14z"/>`;
-}
-
-function svgmd() {
-    return `<rect
-        width="32"
-        height="38"
-        rx="10"
-    />
-    <path
-        d="M10 0 H80 L100 20 V140 H10 V0 Z"
-        fill="#90392B"
-    />
-    <text
-        x="50%"
-        y="50%"
-        font-family="Arial, sans-serif"
-        font-size="36"
-        text-anchor="middle"
-        alignment-baseline="middle"
-    >
-        MD
-    </text>`;
-}
-
-function svgpdf() {
-    return `<rect
-        width="32"
-        height="38"
-        rx="10"
-    />
-    <path
-        d="M10 0 H80 L100 20 V140 H10 V0 Z"
-        fill="#90392B"
-    />
-    <text
-        x="50%"
-        y="50%"
-        font-family="Arial, sans-serif"
-        font-size="36"
-        text-anchor="middle"
-        alignment-baseline="middle"
-    >
-        PDF
-    </text>`;
-}

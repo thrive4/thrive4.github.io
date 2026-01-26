@@ -109,6 +109,129 @@ wah =`
 </div>
 `
 
+const scriptPaths = [
+    'js/lib.js',
+    'js/imageviewer.js',
+    'js/indexcode.js',
+    'js/d3.v6.min.js',
+    'js/jspdfv251.js',
+    'js/mdpdf.js'
+];
+
+function loadScripts(scripts) {
+    return scripts.reduce((promise, scriptPath) => {
+        return promise.then(() => {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = scriptPath;
+                // preserve defer-like behavior
+                script.async = false;
+                script.onload = () => {
+                    //console.log(`Loaded: ${scriptPath}`);
+                    resolve();
+                };
+                script.onerror = () => {
+                    //console.error(`Failed to load: ${scriptPath}`);
+                    reject(new Error(`Script load error: ${scriptPath}`));
+                };
+                document.head.appendChild(script);
+            });
+        });
+    }, Promise.resolve());
+}
+
+// sequential loading preserves order
+loadScripts(scriptPaths)
+    .then(() => {
+        //console.log('All scripts loaded sequentially');
+        // Initialize your application or run post-load logic
+    })
+    .catch(error => {
+        console.error('Script loading failed', error);
+    });
+
 window.localStorage.setItem('tdsortelement', 1);
 document.getElementById("wah").innerHTML = wah;
 let totop = document.getElementById("backtotop");
+
+// svg icons
+function svgcamera() {
+    return '<path d="M21,4c-1.402,0-2.867,0-2.867,0L17.2,2c-0.215-0.498-1.075-1-1.826-1H8.759' +
+    'C8.008,1,7.148,1.502,6.933,2L6,4c0,0-1.517,0-3,0C0.611,4,0,6,0,6v14c0,0,1.5,2,3,2s16.406,0,18,0s3-2,3-2V6C24,6,23.496,4,21,4z' +
+    'M12,19.001c-3.313,0-6-2.687-6-6.001c0-3.313,2.687-6,6-6c3.314,0,6,2.687,6,6C18,16.314,15.314,19.001,12,19.001z M12,9' +
+    'c-2.209,0-4,1.791-4,4s1.791,4,4,4s4-1.791,4-4S14.209,9,12,9z"/>';
+}
+
+function svgwindowslogo() {
+    return '<path d="M0 36.357L104.62 22.11l.045 100.914-104.57.595L0 36.358zm104.57 98.293l.08 101.002L.081 221.275l-.006-87.302' +
+    '104.494.677zm12.682-114.405L255.968 0v121.74l-138.716 1.1V20.246zM256 135.6l-.033 121.191-138.716-19.578-.194-101.84L256 135.6z"/>';
+}
+
+function svginfobox() {
+    return '<path d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 ' +
+           '2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22Z"></path>' +
+           '<path d="M12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75Z" fill="#1C274C">' +
+           '</path> <path d="M12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z" fill="#1C274C"></path>';
+}
+
+function svgnoinfo() {
+    return `<path d="M30,3.4141,28.5859,2,2,28.5859,3.4141,30l2-2H26a2.0027,2.0027,0,0,0,2-2V5.4141ZM26,26H7.4141l7.7929-7.793,2.3788,2.3787a2,2,0,0,0,
+           2.8284,0L22,19l4,3.9973Zm0-5.8318-2.5858-2.5859a2,2,0,0,0-2.8284,0L19,19.1682l-2.377-2.3771L26,7.4141Z"/></path>
+           <path d="M6,22V19l5-4.9966,1.3733,1.3733,1.4159-1.416-1.375-1.375a2,2,0,0,0-2.8284,0L6,16.1716V6H22V4H6A2.002,2.002,0,0,0,4,6V22Z"/>`;
+}
+
+function svgplay() {
+    return `<path d="M1,14c0,0.547,0.461,1,1,1c0.336,0,0.672-0.227,1-0.375L14.258,9C14.531,8.867,15,8.594,15,8s-0.469-0.867-0.742-1L3,
+            1.375  C2.672,1.227,2.336,1,2,1C1.461,1,1,1.453,1,2V14z"/>`;
+}
+
+function svgmd() {
+    return `<rect
+        width="32"
+        height="38"
+        rx="10"
+    />
+    <path
+        d="M10 0 H80 L100 20 V140 H10 V0 Z"
+        fill="#90392B"
+    />
+    <text
+        x="50%"
+        y="50%"
+        font-family="Arial, sans-serif"
+        font-size="36"
+        text-anchor="middle"
+        alignment-baseline="middle"
+    >
+        MD
+    </text>`;
+}
+
+function svgpdf() {
+    return `<rect
+        width="32"
+        height="38"
+        rx="10"
+    />
+    <path
+        d="M10 0 H80 L100 20 V140 H10 V0 Z"
+        fill="#90392B"
+    />
+    <text
+        x="50%"
+        y="50%"
+        font-family="Arial, sans-serif"
+        font-size="36"
+        text-anchor="middle"
+        alignment-baseline="middle"
+    >
+        PDF
+    </text>`;
+}
+function svgdownload() {
+    // courtesy Solar Icons  https://www.svgrepo.com/svg/524035/download-minimalistic
+    return `<path d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21
+    20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    </path> <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    </path>`;
+}

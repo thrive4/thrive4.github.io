@@ -48,7 +48,7 @@ function renderpage(text) {
   start = currentPage * wordsPerPage;
   end   = start + wordsPerPage;
 
-  document.getElementById("bookpage").innerHTML = createparagraph(words.slice(start, end).join(' ')) + '<br><br><p style="text-align:right">' + (currentPage + 1) + ' / ' + totalPages + '</p>';
+  document.getElementById("bookpage").innerHTML = createparagraph(words.slice(start, end).join(' '), 100, 'html') + '<br><br><p style="text-align:right">' + (currentPage + 1) + ' / ' + totalPages + '</p>';
 }
 
 // generate image overlay data
@@ -84,14 +84,14 @@ function imageoverlay(section, overlay, locale) {
     if (overlay === 'paper'){
         // if needed get misc info
         if (section !== 'all'){
-            text += '<br><a class="" href="text2md.html" target="_blank";>';
+            text += '<br><a class="" style="cursor:pointer" onclick="initpdfdownload()";>';
             text += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<svg class="svglight" viewBox="-4 0 102 102">';
             text += svgpdf();
             text += '</svg></a>';
-            text += '<a class="" href="text2md.html" target="_blank";>';
+            text += '<a class="" style="cursor:pointer" onclick="initmddownload()";>';
             text += '&nbsp;&nbsp;<svg class="svglight" viewBox="-4 0 102 102">' + svgmd() + '</svg></a>';
 
-            text += '<br><br><a class="w3-left" style="cursor:pointer" onclick="document.getElementById(\'bookpage\').innerHTML = createparagraph(orgtext) ";>';
+            text += `<br><br><a class="w3-left" style="cursor:pointer" onclick="document.getElementById(\'bookpage\').innerHTML = createparagraph(orgtext, 100, 'html') ";>`;
             text += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<svg class="svglight" viewBox="-4 0 32 32">';
             text += svginfobox();
             text += '</svg></a>';
@@ -123,8 +123,10 @@ function imageoverlay(section, overlay, locale) {
             for (i = 0; i < sourcename.length; i += 1) {
                 if (sourcename[i] === "ducky") {
                   extdummy = "";
-                  url =  'https://corsproxy.io/?' +
-                         'http://api.duckduckgo.com/?q=' + window.localStorage.getItem('name').replaceAll(" ", "%20") + '&format=json&pretty=1';
+                  url = 'https://api.duckduckgo.com/?' +
+                        'q=' + encodeURIComponent(window.localStorage.getItem('name')) +
+                        '&format=json' +
+                        '&pretty=1';
                   getjsonf(url, function(data){
                       if (data) {
                       // get related info if present
@@ -307,12 +309,15 @@ function imageoverlay(section, overlay, locale) {
         if (locale === 'local'){ url = 'json/paper.json';}
         if (locale === 'remote'){
             //todo deal with & etc .replaceAll('&', ' and ') also check tears for fears
-            //url = 'https://corsproxy.io/?https%3A%2F%2Fen.wikipedia.org%2Fw%2Fapi.php%3Fformat%3Djson%26action%3Dquery%26prop%3Dextracts%26exintro%26explaintext%26redirects%3D1%26titles%3D' + encodeURIComponent(section);
             // filter out year
             dummy = section.replace(/[0-9]{4}/g, '');
-            vrl = 'https://corsproxy.io/?' +
-                  'https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=' +
-                  encodeURIComponent(dummy.replaceAll(' ', '_'));
+            vrl = 'https://en.wikipedia.org/w/api.php' +
+                  '?action=opensearch' +
+                  '&limit=10' +
+                  '&namespace=0' +
+                  '&format=json' +
+                  '&origin=*' +
+                  '&search=' + encodeURIComponent(dummy.replaceAll(' ', '_'));
             // todo still funky can result in false postives or no results when actually present at sources
             getjsonf(vrl, function(data){
                 if (data) {
@@ -357,9 +362,15 @@ function imageoverlay(section, overlay, locale) {
                     });
                 }
             });
-            url = 'https://corsproxy.io/?' +
-                  'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' +
-                  encodeURIComponent(section);
+            url = 'https://en.wikipedia.org/w/api.php' +
+                  '?format=json' +
+                  '&action=query' +
+                  '&prop=extracts' +
+                  '&exintro' +
+                  '&explaintext' +
+                  '&redirects=1' +
+                  '&origin=*' +
+                  '&titles=' + encodeURIComponent(section);
         } // end remote
 
         text += '              <div class="canvascenter click-zoom">';
@@ -460,8 +471,17 @@ function imageoverlay(section, overlay, locale) {
         });
     }
     // get media external
-    url = 'https://corsproxy.io/?' + 'https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages|pageterms&piprop=thumbnail&pithumbsize=600&pilicense=any&titles=' +
-          encodeURIComponent(dummy);
+    url = 'https://en.wikipedia.org/w/api.php' +
+          '?action=query' +
+          '&format=json' +
+          '&formatversion=2' +
+          '&prop=pageimages|pageterms' +
+          '&piprop=thumbnail' +
+          '&pithumbsize=600' +
+          '&pilicense=any' +
+          '&origin=*' +
+          '&titles=' + encodeURIComponent(dummy);
+
     // default no image
     if (extimage !== "") {
         image = extimage;
@@ -501,7 +521,7 @@ function imageoverlay(section, overlay, locale) {
     // clean up
     text = "";
     // reset toggle image and paper important affects zoom
-    if (overlay === 'paper'){
+    if (overlay === 'paper' && document.getElementById("paper") !== null && document.getElementById("canvas") !== null){
        document.getElementById("paper").style.display     = 'block';
        document.getElementById("paper").style.visibility  = 'visible';
        document.getElementById("canvas").style.display    = "none";
