@@ -1,7 +1,26 @@
+update 2.4 25/01/2026
+- added first draft mht viewer
+- added first draft internet archive playlist converter
+  coverts <name>_files.xml to .json used in playlist folder
+- added language detection for stopwords
+  supported languages en, de, fr, nl
+- mdviewer generates TOC and index automatically
+- mdviewer fixed several issues
+- handle mojibake esoteric ... cleans up garbled text
+  that results when text is decoded with the wrong
+  character encoding aka mojibake
+- ui position tag now displays number of items in list
+- charts can alter dynamically by selecting key
+- phased out cors proxy fro wikipedia rest api calls
+- swapped some audio playlists
+- fixed a number of md and pdf issues
+
 update 2.3 12/11/2025
 - moved javascript to seperate folder js
-- added pdf and chart functionalty via
-  jspdf and d3, many thanks to the devs of these libs
+- added pdf and chart functionalty with jspdf and d3
+  courtesy to: https://github.com/parallax/jsPDF
+  courtesy to: https://d3js.org
+  many thanks to the devs of these libs
 - added first draft markdown viewer
 - fixed a number of issues stemming
   from harmonized search and filter functionalty
@@ -26,8 +45,9 @@ update 2.2 07/08/2025
   harmonized table views
 - added basic keyboard navigation to data
   and list view
-- added webgl shader functionalty courtesy
-  to xemantic see: https://xemantic.github.io
+- added webgl shader functionalty
+  courtesy to : https://xemantic.github.io
+  many thanks to xemantic.
 - added data source shaders
   33 shaders
   courtesy to author(s) at shadertoy
@@ -137,8 +157,8 @@ update v1.3 12/03/2024
 - site size 8 sections 70% data, 30% page render code
 
 update v1.2 18/12/2023
-- added sticky table header for data tables
-  sticky tip courtesy https://codepen.io/stephen-george-west/pen/rNpjXYL
+- added sticky table header for data tables sticky tip 
+  courtesy to: https://codepen.io/stephen-george-west/pen/rNpjXYL
 - added side menu navigation
 - added search selection box automatically change to selected field
 - fixed issues with code.js
@@ -159,7 +179,7 @@ update v1.1 04/11/2023
   significant improvements in speed and number
   of rows that can be handled by browser
   many thanks to tofsjonas
-  see: https://github.com/tofsjonas/sortable
+  courtesy to: https://github.com/tofsjonas/sortable
 - modified main.css less cluterd html table and other style tweaks
 - robots.txt set to allow crawlers
 - todo still issues with imageviewer and slideshow

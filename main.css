@@ -657,7 +657,7 @@ audio {
   position: fixed;
   display: none;
   width: 10vw;
-  height: 10%;
+  height: 12%;
   top: 50%;
   left: 93vw;
   right: 0;
@@ -689,8 +689,280 @@ audio {
   cursor: pointer;
   padding: 15px;
   border-radius: 4px;
+  animation-name: slidedown;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+}
+@keyframes slidedown {
+  0% {
+    transform: translateY(-1200px) scale(0.7);
+    opacity: 0.7;
+  }
+
+  80% {
+    transform: translateY(0px) scale(0.7);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 #backtotop:hover {
   background-color: maroon;
+  /* animation: pulse 1s infinite; /* Pulsing animation restarts animation on mouse out*/
+  /* blocks slidedown animation on on mouse out */
+  /* kudos to https://designshack.net/articles/css/mastering-mouse-enter-and-exit-events-with-css-transitions/ */
+  -webkit-border-radius: 10px;
+  -moz-border-radius:    10px;
+  border-radius:         10px;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition:    all 0.5s ease;
+  -o-transition:      all 0.5s ease;
+  -ms-transition:     all 0.5s ease;
+  transition:         all 0.5s ease;
+
 }
 /* end back to top */
+
+/* document conversion */
+.docbody {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+.doclabel {
+  font-weight: bold;
+  display: block;
+  margin: 1rem 0 0.5rem;
+}
+.doctextarea {
+  width: 100%;
+  height: 200px;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #555;
+  background-color: var(--trsearchbox);
+  color: var(----ovfontcolor);
+  margin-bottom: 1rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.docbutton {
+  padding: 10px 20px;
+  background-color: #333;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+  margin-right: 1rem;
+}
+.docbutton:hover {
+  background-color: #555;
+}
+.docbutton:active {
+  box-shadow: 0 3px var(--trsearchbox);
+  transform: translateY(4px);
+}
+
+/* css trick hide os button use label for sets docbutton */
+#mht-input {
+  display: none;
+}
+#mdinput { width: 100%; height: 100px; margin-bottom: 10px; }
+#viewmodal, #tocmodal {
+  position: fixed;
+  background-color: var(--ovbgcolor);
+  color: var(--ovfontcolor);
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  max-height: 90vh; overflow-y: auto;
+}
+#navmhtmodal {
+  position: fixed;
+  left: 2%;
+  top: 20%;
+  background-color: var(--ovbgcolor);
+  color: var(--ovfontcolor);
+  margin: 10% auto;
+  padding: 8px;
+  border-radius: 4px;
+  width: 80%;
+  max-width: 88px;
+  height: 20%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+/* todo close needs to be harmonized */
+.closenavmht {
+  position: absolute;
+  top: 70%;
+  right: 35px;
+  color: grey;
+  font-size: 40px;
+  transition: 0.3s;
+}
+.closenavmht:hover,
+.closenavmht:focus {
+  color: maroon;
+  text-decoration: none;
+  cursor: pointer;
+}
+  #viewmodal {
+    border-radius: 15px;
+    top: 52%; left: 50%; transform: translate(-50%, -50%);
+    width: 794px; /* approx A4 width */
+    height: 1123px; /* approx A4 height */
+    padding: 3em;
+    scroll-behavior: smooth;
+  }
+  #tocmodal {
+    position: fixed;
+    top: 10%;
+    right: 0;
+    width: 250px;
+    height: 85vh;
+    background-color: var(--ovbgcolor);
+    color: var(--ovfontcolor);
+    opacity: 0.85;
+    border-top-left-radius:    20px;
+    border-bottom-left-radius: 20px;
+    padding: 0.5em;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 1000;
+  }
+  #tocmodal.open {
+    transform: translateX(0);
+  }
+  #tocmodal ul { padding-left: 1em; }
+  #tocmodal a { text-decoration: none; color: var(--ovfontcolor); cursor: pointer; }
+  #tocmodal a:hover { background:lightblue; text-decoration: none; }
+  #tocmodal-toggle {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    width: 40px;
+    height: 80px;
+    background: var(--trsearchbox);
+    /*opacity: 0.5;*/
+    border-top-left-radius: 40px;
+    border-bottom-left-radius: 40px;
+    cursor: pointer;
+    transform: translateY(-50%);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #tocmodal-toggle span {
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    user-select: none;
+    margin: auto;
+  }
+  h3 { margin-top: 1em; }
+  blockquote {
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: "\201C""\201D""\2018""\2019";
+  }
+  blockquote::before {
+    content: open-quote;
+    font-size: 3em;
+    line-height: 0.1em;
+    margin-right: 10px;
+    vertical-align: -0.4em;
+    color: #ccc;
+  }
+  blockquote p {
+    display: inline;
+  }
+  code {
+    background: #f4f4f4;
+    color: #c7254e;
+    padding: 2px 4px;
+    font-size: 0.95em;
+    border-radius: 3px;
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  }
+  hr {
+    border: none;
+    border-top: 2px solid #ccc;
+    margin: 2em auto;
+    width: 70%;
+  }
+  pre code {
+    background: #2d2d2d;
+    color: #fff;
+    padding: 1em;
+    border-radius: 6px;
+    display: block;
+    font-size: 1em;
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+    overflow-x: auto;
+  }
+  pre {
+    margin: 1.5em 0;
+  }
+  #fence {
+    background: #f9f9f9;
+    padding: 1em;
+    display: block;
+    font-size: 1em;
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+    overflow-x: auto;
+  }
+  mark {
+    background-color: #fffa87;
+    color: #222;
+    padding: 0.2em 0.3em;
+    border-radius: 0.2em;
+  }
+  ul {list-style-type: square;}
+
+  .tablemd {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .tbodymd {
+    background-color: #f9f9f9;
+  }
+  .thmd {
+    padding: 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+    background-color: #ddd;
+  }
+  .trmd {
+    background-color: #f2f2f2;
+  }
+  .trmd:hover {
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.6);
+    background: #3D85C6;
+    transition: transform ease 700ms;
+    transform: translate(0, -5px);
+  }
+  .tdmd {
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+
+/* end document conversion */
+

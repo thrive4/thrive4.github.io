@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Archive.org _files.xml ? JSON</title>
+  <style>
+    body { font-family: sans-serif; max-width: 900px; margin: 1rem auto; }
+    h1 { font-size: 1.4rem; }
+    label { font-weight: 600; margin-top: 0.75rem; display: block; }
+    input, button, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 0.25rem;
+      margin-bottom: 0.5rem;
+      padding: 0.4rem 0.5rem;
+      font-size: 0.95rem;
+    }
+    button { cursor: pointer; background: #007cba; color: white; border: none; border-radius: 4px; }
+    button:hover { background: #005a87; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    textarea { height: 320px; font-family: monospace; }
+    small { color: #555; }
+    .save-section { margin-top: 0.75rem; }
+    .stats { font-size: 0.85rem; color: #666; margin-top: 0.25rem; }
+  </style>
+</head>
+<body>
+  <h1>Archive.org _files.xml ? JSON</h1>
+
+  <label for="xmlUrl">_files.xml URL</label>
+  <input id="xmlUrl" type="text"
+         value="https://dn720308.ca.archive.org/0/items/fantasia-2000-ost-deluxe-edition/fantasia-2000-ost-deluxe-edition_files.xml">
+
+  <small>
+    Example: any Internet Archive <em>_files.xml</em> metadata URL. The script will:
+    - use only .mp3 file nodes,
+    - concatenate all &lt;creator&gt; tags,
+    - <strong>year = "0000" (DuckDuckGo unreliable)</strong>,
+    - use most frequent &lt;genre&gt; as default when empty.
+  </small>
+
+  <button id="convertBtn">Convert</button>
+
+  <label for="output">JSON output</label>
+  <textarea id="output" readonly></textarea>
+  
+  <div class="stats" id="stats"></div>
+
+  <div class="save-section">
+    <button id="saveJsonBtn" disabled>Save JSON</button>
+    <button id="copyBtn" disabled>Copy JSON</button>
+  </div>
+
+  <script>
+    // Find most frequent genre from all <genre> elements
+    function getMostFrequentGenre(xmlDoc) {
+      const genreNodes = xmlDoc.getElementsByTagName("genre");
+      const genreCounts = {};
+      
+      for (let genreNode of genreNodes) {
+        const genre = genreNode.textContent.trim();
+        if (genre) {
+          genreCounts[genre] = (genreCounts[genre] || 0) + 1;
+        }
+      }
+      
+      if (Object.keys(genreCounts).length === 0) return "";
+      
+      let maxCount = 0;
+      let mostFrequent = "";
+      for (let [genre, count] of Object.entries(genreCounts)) {
+        if (count > maxCount) {
+          maxCount = count;
+          mostFrequent = genre;
+        }
+      }
+      return mostFrequent;
+    }
+
+    // Derive Archive.org identifier from the *original* _files.xml URL
+    function getIdentifierFromUrl(inputUrl) {
+      let targetUrl = inputUrl;
+      try {
+        const u = new URL(inputUrl);
+        if (u.hostname === "corsproxy.io") {
+          const qs = u.search;
+          if (qs && qs.length > 1) {
+            targetUrl = decodeURIComponent(qs.substring(1));
+          }
+        }
+      } catch (e) {
+        targetUrl = inputUrl;
+      }
+
+      try {
+        const u2 = new URL(targetUrl);
+        const parts = u2.pathname.split("/").filter(Boolean);
+        const itemsIndex = parts.indexOf("items");
+        if (itemsIndex !== -1 && parts.length > itemsIndex + 1) {
+          return parts[itemsIndex + 1];
+        }
+      } catch (e) {}
+      return "";
+    }
+
+    // Update stats display
+    function updateStats(jsonString) {
+      const statsEl = document.getElementById("stats");
+      if (!jsonString.trim()) {
+        statsEl.textContent = "";
+        return;
+      }
+      
+      const charCount = jsonString.length;
+      const objCount = JSON.parse(jsonString).length;
+      statsEl.textContent = `${charCount} chars, ${objCount} tracks`;
+    }
+
+    // Save JSON to file
+    function saveJson(jsonString, identifier) {
+      if (!jsonString.trim()) {
+        alert('No JSON to save. Generate a conversion first.');
+        return;
+      }
+      
+      const nameBase = identifier.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+      const filename = `${nameBase}.json`;
+      
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Copy JSON to clipboard
+    async function copyJson(jsonString) {
+      try {
+        await navigator.clipboard.writeText(jsonString);
+        alert('JSON copied to clipboard!');
+      } catch (err) {
+        // Fallback for older browsers
+        const textarea = document.createElement('textarea');
+        textarea.value = jsonString;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('JSON copied to clipboard!');
+      }
+    }
+
+    const convertBtn = document.getElementById("convertBtn");
+    const saveJsonBtn = document.getElementById("saveJsonBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const output = document.getElementById("output");
+    let currentIdentifier = "";
+
+    convertBtn.addEventListener("click", async () => {
+      const originalUrl = document.getElementById("xmlUrl").value.trim();
+      output.value = "Loading...";
+      saveJsonBtn.disabled = true;
+      copyBtn.disabled = true;
+
+      currentIdentifier = getIdentifierFromUrl(originalUrl);
+      if (!currentIdentifier) {
+        output.value = "Could not derive identifier from URL.";
+        return;
+      }
+
+      const fetchUrl = "https://corsproxy.io/?" + encodeURIComponent(originalUrl);
+
+      try {
+        const res = await fetch(fetchUrl);
+        if (!res.ok) {
+          output.value = "Error fetching XML: " + res.status + " " + res.statusText;
+          return;
+        }
+
+        const xmlText = await res.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+
+        const defaultGenre = getMostFrequentGenre(xmlDoc);
+
+        const fileNodes = Array.from(xmlDoc.getElementsByTagName("file"));
+        const mp3Nodes = fileNodes.filter(f => {
+          const nameAttr = f.getAttribute("name") || "";
+          return nameAttr.toLowerCase().endsWith(".mp3");
+        });
+
+        const baseUrl = "https://archive.org/download/" + currentIdentifier + "/";
+
+        const items = mp3Nodes.map(f => {
+          const nameAttr = f.getAttribute("name") || "";
+          const creators = Array.from(f.getElementsByTagName("creator"))
+                                .map(n => n.textContent.trim())
+                                .filter(Boolean);
+          const name = creators.join(", ");
+
+          const titleEl = f.getElementsByTagName("title")[0];
+          const albumEl = f.getElementsByTagName("album")[0];
+          const genreEl = f.getElementsByTagName("genre")[0];
+
+          const title = titleEl ? titleEl.textContent.trim() : "";
+          const album = albumEl ? albumEl.textContent.trim() : "";
+          const genre = genreEl && genreEl.textContent.trim() ? 
+                       genreEl.textContent.trim() : defaultGenre;
+
+          const fileUrl = baseUrl + encodeURIComponent(nameAttr);
+
+          return {
+            name:  name,
+            title: title,
+            album: album,
+            year:  "0000",  // DuckDuckGo unreliable, using fixed value
+            genre: genre,
+            file:  fileUrl
+          };
+        });
+
+        output.value = JSON.stringify(items, null, 2);
+        updateStats(output.value);
+        saveJsonBtn.disabled = false;
+        copyBtn.disabled = false;
+      } catch (err) {
+        output.value = "Error: " + err.message;
+        saveJsonBtn.disabled = true;
+        copyBtn.disabled = true;
+      }
+    });
+
+    saveJsonBtn.addEventListener("click", () => {
+      saveJson(output.value, currentIdentifier);
+    });
+
+    copyBtn.addEventListener("click", () => {
+      copyJson(output.value);
+    });
+  </script>
+</body>
+</html>
