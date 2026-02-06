@@ -1,3 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>bouwdepot amersfoort</title>
+  <style>
+    /* Typography */
+    body, table {
+      font-family: "Gill Sans", "Gill Sans MT", "Calibri", sans-serif;
+      color: #153145; /* slightly muted dark-blue for body text */
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    
+    /* Table layout */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.8rem 0;
+      text-align: left;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(16, 40, 60, 0.04);
+    }
+    
+    /* Header: light grey */
+    thead tr.header th {
+      background: #f2f2f2;    /* light grey header */
+      color: #0f2540;         /* dark slate for contrast */
+      font-weight: 600;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(15, 37, 64, 0.06);
+    }
+    
+    /* Body cells */
+    tbody td {
+      padding: 11px 14px;
+      border-bottom: 1px solid #e9eef4;
+      vertical-align: top;
+    }
+    
+    /* Optional: subtle alternating rows (your HTML already has .odd/.even) */
+    tbody tr.odd  { background: #ffffff; }
+    tbody tr.even { background: #fbfdff; }
+    
+    /* Hover: light navy-blue */
+    tbody tr:hover {
+      background: #2b4f6f;    /* light navy-ish blue */
+      color: #ffffff;
+      transition: background-color 160ms ease, color 160ms ease;
+    }
+    tbody tr:hover td { color: inherit; }
+    tbody tr:hover a  { color: #e6f2ff; }
+    
+    /* Links */
+    a {
+      color: #1b6fb3;
+      text-decoration: underline;
+    }
+    a:hover {
+      color: #155a8f;
+    }
+    
+    /* Small screens: make table readable (optional, works better if you add data-label attributes) */
+    @media (max-width: 740px) {
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      tr { margin-bottom: 0.6rem; }
+      td {
+        padding: 8px 12px;
+        border-bottom: none;
+        position: relative;
+      }
+    }
+    </style>
+</head>
+<body>
 <p>This conversation was generated with Duck.ai (https://duck.ai) using
 OpenAI GPT-OSS 120B Model. AI chats may display inaccurate or
 offensive information (see https://duckduckgo.com/duckai/privacy-terms
@@ -24,7 +101,7 @@ ontwikkelingen omtrent het bouwdepot amersfoort experiment
 <tbody>
 <tr class="odd">
 <td>1 Jan 2024</td>
-<td>Start van de pilot Bouwdepot Amersfoort� met 150 gezinnen.</td>
+<td>Start van de pilot Bouwdepot Amersfoort met 150 gezinnen.</td>
 <td>Maandelijks 1200 EUR per huishouden, onvoorwaardelijk.</td>
 </tr>
 <tr class="even">
@@ -35,7 +112,7 @@ hogere arbeidsmarktparticipatie.</td>
 </tr>
 <tr class="odd">
 <td>30 Sep 2024</td>
-<td>Publicatie van het “Interim Report” (Universiteit Utrecht).</td>
+<td>Publicatie van het Interim Report (Universiteit Utrecht).</td>
 <td>Bevindingen: 12% stijging in vrijwilligerswerk, 8% meer
 studie/opleidingsinschrijvingen.</td>
 </tr>
@@ -259,3 +336,5 @@ Amersfoort-experiment</td>
 <p>User prompt 4 of 4 - 2/5/2026, 4:59:48 PM: Uitstekend, dank voor de
 informatie en de replieken.</p>
 <p>GPT-OSS 120B: Graag gedaan!</p>
+</body>
+</html>
