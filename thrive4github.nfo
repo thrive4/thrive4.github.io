@@ -1,3 +1,10 @@
+update 2.5 24/03/2026
+- intergrated chart view with over views
+  removed the link in config options
+- fixed issue with consecutive tables in markdown
+  conversion not rendering correctly
+- various small bug fixes
+
 update 2.4 25/01/2026
 - added first draft mht viewer
 - added first draft internet archive playlist converter
