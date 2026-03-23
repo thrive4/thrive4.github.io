@@ -152,6 +152,8 @@
       // needed to correct paragraph creation in md
       //let mdtext = document.getElementById('markdown-output').value;
       mdtext = mdtext.replace(/^(#{1,6} .+)\n(?!\n)/gm, '$1\n\n');
+      mdtext = fixMojibake(mdtext, _mojibakeMap);
+      //mdtext = mdtohtmlfencedcode(mdtext);
       const pdfdata = {
         pdf: pdf,
         text: mdtext, 
@@ -319,7 +321,7 @@
     }
 // end cleanup and preprocessing
 
-    // pdf render from markdown
+// pdf render from markdown
     function md2pdf(pdfdata) {
         const { pdf, text, width, height, l_margin, r_margin, t_margin, b_margin, line_height, base_font, base_font_style, base_font_size } = pdfdata;
         pdf.setFont(base_font, base_font_style);
@@ -459,127 +461,127 @@
         tempos        = [];
         return rootNode;
     }
+// end pdf render from markdown
 
-    // markdown
-    function text2md(text) {
-        const lines = text.split('\n');
-        const allEntities = getner(text);
-        let filteredEntities = allEntities.filter(e => !stopwords.has(e.toLowerCase()));
-        filteredEntities.sort((a, b) => b.length - a.length);
+// markdown
+  function text2md(text) {
+      const lines = text.split('\n');
+      const allEntities = getner(text);
+      let filteredEntities = allEntities.filter(e => !stopwords.has(e.toLowerCase()));
+      filteredEntities.sort((a, b) => b.length - a.length);
 
-        function isAlreadyBold(token) {
-          return token.startsWith('**') && token.endsWith('**');
-        }
-
-        const convertedLines = lines.map(line => {
-          //if (/^\s*\(?\s*[-\u2013\u2014]?\s*Chapter\b.*\)?$/i.test(line.trim())) {
-          // pattern > sting contains chapter at beginning of line case insensitive
-          if (/^Chapter\b/i.test(line.trim())) {
-            return '## ' + line.trim();
-          }
-          // pattern > 13. LOURVE REVISITED
-          if (/^(\d+)\.\s*([A-Z][\w\s]+)$/i.test(line.trim())) {
-            return '## ' + line.trim();
-          }
-          // pattern > XIII. LOURVE REVISITED
-          if (/^([IVXLCDM]+|\d+)\.\s*([A-Z][\w\s]+)$/i.test(line.trim())) {
-            return '## ' + line.trim();
-          }
-          if (/^part\b/i.test(line.trim())) {
-            return '## ' + line.trim();
-          }
-          let tokens = line.split(' ');
-          tokens = tokens.map(token => {
-            let rawToken = token.replace(/[\W_]+$/, ''); // Remove punctuation from end
-            // Remove bold markers for checking
-            let checkToken = rawToken.replace(/^\*\*|\*\*$/g, '');
-            if (
-              filteredEntities.includes(checkToken) &&
-              !isAlreadyBold(token)
-            ) {
-              // Preserve any attached punctuation
-              let punctuation = token.slice(rawToken.length);
-              return `**${checkToken}**${punctuation}`;
-            }
-            return token;
-          });
-          return tokens.join(' ');
-        });
-
-        return convertedLines.join('\n');
-    }
-
-    function getmdstyle(line) {
-      line = line.trim();
-      if (/^\s?-{3,}\s?$/.test(line)) return [{ text: null, style: "hr" }];
-      const regex = /(\*\*\*([\s\S]+?)\*\*\*|___([\s\S]+?)___|\*\*([\s\S]+?)\*\*|__([\s\S]+?)__|\*([\s\S]+?)\*|_([\s\S]+?)_)/g;
-      let segments = [], lastIndex = 0, match;
-      while ((match = regex.exec(line)) !== null) {
-        if (match.index > lastIndex) segments.push({ text: line.slice(lastIndex, match.index), style: "normal" });
-        if (match[2] || match[3]) segments.push({ text: match[2] ?? match[3], style: "bolditalic" });
-        else if (match[4] || match[5]) segments.push({ text: match[4] ?? match[5], style: "bold" });
-        else if (match[6] || match[7]) segments.push({ text: match[6] ?? match[7], style: "italic" });
-        lastIndex = regex.lastIndex;
+      function isAlreadyBold(token) {
+        return token.startsWith('**') && token.endsWith('**');
       }
-      if (lastIndex < line.length) segments.push({ text: line.slice(lastIndex), style: "normal" });
-      return segments;
+
+      const convertedLines = lines.map(line => {
+        // pattern > sting contains chapter at beginning of line case insensitive
+        if (/^Chapter\b/i.test(line.trim())) {
+          return '## ' + line.trim();
+        }
+        // pattern > 13. lourve revisited
+        if (/^(\d+)\.\s*([A-Z][\w\s]+)$/i.test(line.trim())) {
+          return '## ' + line.trim();
+        }
+        // pattern > xiii. lourve revisited
+        if (/^([IVXLCDM]+|\d+)\.\s*([A-Z][\w\s]+)$/i.test(line.trim())) {
+          return '## ' + line.trim();
+        }
+        if (/^part\b/i.test(line.trim())) {
+          return '## ' + line.trim();
+        }
+        let tokens = line.split(' ');
+        tokens = tokens.map(token => {
+          let rawToken = token.replace(/[\W_]+$/, ''); // remove punctuation from end
+          // remove bold markers for checking
+          let checkToken = rawToken.replace(/^\*\*|\*\*$/g, '');
+          if (
+            filteredEntities.includes(checkToken) &&
+            !isAlreadyBold(token)
+          ) {
+            // preserve any attached punctuation
+            let punctuation = token.slice(rawToken.length);
+            return `**${checkToken}**${punctuation}`;
+          }
+          return token;
+        });
+        return tokens.join(' ');
+      });
+
+      return convertedLines.join('\n');
+  }
+
+  function getmdstyle(line) {
+    line = line.trim();
+    if (/^\s?-{3,}\s?$/.test(line)) return [{ text: null, style: "hr" }];
+    const regex = /(\*\*\*([\s\S]+?)\*\*\*|___([\s\S]+?)___|\*\*([\s\S]+?)\*\*|__([\s\S]+?)__|\*([\s\S]+?)\*|_([\s\S]+?)_)/g;
+    let segments = [], lastIndex = 0, match;
+    while ((match = regex.exec(line)) !== null) {
+      if (match.index > lastIndex) segments.push({ text: line.slice(lastIndex, match.index), style: "normal" });
+      if (match[2] || match[3]) segments.push({ text: match[2] ?? match[3], style: "bolditalic" });
+      else if (match[4] || match[5]) segments.push({ text: match[4] ?? match[5], style: "bold" });
+      else if (match[6] || match[7]) segments.push({ text: match[6] ?? match[7], style: "italic" });
+      lastIndex = regex.lastIndex;
     }
+    if (lastIndex < line.length) segments.push({ text: line.slice(lastIndex), style: "normal" });
+    return segments;
+  }
 
   function mdtohtmltable(md) {
-      return md.replace(
-        /((?:^\|.*\|\s*(?:\r?\n|$)){2,})/gm,
-        function (match) {
-          const lines = match.trim().split(/\r?\n/).filter(l => l.trim() !== '');
-          if (lines.length < 2) return match;
-    
-          const headerLine    = lines[0];
-          const separatorLine = lines[1];
-          const bodyLines     = lines.slice(2);
-
-          if (!/^\|?[\s:\-\|]+\|?$/.test(separatorLine.trim())) return match;
-
-          // column alignments
-          const aligns = separatorLine
-            .split('|')
-            .filter(Boolean)
-            .map(s => {
-              s = s.trim();
-              if (/^:\-+:$/.test(s)) return 'center';
-              if (/^:-+$/.test(s)) return 'left';
-              if (/^-+:$/.test(s)) return 'right';
-              return null;
-            });
-
-          const headers = headerLine
-            .split('|')
-            .filter(Boolean)
-            .map((c, i) => {
-              const align = aligns[i] ? ` style="text-align:${aligns[i]}"` : '';
-              return `<th class="thmd"${align}>${c.trim()}</th>`;
-            })
-            .join('');
-
-          const bodyRows = bodyLines
-            .map(row => {
-              const cols = row
-                .split('|')
-                .filter(Boolean)
-                .map((c, i) => {
-                  const align = aligns[i] ? ` style="text-align:${aligns[i]}"` : '';
-                  return `<td class="tdmd"${align}>${c.trim()}</td>`;
-                })
-                .join('');
-              return `<tr class="trmd">${cols}</tr>`;
-            })
-            .join('');
-    
-          return `<table class="tablemd"><thead><tr class="trmd">${headers}</tr></thead><tbody>${bodyRows}</tbody></table>\n\n`;
-        }
-      );
+    return md.replace(
+      // table = header line, separator line, then 0+ body lines.
+      // each line must start with '|' (no leading spaces) and end with '|'.
+      /((?:^\|[^\r\n\t].*\|[^\r\n]*\r?\n){2,})/gm,
+      function (match) {
+        const lines = match.trim().split(/\r?\n/).filter(l => l.trim() !== '');
+        if (lines.length < 2) return match;
+  
+        const headerLine    = lines[0];
+        const separatorLine = lines[1];
+        const bodyLines     = lines.slice(2);
+  
+        if (!/^\|?[\s:\-\|]+\|?$/.test(separatorLine.trim())) return match;
+  
+        const aligns = separatorLine
+          .split('|')
+          .filter(Boolean)
+          .map(s => {
+            s = s.trim();
+            if (/^:\-+:$/.test(s)) return 'center';
+            if (/^:-+$/.test(s))   return 'left';
+            if (/^-+:$/.test(s))   return 'right';
+            return null;
+          });
+  
+        const headers = headerLine
+          .split('|')
+          .filter(Boolean)
+          .map((c, i) => {
+            const align = aligns[i] ? ` style="text-align:${aligns[i]}"` : '';
+            return `<th class="thmd"${align}>${c.trim()}</th>`;
+          })
+          .join('');
+  
+        const bodyRows = bodyLines
+          .map(row => {
+            const cols = row
+              .split('|')
+              .filter(Boolean)
+              .map((c, i) => {
+                const align = aligns[i] ? ` style="text-align:${aligns[i]}"` : '';
+                return `<td class="tdmd"${align}>${c.trim()}</td>`;
+              })
+              .join('');
+            return `<tr class="trmd">${cols}</tr>`;
+          })
+          .join('');
+  
+        return `<table class="tablemd"><thead><tr class="trmd">${headers}</tr></thead><tbody>${bodyRows}</tbody></table>\n\n`;
+      }
+    );
   }
 
   function mdtohtml(content) {
-      // Regular Expressions
       const h1 = /^#{1}[^#].*$/gm;
       const h2 = /^#{2}[^#].*$/gm;
       const h3 = /^#{3}[^#].*$/gm;
@@ -775,7 +777,9 @@
         }
       }).join('');
   }
+// end markdown
 
+// html toc and index
   // slugify heading or text to create id
   function slugify(str) {
     return str.trim()
@@ -862,372 +866,372 @@
       return `<div id="fence">${escapedCode.trim()}</div>`;
     });
   }
+// end html toc and index
 
 // mht2html related
-
-function htmltable2md(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-
-  const tables = doc.querySelectorAll('table');
-  if (!tables.length) return html; // no tables
-
-  function convertTable(table) {
-    let md = '';
-
-    const rows = table.querySelectorAll('tr');
-    rows.forEach((tr, rowIndex) => {
-      const cells = tr.querySelectorAll('th, td');
-      let rowContent = '|';
-
-      cells.forEach(cell => {
-        // map cell child nodes to markdown-compatible text
-        let text = Array.from(cell.childNodes).map(node => {
-          if (node.nodeType === Node.TEXT_NODE) {
-            return node.textContent.trim();
-          } else if (node.nodeName.toLowerCase() === 'br') {
-            return ' '; // replace <br> with space
-          } else if (node.nodeName.toLowerCase() === 'img') {
-            // Convert <img> to markdown image syntax
-            const src = node.getAttribute('src') || '';
-            const alt = node.getAttribute('alt') || '';
-            return `![${alt}](${src})`;
-          } else {
-            return node.textContent.trim();
-          }
-        }).join('');
-
-        text = text.replace(/\s+/g, ' ').trim();
-        rowContent += ' ' + text + ' |';
+  function htmltable2md(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+  
+    const tables = doc.querySelectorAll('table');
+    if (!tables.length) return html; // no tables
+  
+    function convertTable(table) {
+      let md = '';
+  
+      const rows = table.querySelectorAll('tr');
+      rows.forEach((tr, rowIndex) => {
+        const cells = tr.querySelectorAll('th, td');
+        let rowContent = '|';
+  
+        cells.forEach(cell => {
+          // map cell child nodes to markdown-compatible text
+          let text = Array.from(cell.childNodes).map(node => {
+            if (node.nodeType === Node.TEXT_NODE) {
+              return node.textContent.trim();
+            } else if (node.nodeName.toLowerCase() === 'br') {
+              return ' '; // replace <br> with space
+            } else if (node.nodeName.toLowerCase() === 'img') {
+              // Convert <img> to markdown image syntax
+              const src = node.getAttribute('src') || '';
+              const alt = node.getAttribute('alt') || '';
+              return `![${alt}](${src})`;
+            } else {
+              return node.textContent.trim();
+            }
+          }).join('');
+  
+          text = text.replace(/\s+/g, ' ').trim();
+          rowContent += ' ' + text + ' |';
+        });
+  
+        md += rowContent + '\n';
+  
+        if (rowIndex === 0) {
+          md += '|' + Array(cells.length).fill(' --- ').join('|') + '|\n';
+        }
       });
-
-      md += rowContent + '\n';
-
-      if (rowIndex === 0) {
-        md += '|' + Array(cells.length).fill(' --- ').join('|') + '|\n';
-      }
+      return md;
+    }
+  
+    let result = html;
+    tables.forEach(table => {
+      const mdTable = convertTable(table);
+      result = result.split(table.outerHTML).join(mdTable);
+      result = result
+        .split('\n')
+        .map(line => line.replace(/^\s*\|/, '|'))
+        .join('\n')
+        .trim();
     });
-    return md;
+  
+    return result;
   }
-
-  let result = html;
-  tables.forEach(table => {
-    const mdTable = convertTable(table);
-    result = result.split(table.outerHTML).join(mdTable);
-    result = result
-      .split('\n')
-      .map(line => line.replace(/^\s*\|/, '|'))
-      .join('\n')
-      .trim();
-  });
-
-  return result;
-}
-
-function html2md(html) {
-  // create a DOM parser
-  const container = document.createElement('div');
-  html = html.replace(/ {2,}/g, ' ').trim();
-  // removes tabs todo maybe replace with div indent in html covnversion
-  html = html.replace(/\t+/g, ' ');
-  container.innerHTML = html.replace(/&nbsp;/g, ' ');
-  function processNode(node) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      return node.textContent;
-    }
-    if (node.nodeType !== Node.ELEMENT_NODE) {
-      return '';
-    }
-
-    const tag = node.tagName.toLowerCase();
-    let content = Array.from(node.childNodes).map(processNode).join('');
-
-    switch(tag) {
-      case 'h1': return '# ' + content + '\n\n';
-      case 'h2': return '## ' + content + '\n\n';
-      case 'h3': return '### ' + content + '\n\n';
-      case 'b':
-      case 'strong': return '**' + content + '**';
-      case 'i':
-      case 'em': return '_' + content + '_';
-      case 'a': return `[${content}](${node.getAttribute('href')})`;
-      case 'ul': return '\n' + Array.from(node.children).map(li => '- ' + processNode(li)).join('\n') + '\n';
-      case 'ol': return '\n' + Array.from(node.children).map((li, i) => `${i+1}. ${processNode(li)}`).join('\n') + '\n';
-      case 'blockquote': return '> ' + content.replace(/\n/g, '\n> ') + '\n\n';
-      case 'code': return '`' + content + '`';
-      case 'hr': return '\n---\n';
-      case 'img': return `![](${node.getAttribute('src')})`;
-      case 'del': return '~~' + content + '~~';
-      case 'mark': return '==' + content + '==';
-      default: return content;
-    }
-  }
-  return processNode(container).replace(/\n{3,}/g, '\n\n');
-}
-
-function isfrontpage(html) {
-  const checkgenerator = /<meta[^>]+name\s*=\s*["']?generator["']?[^>]+content\s*=\s*["']?Microsoft FrontPage/i.test(html);
-  const checkprogid    = /<meta[^>]+content\s*=\s*["']?FrontPage\.Editor\.Document["']?[^>]+name\s*=\s*["']?ProgId["']?/i.test(html);
-  const check3d        = (html => (html.match(/3D/g) || []).length > 50); // todo might need percentage for more accruacy
-  return checkgenerator || checkprogid || check3d;
-}
-
-function cleanupfrontpage(html) {
-  // deal with frontpage linefeeds
-  html              = html.replace(/<\/p\s*>/gi, '<br>');
-  const tempDiv     = document.createElement('div');
-  tempDiv.innerHTML = html;
-
-  const allowedTags = new Set([
-        'b', 'br', 'em', 'i', 'img',
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'ol', 'li', 'strong', 'table', 'td',
-        'th', 'tr', 'u', 'ul']);
-  // filter out 'blockquote' frontpage has the habit
-  // of not adding a closing tag.
-  function cleanNode(node) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      return node.textContent;
-    }
-    if (node.nodeType !== Node.ELEMENT_NODE) {
-      return '';
-    }
-
-    const tag = node.tagName.toLowerCase();
-    let innerContent = Array.from(node.childNodes).map(cleanNode).join('');
-
-    if (allowedTags.has(tag)) {
-      if (tag === 'img') {
-        const src = node.getAttribute('src') || '';
-        // optionally, validate that src is a data URL or normal URL here if you want
-        return `<img src="${src}">`;
+  
+  function html2md(html) {
+    // create a DOM parser
+    const container = document.createElement('div');
+    html = html.replace(/ {2,}/g, ' ').trim();
+    // removes tabs todo maybe replace with div indent in html covnversion
+    html = html.replace(/\t+/g, ' ');
+    container.innerHTML = html.replace(/&nbsp;/g, ' ');
+    function processNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent;
       }
-// todo used for ahref evaluate this one...
-/*
-if (tag === 'a') {
-  const href = node.getAttribute('href') || '#';
-  const title = node.getAttribute('title');
-  const titleAttr = title ? ` title="${title}"` : '';
-  return `<a href="${href}"${titleAttr}>${innerContent}</a>`;
-}
-*/
-      // other allowed tags, return tag without attributes
-      return `<${tag}>${innerContent}</${tag}>`;
-    } else {
-      // flatten disallowed tags to their children content
-      return innerContent;
-    }
-  }
-
-  return Array.from(tempDiv.childNodes).map(cleanNode).join('');
-}
-
-function fixinlinetaglines(html, tagnames) {
-  if (!html) return html;
-
-  let result = '';
-  let i = 0;
-  while (i < html.length) {
-    // Find the next opening tag for any of the given tagNames
-    let ntidx = -1;
-    let ntname = null;
-
-    for (const name of tagnames) {
-      const open = html.indexOf('<' + name + '>', i);
-      if (open !== -1 && (ntidx === -1 || open < ntidx)) {
-        ntidx  = open;
-        ntname = name;
+      if (node.nodeType !== Node.ELEMENT_NODE) {
+        return '';
+      }
+  
+      const tag = node.tagName.toLowerCase();
+      let content = Array.from(node.childNodes).map(processNode).join('');
+  
+      switch(tag) {
+        case 'h1': return '# ' + content + '\n\n';
+        case 'h2': return '## ' + content + '\n\n';
+        case 'h3': return '### ' + content + '\n\n';
+        case 'b':
+        case 'strong': return '**' + content + '**';
+        case 'i':
+        case 'em': return '_' + content + '_';
+        case 'a': return `[${content}](${node.getAttribute('href')})`;
+        case 'ul': return '\n' + Array.from(node.children).map(li => '- ' + processNode(li)).join('\n') + '\n';
+        case 'ol': return '\n' + Array.from(node.children).map((li, i) => `${i+1}. ${processNode(li)}`).join('\n') + '\n';
+        case 'blockquote': return '> ' + content.replace(/\n/g, '\n> ') + '\n\n';
+        case 'code': return '`' + content + '`';
+        case 'hr': return '\n---\n';
+        case 'img': return `![](${node.getAttribute('src')})`;
+        case 'del': return '~~' + content + '~~';
+        case 'mark': return '==' + content + '==';
+        default: return content;
       }
     }
-
-    if (ntidx === -1) {
-      // No more of these tags
-      result += html.slice(i);
-      break;
+    return processNode(container).replace(/\n{3,}/g, '\n\n');
+  }
+  
+  function isfrontpage(html) {
+    const checkgenerator = /<meta[^>]+name\s*=\s*["']?generator["']?[^>]+content\s*=\s*["']?Microsoft FrontPage/i.test(html);
+    const checkprogid    = /<meta[^>]+content\s*=\s*["']?FrontPage\.Editor\.Document["']?[^>]+name\s*=\s*["']?ProgId["']?/i.test(html);
+    const check3d        = (html => (html.match(/3D/g) || []).length > 50); // todo might need percentage for more accruacy
+    return checkgenerator || checkprogid || check3d;
+  }
+  
+  function cleanupfrontpage(html) {
+    // deal with frontpage linefeeds
+    html              = html.replace(/<\/p\s*>/gi, '<br>');
+    const tempDiv     = document.createElement('div');
+    tempDiv.innerHTML = html;
+  
+    const allowedTags = new Set([
+          'b', 'br', 'em', 'i', 'img',
+          'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+          'ol', 'li', 'strong', 'table', 'td',
+          'th', 'tr', 'u', 'ul']);
+    // filter out 'blockquote' frontpage has the habit
+    // of not adding a closing tag.
+    function cleanNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent;
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) {
+        return '';
+      }
+  
+      const tag = node.tagName.toLowerCase();
+      let innerContent = Array.from(node.childNodes).map(cleanNode).join('');
+  
+      if (allowedTags.has(tag)) {
+        if (tag === 'img') {
+          const src = node.getAttribute('src') || '';
+          // optionally, validate that src is a data URL or normal URL here if you want
+          return `<img src="${src}">`;
+        }
+  // todo used for ahref evaluate this one...
+  /*
+  if (tag === 'a') {
+    const href = node.getAttribute('href') || '#';
+    const title = node.getAttribute('title');
+    const titleAttr = title ? ` title="${title}"` : '';
+    return `<a href="${href}"${titleAttr}>${innerContent}</a>`;
+  }
+  */
+        // other allowed tags, return tag without attributes
+        return `<${tag}>${innerContent}</${tag}>`;
+      } else {
+        // flatten disallowed tags to their children content
+        return innerContent;
+      }
     }
-
-    result += html.slice(i, ntidx);
-
-    const openTag  = '<' + ntname + '>';
-    const closeTag = '</' + ntname + '>';
-
-    const openIdx = ntidx;
-    const closeIdx = html.indexOf(closeTag, openIdx);
-    if (closeIdx === -1) {
-      // malformed, no closing tag; append rest and stop
-      result += html.slice(openIdx);
-      break;
-    }
-
-    // content between <tag> and </tag>
-    let inside = html.slice(openIdx + openTag.length, closeIdx);
-
-    // if newline, remove newline(s) and surrounding spaces inside
-    if (inside.indexOf('\n') !== -1 || inside.indexOf('\r') !== -1) {
-      let cleaned = '';
-      let j = 0;
-      while (j < inside.length) {
-        const ch = inside[j];
-
-        if (ch === '\n' || ch === '\r') {
-          j++;
-          // skip whitespace/newlines following the newline
-          while (
-            j < inside.length &&
-            (inside[j] === ' ' ||
-             inside[j] === '\t' ||
-             inside[j] === '\n' ||
-             inside[j] === '\r')
-          ) {
+  
+    return Array.from(tempDiv.childNodes).map(cleanNode).join('');
+  }
+  
+  function fixinlinetaglines(html, tagnames) {
+    if (!html) return html;
+  
+    let result = '';
+    let i = 0;
+    while (i < html.length) {
+      // Find the next opening tag for any of the given tagNames
+      let ntidx = -1;
+      let ntname = null;
+  
+      for (const name of tagnames) {
+        const open = html.indexOf('<' + name + '>', i);
+        if (open !== -1 && (ntidx === -1 || open < ntidx)) {
+          ntidx  = open;
+          ntname = name;
+        }
+      }
+  
+      if (ntidx === -1) {
+        // No more of these tags
+        result += html.slice(i);
+        break;
+      }
+  
+      result += html.slice(i, ntidx);
+  
+      const openTag  = '<' + ntname + '>';
+      const closeTag = '</' + ntname + '>';
+  
+      const openIdx = ntidx;
+      const closeIdx = html.indexOf(closeTag, openIdx);
+      if (closeIdx === -1) {
+        // malformed, no closing tag; append rest and stop
+        result += html.slice(openIdx);
+        break;
+      }
+  
+      // content between <tag> and </tag>
+      let inside = html.slice(openIdx + openTag.length, closeIdx);
+  
+      // if newline, remove newline(s) and surrounding spaces inside
+      if (inside.indexOf('\n') !== -1 || inside.indexOf('\r') !== -1) {
+        let cleaned = '';
+        let j = 0;
+        while (j < inside.length) {
+          const ch = inside[j];
+  
+          if (ch === '\n' || ch === '\r') {
+            j++;
+            // skip whitespace/newlines following the newline
+            while (
+              j < inside.length &&
+              (inside[j] === ' ' ||
+               inside[j] === '\t' ||
+               inside[j] === '\n' ||
+               inside[j] === '\r')
+            ) {
+              j++;
+            }
+            // nop
+          } else {
+            cleaned += ch;
             j++;
           }
-          // nop
-        } else {
-          cleaned += ch;
-          j++;
         }
+        inside = cleaned;
       }
-      inside = cleaned;
+  
+      result += openTag + inside + closeTag;
+      i = closeIdx + closeTag.length;
     }
-
-    result += openTag + inside + closeTag;
-    i = closeIdx + closeTag.length;
+  
+    return result;
   }
-
-  return result;
-}
-
-function decodequotedprintable(str) {
-  str = str.replace(/=\r?\n/g, ''); // Remove soft line breaks
-  return str.replace(/=([A-Fa-f0-9]{2})/g, (match, hex) => {
-    return String.fromCharCode(parseInt(hex, 16));
-  });
-}
-
-function parsemhtparts(text) {
-  text = text.replace(/\r\n/g, '\n');
-  const boundaryMatch = text.match(/boundary="([^"]+)"/);
-  if (!boundaryMatch) return null;
-  const boundary = boundaryMatch[1];
-  const parts = text.split('--' + boundary).filter(p => p.trim() && !p.startsWith('--'));
-
-  let htmlContent = '';
-  const resources = {
-    images: {},
-    css: {},
-    js: {},
-    fonts: {}
-  };
-
-  for (const part of parts) {
-    const splitIndex = part.indexOf('\n\n');
-    if (splitIndex === -1) continue;
-    const rawHeaders = part.substring(0, splitIndex);
-    let body = part.substring(splitIndex + 2).trim();
-
-    const headers = {};
-    rawHeaders.split('\n').forEach(line => {
-      const idx = line.indexOf(':');
-      if (idx > 0) {
-        const key = line.substring(0, idx).trim().toLowerCase();
-        const value = line.substring(idx + 1).trim();
-        headers[key] = value;
+  
+  function decodequotedprintable(str) {
+    str = str.replace(/=\r?\n/g, ''); // Remove soft line breaks
+    return str.replace(/=([A-Fa-f0-9]{2})/g, (match, hex) => {
+      return String.fromCharCode(parseInt(hex, 16));
+    });
+  }
+  
+  function parsemhtparts(text) {
+    text = text.replace(/\r\n/g, '\n');
+    const boundaryMatch = text.match(/boundary="([^"]+)"/);
+    if (!boundaryMatch) return null;
+    const boundary = boundaryMatch[1];
+    const parts = text.split('--' + boundary).filter(p => p.trim() && !p.startsWith('--'));
+  
+    let htmlContent = '';
+    const resources = {
+      images: {},
+      css: {},
+      js: {},
+      fonts: {}
+    };
+  
+    for (const part of parts) {
+      const splitIndex = part.indexOf('\n\n');
+      if (splitIndex === -1) continue;
+      const rawHeaders = part.substring(0, splitIndex);
+      let body = part.substring(splitIndex + 2).trim();
+  
+      const headers = {};
+      rawHeaders.split('\n').forEach(line => {
+        const idx = line.indexOf(':');
+        if (idx > 0) {
+          const key = line.substring(0, idx).trim().toLowerCase();
+          const value = line.substring(idx + 1).trim();
+          headers[key] = value;
+        }
+      });
+  
+      if (headers['content-transfer-encoding'] && headers['content-transfer-encoding'].toLowerCase() === 'quoted-printable') {
+        body = decodequotedprintable(body);
+      }
+  
+      let contentType = headers['content-type'] ? headers['content-type'].toLowerCase() : '';
+  
+      // strip parameters to get main type only
+      if (contentType.includes(';')) {
+        contentType = contentType.split(';')[0].trim();
+      }
+  
+      const resourceKeyRaw = headers['content-location'] || headers['content-id'] || '';
+      const resourceKey    = resourceKeyRaw.replace(/[<>]/g, '').trim();
+      const filename       = resourceKey.split(/[\\/]/).pop().toLowerCase();
+  
+      switch(contentType) {
+        case 'text/html':
+        case 'text/plain':
+          // prefer first HTML part only
+          if (!htmlContent) {
+            htmlContent = body;
+          }
+          break;
+        case 'image/jpeg':
+        case 'image/png':
+        case 'image/gif':
+        case 'image/svg+xml':
+        case 'image/webp':
+          const mimeType = contentType;
+          const base64Data = body.replace(/\s/g, '');
+          if (filename) {
+            resources.images[filename] = `data:${mimeType};base64,${base64Data}`;
+          }
+          break;
+        case 'text/css':
+          if (filename) {
+            resources.css[filename] = body;
+          }
+          break;
+  
+        case 'text/javascript':
+        case 'application/javascript':
+          if (filename) {
+            resources.js[filename] = body;
+          }
+          break;
+        case 'font/woff':
+        case 'font/woff2':
+        case 'application/font-woff':
+        case 'application/font-woff2':
+        case 'application/x-font-ttf':
+        case 'font/ttf':
+          // Fonts stored as base64 similar to image, embed via CSS rewriting usually
+          if (filename) {
+            const base64FontData = body.replace(/\s/g, '');
+            resources.fonts[filename] = `data:${contentType};base64,${base64FontData}`;
+          }
+          break;
+        default:
+          // unknown content types, do nothing or optionally log.
+      }
+    }
+  
+    if (!htmlContent) return null;
+  
+    const parser = new DOMParser();
+    const doc    = parser.parseFromString(htmlContent, 'text/html');
+  
+    doc.querySelectorAll('img[src]').forEach(img => {
+      let src = img.getAttribute('src');
+      if (!src) return;
+      let srcFilename = src.split(/[\\/]/).pop().split('?')[0].toLowerCase();
+      if (resources.images[srcFilename]) {
+        img.setAttribute('src', resources.images[srcFilename]);
       }
     });
-
-    if (headers['content-transfer-encoding'] && headers['content-transfer-encoding'].toLowerCase() === 'quoted-printable') {
-      body = decodequotedprintable(body);
-    }
-
-    let contentType = headers['content-type'] ? headers['content-type'].toLowerCase() : '';
-
-    // strip parameters to get main type only
-    if (contentType.includes(';')) {
-      contentType = contentType.split(';')[0].trim();
-    }
-
-    const resourceKeyRaw = headers['content-location'] || headers['content-id'] || '';
-    const resourceKey    = resourceKeyRaw.replace(/[<>]/g, '').trim();
-    const filename       = resourceKey.split(/[\\/]/).pop().toLowerCase();
-
-    switch(contentType) {
-      case 'text/html':
-      case 'text/plain':
-        // prefer first HTML part only
-        if (!htmlContent) {
-          htmlContent = body;
-        }
-        break;
-      case 'image/jpeg':
-      case 'image/png':
-      case 'image/gif':
-      case 'image/svg+xml':
-      case 'image/webp':
-        const mimeType = contentType;
-        const base64Data = body.replace(/\s/g, '');
-        if (filename) {
-          resources.images[filename] = `data:${mimeType};base64,${base64Data}`;
-        }
-        break;
-      case 'text/css':
-        if (filename) {
-          resources.css[filename] = body;
-        }
-        break;
-
-      case 'text/javascript':
-      case 'application/javascript':
-        if (filename) {
-          resources.js[filename] = body;
-        }
-        break;
-      case 'font/woff':
-      case 'font/woff2':
-      case 'application/font-woff':
-      case 'application/font-woff2':
-      case 'application/x-font-ttf':
-      case 'font/ttf':
-        // Fonts stored as base64 similar to image, embed via CSS rewriting usually
-        if (filename) {
-          const base64FontData = body.replace(/\s/g, '');
-          resources.fonts[filename] = `data:${contentType};base64,${base64FontData}`;
-        }
-        break;
-      default:
-        // unknown content types, do nothing or optionally log.
-    }
+  
+    // inject CSS
+    Object.values(resources.css).forEach(cssText => {
+      const styleEl = doc.createElement('style');
+      styleEl.textContent = cssText;
+      doc.head.appendChild(styleEl);
+    });
+  
+    // inject JS
+    Object.values(resources.js).forEach(jsText => {
+      const scriptEl = doc.createElement('script');
+      scriptEl.textContent = jsText;
+      doc.body.appendChild(scriptEl);
+    });
+  
+    return doc.documentElement.outerHTML;
   }
-
-  if (!htmlContent) return null;
-
-  const parser = new DOMParser();
-  const doc    = parser.parseFromString(htmlContent, 'text/html');
-
-  doc.querySelectorAll('img[src]').forEach(img => {
-    let src = img.getAttribute('src');
-    if (!src) return;
-    let srcFilename = src.split(/[\\/]/).pop().split('?')[0].toLowerCase();
-    if (resources.images[srcFilename]) {
-      img.setAttribute('src', resources.images[srcFilename]);
-    }
-  });
-
-  // inject CSS
-  Object.values(resources.css).forEach(cssText => {
-    const styleEl = doc.createElement('style');
-    styleEl.textContent = cssText;
-    doc.head.appendChild(styleEl);
-  });
-
-  // inject JS
-  Object.values(resources.js).forEach(jsText => {
-    const scriptEl = doc.createElement('script');
-    scriptEl.textContent = jsText;
-    doc.body.appendChild(scriptEl);
-  });
-
-  return doc.documentElement.outerHTML;
-}
 // end mht2html related
 
 // reset text2md input if text is pasted

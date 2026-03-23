@@ -42,6 +42,18 @@ wah =`
 <br><br><br>
 <div class="container">
      <div class="row">
+        <div class="dropdown"><a href="chart.html" target="_blank">
+        <svg class="svglight" id="chartview" viewBox="0 0 72 72">
+            <path d="M61 49.12c0 1-.27 1.88-1.57 1.88H13.35A2.36 2.36 0 0 1 11 48.65V5.22c0-1.3.85-1.57 1.88-1.57s1.88.27 1.88 1.57v39.67a2.36 2.36
+            0 0 0 2.35 2.35h42.32c1.3 0 1.57.84 1.57 1.88Z" data-name="Layer 5"/>
+            <path d="M22.13 44h3.12a1.55 1.55 0 0 0 1.55-1.56V26.8a1.55 1.55 0 0 0-1.55-1.56h-3.12a1.56 1.56 0 0 0-1.56 1.56v15.59A1.56 1.56
+            0 0 0 22.13 44ZM31.37 43.63h3.26A1.63 1.63 0 0 0 36.26 42V12.65A1.63 1.63 0 0 0 34.63 11h-3.26a1.63 1.63 0 0 0-1.63 1.63V42a1.63
+            1.63 0 0 0 1.63 1.63ZM41.15 43.63h3.27A1.63 1.63 0 0 0 46.05 42v-9.79a1.63 1.63 0 0 0-1.63-1.63h-3.27a1.63 1.63 0 0 0-1.63 1.63V42a1.63
+            1.63 0 0 0 1.63 1.63ZM50.94 43.63h3.26A1.63 1.63 0 0 0 55.83 42V19.17a1.63 1.63 0 0 0-1.63-1.63h-3.26a1.63 1.63 0 0 0-1.63 1.63V42a1.63
+            1.63 0 0 0 1.63 1.63Z"/>
+        </svg>
+        </a><div class="dropdown-content"><p>chart view</p></div></div>
+
         <div class="dropdown"><a href="" onclick="switchlistview('tile'); localStorage.setItem('listtype', 'tile');">
         <svg class="svglight" id="tileview" viewBox="0 0 1400 1400">
              <path d="M313 333H153q-8 0-14-6t-6-14V153q0-8 6-14t14-6h160q8 0 14 6t6 14v160q0 8-6 14t-14 6zm265
