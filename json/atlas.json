@@ -154,7 +154,8 @@
       "name",
       "developer",
       "publisher",
-      "genre"
+      "genre",
+      "year"
     ]
   },
   {
@@ -170,6 +171,7 @@
     ],
     "displayfields": [
       "name",
+      "year",
       "updated"
     ]
   },

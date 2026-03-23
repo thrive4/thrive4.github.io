@@ -53,7 +53,7 @@
   },
   {
     "name": "chart",
-    "private": false,
+    "private": true,
     "description": "documentaries",
     "href":  "<a href='chart.html' target='_blank' onclick=closeNav();>",
     "updated": "2023-07-18T09:23:01Z",

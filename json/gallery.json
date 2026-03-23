@@ -2,6 +2,7 @@
  {
     "private": false,
     "name": "adriaen van de velde",
+    "year": 1636,
     "href":  "../gallery/adriaenvandevelde.json",
     "updated": "2023-07-18T09:23:01Z",
     "extract": ""
@@ -9,6 +10,7 @@
  {
     "private": false,
     "name": "aelbert cuyp",
+    "year": 1620,
     "href":  "../gallery/aelbertcuyp.json",
     "updated": "2023-07-18T09:23:01Z",
     "extract": ""
@@ -16,6 +18,7 @@
  {
     "private": false,
     "name": "ferdinand bol",
+    "year": 1616,
     "href":  "../gallery/ferdinandbol.json",
     "updated": "2023-07-18T09:23:01Z",
     "extract": ""
@@ -23,6 +26,7 @@
  {
     "private": false,
     "name": "frans hals",
+    "year": 1581,
     "href":  "../gallery/franshals.json",
     "updated": "2023-07-18T09:23:01Z",
     "extract": ""
@@ -30,6 +34,7 @@
  {
     "private": false,
     "name": "jan steen",
+    "year": 1626,
     "href":  "../gallery/jansteen.json",
     "updated": "2023-07-18T09:23:01Z",
     "extract": ""
@@ -37,6 +42,7 @@
  {
     "private": false,
     "name": "johannes vermeer",
+    "year": 1632,
     "href":  "../gallery/johannesvermeer.json",
     "updated": "2023-07-18T09:23:01Z",
     "extract": ""
@@ -44,6 +50,7 @@
  {
     "private": false,
     "name": "jan lievens",
+    "year": 1607,
     "href":  "../gallery/janlievens.json",
     "updated": "2023-07-18T09:23:01Z",
     "extract": ""
@@ -51,6 +58,7 @@
  {
     "private": false,
     "name": "willem van de velde the younger",
+    "year": 1633,
     "href":  "../gallery/willemvandeveldetheyounger.json",
     "updated": "2023-07-18T09:23:01Z",
     "extract": ""
@@ -58,6 +66,7 @@
  {
     "private": false,
     "name": "john singer sargent",
+    "year": 1856,
     "href":  "../gallery/johnsingersargent.json",
     "updated": "2025-10-05T09:23:01Z",
     "extract": ""
@@ -65,6 +74,7 @@
  {
     "private": false,
     "name": "albert edelfelt",
+    "year": 1854,
     "href":  "../gallery/albertedelfelt.json",
     "updated": "2025-10-05T09:23:01Z",
     "extract": ""
@@ -72,6 +82,7 @@
  {
     "private": false,
     "name": "jean beraud",
+    "year": 1849,
     "href":  "../gallery/jeanberaud.json",
     "updated": "2025-10-05T09:23:01Z",
     "extract": ""
@@ -79,6 +90,7 @@
  {
     "private": false,
     "name": "giovanni boldini",
+    "year": 1842,
     "href":  "../gallery/giovanniboldini.json",
     "updated": "2025-10-05T09:23:01Z",
     "extract": ""
@@ -86,6 +98,7 @@
  {
     "private": false,
     "name": "james tissot",
+    "year": 1836,
     "href":  "../gallery/jamestissot.json",
     "updated": "2025-10-05T09:23:01Z",
     "extract": ""
@@ -93,6 +106,7 @@
  {
     "private": false,
     "name": "local",
+    "year": 2025,
     "href":  "../gallery/local.json",
     "updated": "2023-07-18T09:23:01Z",
     "extract": ""
