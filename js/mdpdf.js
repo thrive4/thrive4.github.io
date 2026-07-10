@@ -66,13 +66,13 @@
 // end index related
 
 // init functions
-    function initviewmd() {
+    function initviewmd(ismd = true) {
         let md          = document.getElementById('mdinput').value;
         md              = fixMojibake(md, _mojibakeMap);
         md              = mdtohtmlfencedcode(md);
         md              = mdtohtmltable(md);
         const lines     = md.split(/\r?\n/);
-        const html      = convertmarkdown(lines);
+        const html      = convertmarkdown(lines, ismd);
         const viewmodal = document.getElementById('viewmodal');
         viewmodal.innerHTML     = html;
         viewmodal.style.display = 'block';
@@ -843,7 +843,13 @@
   }
 
   // convert markdown lines to html string with headings assigned ids
-  function convertmarkdown(lines) {
+  function convertmarkdown(lines, ismd = true) {
+
+  // alternative .txt .md toggle auto-detect format if not specified
+  //if (format === 'auto') {
+  //  format = lines.some(line => /^\s*#+\s/.test(line)) ? 'markdown' : 'text';
+  //}
+
     return lines.map(line => {
       line = line.trim();
       if(/^\s*#+\s/.test(line)) {
@@ -852,7 +858,12 @@
         const id = slugify(content);
         return `<h${level} id="${id}">${mdtohtml(content)}</h${level}>`;
       }
-      return `<p>${mdtohtml(line)}</p>`;
+      // todo phase out hack toggling between .md and .txt as input source
+      if (ismd) {
+         return `<p>${mdtohtml(line)}</p>`;
+      } else {
+        return `${mdtohtml(line)}<br>`;
+      }
     }).join('\n');
   }
 

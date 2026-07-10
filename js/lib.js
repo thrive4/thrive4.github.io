@@ -1,16 +1,70 @@
-function switchtheme() {
-   if (window.localStorage.getItem('theme') == null) {
-      window.localStorage.setItem('theme', 'light');
-   }
-   if (window.localStorage.getItem('theme') === 'light') {
-      window.localStorage.setItem('theme', 'dark');
-   } else {
-      window.localStorage.setItem('theme', 'light');
-   }
+// init theme on page load
+function inittheme() {
+   const theme = window.localStorage.getItem('theme') || 'light';
+   window.localStorage.setItem('theme', theme);
+   applytheme(theme);
+   renderthemeicon(theme);
 }
 
-// needed to affect switch theme
-document.documentElement.className = window.localStorage.getItem('theme');
+// apply theme
+function applytheme(theme) {
+   document.documentElement.className = theme;
+}
+
+// render the svg if needed
+function renderthemeicon(theme) {
+   const icon = document.getElementById('sthemeicon');
+   if (!icon) return;
+
+   const svgs = {
+      dark:  svgsun(),
+      light: svgmoon()
+   };
+
+   icon.innerHTML = svgs[theme] || svgs.light;
+}
+
+// toggle theme
+function switchtheme() {
+   const currenttheme = window.localStorage.getItem('theme');
+   const newtheme = currenttheme === 'light' ? 'dark' : 'light';
+
+   window.localStorage.setItem('theme', newtheme);
+   applytheme(newtheme);
+   renderthemeicon(newtheme);
+}
+
+// set up theme toggle with transition
+function setupthemetoggle() {
+   const themebutton = document.getElementById('themeicon');
+   if (!themebutton) return;
+
+   // remove any existing listeners (prevents duplicates)
+   themebutton.replaceWith(themebutton.cloneNode(true));
+
+   const newbutton = document.getElementById('themeicon');
+   newbutton.addEventListener('click', () => {
+      if (!document.startViewTransition) {
+         switchtheme();
+         return;
+      }
+
+      document.startViewTransition(() => {
+         switchtheme();
+      });
+   });
+}
+
+// theme initial page load
+if (document.readyState === 'loading') {
+   document.addEventListener('DOMContentLoaded', () => {
+      inittheme();
+      setupthemetoggle();
+   });
+} else {
+   inittheme();
+   setupthemetoggle();
+}
 
 // resize text paper view
 if (document.title !== 'slide show' && document.title !== 'webgl') {
@@ -50,6 +104,22 @@ function islocalurl(url) {
         return true;
     }
 }
+
+function getzipzarchive(url, callback) {
+    fetch(url)
+        .then(response => response.arrayBuffer())
+        .then(arrayBuffer => {
+            return loadzipfilef(arrayBuffer, url);
+        })
+        .then(fileList => {
+            callback(fileList);
+        })
+        .catch(error => {
+            //console.error('Error loading ZIP:', error);
+            //callback(null);  // Call callback with null on error
+        });
+}
+
 
 function getjsonf(url, callback) {
     var request = new XMLHttpRequest();
@@ -849,4 +919,3 @@ function togglefullscreen() {
       }
   }
 }
-

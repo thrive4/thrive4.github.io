@@ -24,9 +24,9 @@ wah =`
     <a class="nav-item" style="cursor:pointer" href="index.html">THRIVE4</a>
   </div>
   <div class="nav-right">
-    <a class="nav-item" href="" onclick="switchtheme();">
-        <div id="themeicon"></div>
-    </a>
+    <button id="themeicon" class="nav-item" style="cursor:pointer">
+            <div id="sthemeicon"></div>
+    </button>
     <a class="nav-item" style="cursor:pointer" onclick="openNav('right')">
        <svg class="svglight" viewBox="-8 -11 52 52">
             <path d="M23.265,24.381l.9-.894c4.164.136,4.228-.01,4.411-.438l1.144-2.785L29.805,20l-.093-.231c-.049-.122-.2-.486-2.8-2.965V15.5c3-2.89,
@@ -246,4 +246,24 @@ function svgdownload() {
     20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     </path> <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     </path>`;
+}
+
+function svgsun() {
+    return `<svg class="svglight" viewBox="-5 -8 34 34">
+             <circle cx="12" cy="12" r="5"/>
+             <path d="M21,13H20a1,1,0,0,1,0-2h1a1,1,0,0,1,0,2Z M4,13H3a1,1,0,0,1,0-2H4a1,1,0,0,1,0,2Z M17.66,7.34A1,
+                      1,0,0,1,17,7.05a1,1,0,0,1,0-1.41l.71-.71a1,1,0,1,1,1.41,1.41l-.71.71A1,1,0,0,1,17.66,
+                      7.34Z M5.64,19.36a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.41L5.64,17a1,1,0,0,1,1.41,
+                      1.41l-.71.71A1,1,0,0,1,5.64,19.36Z M12,5a1,1,0,0,1-1-1V3a1,1,0,0,1,2,0V4A1,
+                      1,0,0,1,12,5Z M12,22a1,1,0,0,1-1-1V20a1,1,0,0,1,2,0v1A1,1,0,0,1,12,
+                      22Z M6.34,7.34a1,1,0,0,1-.7-.29l-.71-.71A1,1,0,0,1,6.34,4.93l.71.71a1,1,0,0,
+                      1,0,1.41A1,1,0,0,1,6.34,7.34Z M18.36,19.36a1,1,0,0,1-.7-.29L17,18.36A1,1,
+                      0,0,1,18.36,17l.71.71a1,1,0,0,1,0,1.41A1,1,0,0,1,18.36,19.36Z"/>
+          </svg>`;
+}
+
+function svgmoon() {
+  return `<svg class="svglight" viewBox="-5 -8 34 34">
+           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>`;
 }
