@@ -111,6 +111,8 @@ body {
     z-index: 1;
 }
 .nav-item {
+    border: 0px;
+    background-color: var(--navmaincolor);
     color: var(--navfontcolor);
     align-items: center;
     display: flex;
@@ -784,6 +786,9 @@ audio {
 #mht-input {
   display: none;
 }
+#zipinput {
+  display: none;
+}
 #mdinput { width: 100%; height: 100px; margin-bottom: 10px; }
 #viewmodal, #tocmodal {
   position: fixed;
@@ -963,6 +968,56 @@ audio {
     padding: 10px;
     border: 1px solid #ddd;
   }
-
 /* end document conversion */
 
+/* theme mode trasistion fx */
+/* courtesy https://theme-toggle.rdsx.dev */
+::view-transition-group(root) {
+  animation-duration: 0.7s;
+  animation-timing-function: var(--expo-out);
+}
+
+::view-transition-new(root) {
+  animation-name: reveal-light;
+  animation-fill-mode: both;
+}
+
+::view-transition-old(root),
+.dark::view-transition-old(root) {
+  animation: none;
+  animation-fill-mode: both;
+  z-index: -1;
+}
+
+.dark::view-transition-new(root) {
+  animation-name: reveal-dark;
+  animation-fill-mode: both;
+}
+
+@keyframes reveal-dark {
+  from {
+    clip-path: polygon(50% -71%, -50% 71%, -50% 71%, 50% -71%);
+  }
+  to {
+    clip-path: polygon(50% -71%, -50% 71%, 50% 171%, 171% 50%);
+  }
+}
+
+@keyframes reveal-light {
+  from {
+    clip-path: polygon(171% 50%, 50% 171%, 50% 171%, 171% 50%);
+  }
+  to {
+    clip-path: polygon(171% 50%, 50% 171%, -50% 71%, 50% -71%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-new(root),
+  ::view-transition-old(root),
+  .dark::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+/* end theme mode trasistion fx */

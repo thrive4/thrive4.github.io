@@ -6,6 +6,44 @@
     <title>documentconverter</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
     <link rel="stylesheet" href="main.css" />
+  <style>
+    .wrap {
+      display: grid;
+      grid-template-columns: 320px 280px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .panel {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 16px;
+      background: #fafafa;
+    }
+    #files {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0 0;
+      max-height: 420px;
+      overflow: auto;
+    }
+    #files li {
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 6px;
+      background: white;
+      border: 1px solid #e5e5e5;
+      word-break: break-word;
+    }
+    #files li:hover {
+      background: #f0f7ff;
+      border-color: #b9d7ff;
+    }
+    #files li.active {
+      background: #dcebff;
+      border-color: #7fb2ff;
+    }
+  </style>
 </head>
 <body>
   <p id="wah"></p>
@@ -14,19 +52,37 @@
   <script type="text/javascript" src="js/body.js" defer></script>
   <script type="text/javascript" src="js/mdmhtlib.js" defer></script>
   <div class="docbody">
+
+  <textarea class="doctextarea" id="input-text" style="display:none;" placeholder="Paste your plain text here..."></textarea>
     <textarea id="mdinput" class="doctextarea" placeholder="Paste your Markdown content here..."></textarea><br/>
       <div id="output">loaded stopwords (en)</div>
       <button class="docbutton" id="loadbtn">load markdown</button>
 
-      <h3>MHT Viewer</h3>
+      <h3>mht viewer</h3>
       <input type="file" id="mht-input" accept=".mht,.mhtml" />
-      <label for="mht-input" class="docbutton">choose file</label>
+      <label for="mht-input" class="docbutton">browse</label>
 
+      <h3>zip archive</h3>
+      <input type="file" id="zipinput" accept=".zip" />
+      <label for="zipinput" class="docbutton">browse</label>
+    <div id="status" class="muted" style="margin-top:12px;">No file loaded.</div>
+    <div id="ziparchivecompressed"   class="muted" style="margin-top:12px;">0 bytes</div>
+    <div id="ziparchiveuncompressed" class="muted" style="margin-top:12px;">0 bytes</div>
+
+  <div class="wrap" style="margin-top:20px;">
+    <div class="panel">
+      <h2 style="margin-top:0;">Files</h2>
+      <ul id="files"></ul>
+    </div>
+ </div>
       <div id="viewmodal" style="display:none;"></div>
       <div id="tocmodal"  style="display:none;"></div>
       <div id="tocmodal-toggle"><span id="toggle-symbol">+</span></div>
       <div id="navmhtmodal"  style="display:none;">
       </div>
   </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
 </body>
 </html>

@@ -1,3 +1,12 @@
+update 2.6 10/10/2026
+- fixed thumbnail size in url to upload.wikimedia.org
+  fixed sizes been implemented to reduce serverload see:
+  https://www.mediawiki.org/wiki/Common_thumbnail_sizes/en
+- added swipe transistion to switching between dark and light mode
+  refactored some switchtheme code most is now in lib.js
+- added first draft zip archive intergration with paper
+  and mhtviewer
+
 update 2.5 24/03/2026
 - intergrated chart view with over views
   removed the link in config options

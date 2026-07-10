@@ -1,16 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8" />
-    <meta name="keywords" content="jazz artists">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8" />
+    <meta name="keywords"    content="" />
     <title>paper</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
     <link rel="stylesheet" href="main.css" />
+  <style>
+    .wrap {
+      display: grid;
+      grid-template-columns: 320px 280px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .panel {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 16px;
+      background: #fafafa;
+    }
+    #files {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0 0;
+      max-height: 420px;
+      overflow: auto;
+    }
+    #files li {
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 6px;
+      background: white;
+      border: 1px solid #e5e5e5;
+      word-break: break-word;
+    }
+    #files li:hover {
+      background: #f0f7ff;
+      border-color: #b9d7ff;
+    }
+    #files li.active {
+      background: #dcebff;
+      border-color: #7fb2ff;
+    }
+  </style>
 </head>
 <body>
-<p id="wah"></p>
-<script type="text/javascript" src="js/body.js" defer></script>
+  <p id="wah"></p>
+  <!-- todo dummy placed due to error in lib.js needs to be removed-->
+  <table><tbody id=""></tbody></table>
+  <script type="text/javascript" src="js/body.js" defer></script>
+  <script type="text/javascript" src="js/mdmhtlib.js" defer></script>
+  <script type="text/javascript" src="js/jszip.js" defer></script>
+  <div class="docbody">
+  <!-- todo cleanup zip archive related ids-->
+  <p id="input-text">
+  <p id="mdinput">
+  <p id="output">
+  <p id="status">
+    <div id="ziparchivecompressed"   class="muted" style="margin-top:12px;">0 bytes</div>
+    <div id="ziparchiveuncompressed" class="muted" style="margin-top:12px;">0 bytes</div>
+  <p id="loadbtn">
+  <p id="mht-input">
+  <p id="zipinput">
+  <p id="files">
+  <div id="viewmodal" style="display:none;"></div>
+  <div id="tocmodal"  style="display:none;"></div>
+  <div id="tocmodal-toggle"><span id="toggle-symbol">+</span></div>
+  <div id="navmhtmodal"  style="display:none;"></div>
+</div>
 </body>
 </html>
-
-
